@@ -51,3 +51,5 @@ fn main() {
 // * [The Rust Book](https://doc.rust-lang.org/stable/book/)
 // * [Rust by Example](http://rustbyexample.com/)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
+
+// (This website has been generated with [Docco](https://jashkenas.github.io/docco/))
