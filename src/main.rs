@@ -10,6 +10,9 @@
 // I plan to cover. They may also be helpful as an offline resource, but you're on your
 // own then.
 
+// I will assume basic familiarity with programming, and hence not explain the basic
+// concepts common to most languages. Instead, I will focus on what makes Rust special.
+
 // The actual course is in the partXX.rs files. I suggest you get started with
 // [the first part](part00.html), or jump directly to where you left off:
 
