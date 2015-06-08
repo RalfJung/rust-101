@@ -27,3 +27,12 @@ mod part01;
 fn main() {
     part00::part_main();
 }
+
+// Additional material
+// -------------------
+// 
+// There's tons of useful Rust stuff out there, so let me just put links to some
+// of the most interesting places here:
+// * [The Rust Book](https://doc.rust-lang.org/stable/book/)
+// * [Rust by Example](http://rustbyexample.com/)
+// * The [Rust Subreddit](https://www.reddit.com/r/rust/)
