@@ -6,3 +6,5 @@
 pub fn part_main() {
     
 }
+
+// [index](main.html) | [previous](part00.html) | [next](part02.html)

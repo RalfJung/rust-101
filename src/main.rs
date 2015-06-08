@@ -20,7 +20,7 @@
 // [the Rust website](http://www.rust-lang.org/). At this point, I plan to restrict
 // myself to stable Rust, so "Recommended" version is just right.
 // You can find some more installation instructions in
-// [the second chapter of The Book](https://doc.rust-lang.org/stable/book/getting-started.html).
+// [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 // When you are done, running `cargo build` in the root of Rust-101 should successfully compile
 // all the code.
 //
