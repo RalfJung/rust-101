@@ -11,7 +11,7 @@ Usage
 -----
 
 You can either read through the sources in ``src/``, or generate the HTML in 
-``docs/`` using ``docco src/*.rs`` (this step needs Docco_), or go directly to 
+``docs/`` using ``make docs`` (this step needs Docco_), or go directly to 
 `the rendered output`_.
 
 Source, License

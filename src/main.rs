@@ -1,7 +1,7 @@
 // Welcome to Rust-101
 // ===================
 //
-// This is Rust-101, a small tutorial to the [Rust language](http://www.rust-lang.org/).
+// This is [Rust-101](https://www.ralfj.de/projects/rust-101/), a small tutorial for the [Rust language](http://www.rust-lang.org/).
 // This is intended to be an interactive, hands-on course: I believe the only way to
 // *really* learn a language is to write code in it, so you should be coding during
 // the course. These documents mainly serve as a guide to the teacher, reminding me
@@ -51,5 +51,3 @@ fn main() {
 // * [The Rust Book](https://doc.rust-lang.org/stable/book/)
 // * [Rust by Example](http://rustbyexample.com/)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
-
-// (This website has been generated with [Docco](https://jashkenas.github.io/docco/))
