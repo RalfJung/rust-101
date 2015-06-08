@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 // Welcome to Rust-101
 // ===================
 //
@@ -32,10 +31,11 @@
 // 
 // * [Part 00](part00.html)
 // * [Part 01](part01.html)
+#![allow(dead_code)]
 mod part00;
 mod part01;
 
-// To actually run the code after filling in the blanks, simply edit the `main`
+// To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function below.
 
 fn main() {
