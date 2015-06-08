@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0"))"
+./pycco-rs src/*.rs
+cd docs
+git add .
+git commit -m "semi-auto-update of the documentation"
+git push

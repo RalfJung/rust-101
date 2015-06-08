@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 // Welcome to Rust-101
 // ===================
 //
