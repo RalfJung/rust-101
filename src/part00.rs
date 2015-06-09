@@ -1,5 +1,5 @@
-// Rust-101, Part 00: Algebraic datatypes, expressions
-// ===================================================
+// Rust-101, Part 00: Algebraic datatypes
+// ======================================
 
 // As our first piece of Rust code, we want to write a function that computes the
 // minimum of a list. We are going to make use of the standard library, so let's import that:
@@ -26,7 +26,7 @@ enum NumberOrNothing {
 // (growable) arrays of numbers, and we will use that as our list type.
 // Observe how in Rust, the return type comes *after* the arguments.
 
-fn vec_min_try1(vec: Vec<i32>) -> NumberOrNothing {
+fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
     // First, we need some variable to store the minimum as computed so far.
     // Since we start out with nothing computed, this will again be a 
     // "number or nothing":
@@ -62,59 +62,13 @@ fn vec_min_try1(vec: Vec<i32>) -> NumberOrNothing {
 // the constructors of `NumberOrNothing` into the local namespace:
 use self::NumberOrNothing::{Number,Nothing};
 // Try moving that above the function, and removing all the occurrences `NumberOrNothing::`.
-// Things should still compile, now being much less verbose!
-
-// There is more prettification we can do. To understand how, it is important to
-// understand that Rust is an "expression-based" language. This means that most of the
-// terms you write down are not just *statements* (executing code), but *expressions*
-// (returning a value). This applies even to the body of entire functions!
-
-// For example, consider `sqr`:
-fn sqr(i: i32) -> i32 { i * i }
-// Between the curly braces, we are giving the *expression* that computes the return value.
-// So we can just write `i * i`, the expression that returns the square if `i`!
-// This is very close to how mathematicians write down functions (but with more types).
-
-// Conditionals are also just expressions. You can compare this to the ternary `? :` operator
-// from languages like C.
-fn abs(i: i32) -> i32 { if i >= 0 { i } else { -i } }
-
-// And the same applies to case distinction with `match`: Every `arm` of the match
-// gives the expression that is returned in the respective case.
-fn number_or_default(n: NumberOrNothing, default: i32) -> i32 {
-    match n {
-        Nothing => default,
-        Number(n) => n,
-    }
-}
-
-// With this fresh knowledge, let us now refactor `vec_min`.
-fn vec_min(v: Vec<i32>) -> NumberOrNothing {
-    let mut min = Nothing;
-    for e in v {
-        // First of all, notice that all we do here is compute a new value for `min`, and that it
-        // will always end up being `Number` rather than `Nothing`. In Rust, the structure of the code
-        // can express this uniformity as follows:
-        min = Number(match min {
-            Nothing => e,
-            Number(n) => std::cmp::min(n, e)
-        });
-    }
-    // The `return` keyword exists in Rust, but it is rarely used. Instead, we typically
-    // make use of the fact that the entire function body is an expression, so we can just
-    // write down the desired return value.
-    min
-}
-
-// Now that's already much shorter! Make sure you can go over the code above and actually understand
-// every step of what's going on.
 
 // To call this function, we now just need a list. Of course, ultimately we want to ask the user for
 // a list of numbers, but for now, let's just hard-code something:
 
 fn read_vec() -> Vec<i32> {
     vec![18,5,7,1,9,27]
-    // `vec!` is a *macro* (as you can tell from the `!`) that constructs a constant `Vec` with the given
+    // `vec!` is a *macro* (as you can tell from the `!`) that constructs a constant `Vec<_>` with the given
     // elements.
 }
 
@@ -127,6 +81,9 @@ fn print_number_or_nothing(n: NumberOrNothing) {
     match n {
         Nothing => println!("The number is: <nothing>"),
         Number(n) => println!("The number is: {}", n),
+        // `println!` is again a macro, where the first argument is a *format string*. For
+        // now, you just need to know that `{}` is the placeholder for a value, and that Rust
+        // will check at compile-time that you supplied the right number of arguments.
     };
 }
 
