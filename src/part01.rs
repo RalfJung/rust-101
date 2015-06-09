@@ -1,4 +1,4 @@
-// Rust-101, Part 00: Expressions, Inherent methods
+// Rust-101, Part 01: Expressions, Inherent methods
 // ================================================
 
 use std;
@@ -8,13 +8,13 @@ use std;
 // understand that Rust is an "expression-based" language. This means that most of the
 // terms you write down are not just *statements* (executing code), but *expressions*
 // (returning a value). This applies even to the body of entire functions!
-
+// 
 // For example, consider `sqr`:
 fn sqr(i: i32) -> i32 { i * i }
 // Between the curly braces, we are giving the *expression* that computes the return value.
 // So we can just write `i * i`, the expression that returns the square if `i`!
 // This is very close to how mathematicians write down functions (but with more types).
-
+// 
 // Conditionals are also just expressions. You can compare this to the ternary `? :` operator
 // from languages like C.
 fn abs(i: i32) -> i32 { if i >= 0 { i } else { -i } }
@@ -91,5 +91,8 @@ pub fn part_main() {
 }
 // You will have to replace `part00` by `part01` in the `main` function in
 // `main.rs` to run this code.
+
+// **Exercise**: Write a funtion `vec_avg` that computes the average value of a `Vec<i32>`.
+// *Hint*: `vec.len()` returns the length of a vector `vec`.
 
 // [index](main.html) | [previous](part00.html) | [next](part02.html)

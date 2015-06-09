@@ -39,11 +39,13 @@
 // [the first part](part00.html), or jump directly to where you left off:
 // 
 // * [Part 00](part00.html)
-// * [Part 01](part01.html) (WIP)
+// * [Part 01](part01.html)
+// * [Part 02](part02.html) (WIP)
 // * (to be continued)
 #![allow(dead_code)]
 mod part00;
 mod part01;
+mod part02;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function below.
