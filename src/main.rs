@@ -41,11 +41,13 @@
 // * [Part 00](part00.html)
 // * [Part 01](part01.html)
 // * [Part 02](part02.html)
+// * [Part 03](part03.html) (WIP)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables)]
 mod part00;
 mod part01;
 mod part02;
+mod part03;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.

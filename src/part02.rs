@@ -155,4 +155,4 @@ impl<T: Print> SomethingOrNothing<T> {
     }
 }
 
-// [index](main.html) | [previous](part01.html) | next
+// [index](main.html) | [previous](part01.html) | [next](part03.html)
