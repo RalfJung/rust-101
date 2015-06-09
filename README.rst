@@ -18,9 +18,10 @@ You can either read through the sources in ``src/``, or generate the HTML in
 Source, License
 ---------------
 
-You can find the sources in the `git repository`_ and `on GitHub`_. They are 
-provided under a Creative Commons Attribution-ShareAlike 4.0 International 
-license (`CC-BY-SA 4.0`_). See the file ``LICENSE-CC`` for more details.
+You can find the sources in the `git repository`_ (also available `on GitHub`_). 
+They are provided under a Creative Commons Attribution-ShareAlike 4.0 
+International license (`CC-BY-SA 4.0`_). See the file ``LICENSE-CC`` for more 
+details.
 
 .. _git repository: http://www.ralfj.de/git/rust-101.git
 .. _on GitHub: https://github.com/RalfJung/rust-101
