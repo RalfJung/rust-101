@@ -1,3 +1,4 @@
-target
-docs
+target/
+docs/
 sync-docs
+rawsrc/

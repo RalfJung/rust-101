@@ -77,7 +77,7 @@ impl NumberOrNothing {
 // is independent of the definition of the type. `self` is like `this` in other
 // languages, and its type is always implicit. So `print` is now a method that
 // takes as first argument a `NumberOrNothing`, just like `print_number_or_nothing`.
-//
+// 
 // Try making `number_or_default` from above an inherent method as well!
 
 // With our refactored functions and methods, `main` now looks as follows:
