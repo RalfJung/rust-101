@@ -4,7 +4,7 @@ all: docs rawsrc
 .PHONY: docs rawsrc
 
 docs:
-	@docco $(FILES) -l linear
+	@docco $(FILES) # -l linear
 
 rawsrc:
 	@mkdir -p rawsrc

@@ -42,13 +42,13 @@
 // * [Part 01](part01.html)
 // * [Part 02](part02.html) (WIP)
 // * (to be continued)
-#![allow(dead_code)]
+#![allow(dead_code, unused_imports, unused_variables)]
 mod part00;
 mod part01;
 mod part02;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
-// function below.
+// function.
 
 fn main() {
     part00::part_main();

@@ -8,13 +8,13 @@ use std;
 // understand that Rust is an "expression-based" language. This means that most of the
 // terms you write down are not just *statements* (executing code), but *expressions*
 // (returning a value). This applies even to the body of entire functions!
-// 
+
 // For example, consider `sqr`:
 fn sqr(i: i32) -> i32 { i * i }
 // Between the curly braces, we are giving the *expression* that computes the return value.
 // So we can just write `i * i`, the expression that returns the square if `i`!
 // This is very close to how mathematicians write down functions (but with more types).
-// 
+
 // Conditionals are also just expressions. You can compare this to the ternary `? :` operator
 // from languages like C.
 fn abs(i: i32) -> i32 { if i >= 0 { i } else { -i } }
@@ -42,10 +42,11 @@ fn number_or_default(n: NumberOrNothing, default: i32) -> i32 {
 fn vec_min(v: &Vec<i32>) -> NumberOrNothing {
     let mut min = Nothing;
     for e in v {
+        // Now that `v` is just a reference, the same goes for `e`, so we have to dereference the pointer.
         let e = *e;
         // Notice that all we do here is compute a new value for `min`, and that it will always end
         // up being a `Number` rather than `Nothing`. In Rust, the structure of the code
-        // can express this uniformity as follows:
+        // can express this uniformity.
         min = Number(match min {
             Nothing => e,
             Number(n) => std::cmp::min(n, e)
@@ -63,7 +64,7 @@ fn vec_min(v: &Vec<i32>) -> NumberOrNothing {
 // So much for `vec_min`. Let us now reconsider `print_number_or_nothing`. That function
 // really belongs pretty close to the type `NumberOrNothing`. In C++ or Java, you would
 // probably make it a method of the type. In Rust, we can achieve something very similar
-// by providing an *inherent implementation* as follows:
+// by providing an *inherent implementation*.
 impl NumberOrNothing {
     fn print(self) {
         match self {

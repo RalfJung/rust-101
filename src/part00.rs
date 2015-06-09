@@ -2,8 +2,9 @@
 // ======================================
 
 // As our first piece of Rust code, we want to write a function that computes the
-// minimum of a list. We are going to make use of the standard library, so let's import that:
+// minimum of a list.
 
+// We are going to make use of the standard library, so let's import that:
 use std;
 
 // Let us start by thinking about the *type* of our function. Rust forces us to give the types of
@@ -16,18 +17,18 @@ use std;
 // Coming from C(++), you can think of such a type as a `union`, together with a field that
 // stores the variant of the union that's currently used.
 
+// An `enum` for "a number or nothing" could look as follows:
 enum NumberOrNothing {
     Number(i32),
     Nothing
 }
-
 // Notice that `i32` is the type of (signed, 32-bit) integers. To write down the type of
 // the minimum function, we need just one more ingredient: `Vec<i32>` is the type of
 // (growable) arrays of numbers, and we will use that as our list type.
-// Observe how in Rust, the return type comes *after* the arguments.
 
+// Observe how in Rust, the return type comes *after* the arguments.
 fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
-    // First, we need some variable to store the minimum as computed so far.
+    // In the function, we first need some variable to store the minimum as computed so far.
     // Since we start out with nothing computed, this will again be a 
     // "number or nothing":
     let mut min = NumberOrNothing::Nothing;
@@ -42,12 +43,12 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
         // So `el` is al element of the list. We need to update `min` accordingly, but how do we get the current
         // number in there? This is what pattern matching can do:
         match min {
+            // In this case (*arm*) of the `match`, `min` is currently nothing, so let's just make it the number `el`.
             NumberOrNothing::Nothing => {
-                // In this case (*arm*) of the `match`, `min` is currently nothing, so let's just make it the number `el`.
                 min = NumberOrNothing::Number(el);
             },
+            // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it.
             NumberOrNothing::Number(n) => {
-                // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it.
                 let new_min = std::cmp::min(n, el);
                 min = NumberOrNothing::Number(new_min);
             }
@@ -58,18 +59,20 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
 }
 
 // Phew. We wrote our first Rust function! But all this `NumberOrNothing::` is getting kind of
-// ugly. Can't we do that nicer? Indeed, we can: The following line tells Rust to take
-// the constructors of `NumberOrNothing` into the local namespace:
-use self::NumberOrNothing::{Number,Nothing};
+// ugly. Can't we do that nicer?
+
+// Indeed, we can: The following line tells Rust to take
+// the constructors of `NumberOrNothing` into the local namespace.
 // Try moving that above the function, and removing all the occurrences `NumberOrNothing::`.
+use self::NumberOrNothing::{Number,Nothing};
 
 // To call this function, we now just need a list. Of course, ultimately we want to ask the user for
-// a list of numbers, but for now, let's just hard-code something:
+// a list of numbers, but for now, let's just hard-code something.
 
+// `vec!` is a *macro* (as you can tell from the `!`) that constructs a constant `Vec<_>` with the given
+// elements.
 fn read_vec() -> Vec<i32> {
     vec![18,5,7,1,9,27]
-    // `vec!` is a *macro* (as you can tell from the `!`) that constructs a constant `Vec<_>` with the given
-    // elements.
 }
 
 // Finally, let's call our functions and run the code!
@@ -77,18 +80,17 @@ fn read_vec() -> Vec<i32> {
 // Of course Rust can print numbers, but after calling `vec_min`, we have a `NumberOrNothing`.
 // So let's write a small helper function that prints such values.
 
+// `println!` is again a macro, where the first argument is a *format string*. For
+// now, you just need to know that `{}` is the placeholder for a value, and that Rust
+// will check at compile-time that you supplied the right number of arguments.
 fn print_number_or_nothing(n: NumberOrNothing) {
     match n {
         Nothing => println!("The number is: <nothing>"),
         Number(n) => println!("The number is: {}", n),
-        // `println!` is again a macro, where the first argument is a *format string*. For
-        // now, you just need to know that `{}` is the placeholder for a value, and that Rust
-        // will check at compile-time that you supplied the right number of arguments.
     };
 }
 
 // Putting it all together:
-
 pub fn part_main() {
     let vec = read_vec();
     let min = vec_min(vec);
