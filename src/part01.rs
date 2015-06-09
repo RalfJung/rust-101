@@ -94,6 +94,7 @@ pub fn part_main() {
 // `main.rs` to run this code.
 
 // **Exercise**: Write a funtion `vec_avg` that computes the average value of a `Vec<i32>`.
+// 
 // *Hint*: `vec.len()` returns the length of a vector `vec`.
 
 // [index](main.html) | [previous](part00.html) | [next](part02.html)

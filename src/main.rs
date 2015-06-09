@@ -1,6 +1,6 @@
 // Welcome to Rust-101
 // ===================
-//
+// 
 // This is [Rust-101](https://www.ralfj.de/projects/rust-101/), a small *work-in-progress*
 // tutorial for the [Rust language](http://www.rust-lang.org/).
 // It is intended to be an interactive, hands-on course: I believe the only way to
@@ -13,10 +13,10 @@
 // 
 // I will assume basic familiarity with programming, and hence not explain the basic
 // concepts common to most languages. Instead, I will focus on what makes Rust special.
-//
+// 
 // Prerequisites
 // -------------
-//
+// 
 // You will need to have Rust installed, of course. It is available for download on
 // [the Rust website](http://www.rust-lang.org/). At this point, I plan to restrict
 // myself to stable Rust, so "Recommended" version is just right.
@@ -24,14 +24,14 @@
 // [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 // When you are done, running `cargo build` in the root of Rust-101 should successfully compile
 // all the code.
-//
+// 
 // Getting the source
 // ------------------
-//
+// 
 // You are meant to play around with the source code of the course as you go on, so please
 // fetch it from the [git repository](http://www.ralfj.de/git/rust-101.git) (also available
 // [on GitHub](https://github.com/RalfJung/rust-101)).
-//
+// 
 // Course Content
 // --------------
 // 
@@ -40,7 +40,7 @@
 // 
 // * [Part 00](part00.html)
 // * [Part 01](part01.html)
-// * [Part 02](part02.html) (WIP)
+// * [Part 02](part02.html)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables)]
 mod part00;
