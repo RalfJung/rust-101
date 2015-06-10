@@ -30,10 +30,9 @@ trait Minimum : Copy {
     fn min(a: Self, b: Self) -> Self;
 }
 
-fn vec_min<T: Minimum>(v: &Vec<T>) -> SomethingOrNothing<T> {
+fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
     let mut min = Nothing;
     for e in v {
-        let e = *e;
         min = Something(match min {
             Nothing => e,
             Something(n) => T::min(n, e)
@@ -48,20 +47,34 @@ impl Minimum for i32 {
     }
 }
 
-use std::fmt;
-impl<T: fmt::Display> fmt::Display for SomethingOrNothing<T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl SomethingOrNothing<i32> {
+    fn print(self) {
         match self {
-            &Something(ref t) => t.fmt(f),
-            &Nothing => "Nothing".fmt(f),
+            Nothing => println!("The number is: <nothing>"),
+            Something(n) => println!("The number is: {}", n),
+        };
+    }
+}
+pub fn part_main() {
+    let vec = read_vec();
+    let min = vec_min(vec);
+    min.print();
+}
+
+impl SomethingOrNothing<i32> {
+    fn equals(self, other: Self) -> bool {
+        match (self, other) {
+            (Nothing     , Nothing      ) => true,
+            (Something(n), Something (m)) => n == m,
+            _ => false,
         }
     }
 }
 
-pub fn part_main() {
-    let vec = read_vec();
-    let min = vec_min(&vec);
-    println!("The minimum is: {}", min);
+#[test]
+fn tes_vec_min() {
+    assert!(vec_min(vec![6,325,33,532,5,7]).equals(Something(5)));
+    assert!(vec_min(vec![]).equals(Nothing));
 }
 
 // [index](main.html) | [previous](part02.html) | next

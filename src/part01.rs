@@ -34,16 +34,10 @@ fn number_or_default(n: NumberOrNothing, default: i32) -> i32 {
     }
 }
 
-// With this fresh knowledge, let us now refactor `vec_min`. First of all, we are doing a small change
-// to the type: `&Vec<i32>` denotes a *reference* to a `Vec<i32>`. You can think of this as a pointer
-// (in C terms): Arguments in Rust are passed *by value*, so we need to employ explicit references if
-// that's not what we want. References are per default immutable (like variables), a mutable reference
-// would be denoted `&mut Vec<i32>`.
-fn vec_min(v: &Vec<i32>) -> NumberOrNothing {
+// With this fresh knowledge, let us now refactor `vec_min`.
+fn vec_min(v: Vec<i32>) -> NumberOrNothing {
     let mut min = Nothing;
     for e in v {
-        // Now that `v` is just a reference, the same goes for `e`, so we have to dereference the pointer.
-        let e = *e;
         // Notice that all we do here is compute a new value for `min`, and that it will always end
         // up being a `Number` rather than `Nothing`. In Rust, the structure of the code
         // can express this uniformity.
@@ -87,7 +81,7 @@ fn read_vec() -> Vec<i32> {
 }
 pub fn part_main() {
     let vec = read_vec();
-    let min = vec_min(&vec);
+    let min = vec_min(vec);
     min.print();
 }
 // You will have to replace `part00` by `part01` in the `main` function in

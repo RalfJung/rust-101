@@ -78,10 +78,9 @@ trait Minimum : Copy {
 // we cannot call `min`. Just try it! There is no reason to believe that `T` provides such an operation.
 // This is in strong contrast to C++, where the compiler only checks such details when the
 // function is actually used.
-fn vec_min<T: Minimum>(v: &Vec<T>) -> SomethingOrNothing<T> {
+fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
     let mut min = Nothing;
     for e in v {
-        let e = *e;
         min = Something(match min {
             Nothing => e,
             Something(n) => T::min(n, e)
@@ -125,7 +124,7 @@ fn read_vec() -> Vec<i32> {
 }
 pub fn part_main() {
     let vec = read_vec();
-    let min = vec_min(&vec);
+    let min = vec_min(vec);
     min.print();
 }
 
