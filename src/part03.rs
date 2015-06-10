@@ -105,7 +105,7 @@ impl SomethingOrNothing<i32> {
 
 // If you update your `main.rs` to use part 03, `cargo run` should now ask you for some numbers,
 // and tell you the minimum. Neat, isn't it?
-pub fn part_main() {
+pub fn main() {
     let vec = read_vec();
     let min = vec_min(vec);
     min.print();

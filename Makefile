@@ -8,4 +8,4 @@ docs:
 
 rawsrc:
 	@mkdir -p rawsrc
-	@for file in $(FILES); do echo "$$file -> raw$$file"; egrep -v "^[[:space:]]*// " "$$file" > "raw""$$file"; done
+	@for file in $(FILES); do echo "$$file -> rawsrc/$$file"; egrep -v "^[[:space:]]*// " "$$file" > "rawsrc/""$$file"; done

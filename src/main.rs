@@ -57,7 +57,7 @@ mod part03;
 // function.
 
 fn main() {
-    part00::part_main();
+    part00::main();
 }
 
 // Additional material

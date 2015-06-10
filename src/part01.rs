@@ -79,7 +79,7 @@ impl NumberOrNothing {
 fn read_vec() -> Vec<i32> {
     vec![18,5,7,2,9,27]
 }
-pub fn part_main() {
+pub fn main() {
     let vec = read_vec();
     let min = vec_min(vec);
     min.print();

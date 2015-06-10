@@ -91,7 +91,7 @@ fn print_number_or_nothing(n: NumberOrNothing) {
 }
 
 // Putting it all together:
-pub fn part_main() {
+pub fn main() {
     let vec = read_vec();
     let min = vec_min(vec);
     print_number_or_nothing(min);
