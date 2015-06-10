@@ -4,7 +4,7 @@ all: docs rawsrc
 .PHONY: docs rawsrc
 
 docs:
-	@docco $(FILES) # -l linear
+	@./pycco-rs $(FILES)
 
 rawsrc:
 	@mkdir -p rawsrc

@@ -1,0 +1,31 @@
+/*--------------------- Typography ----------------------------*/
+
+@font-face {
+    font-family: 'aller-light';
+    src: url('fonts/aller-light.eot');
+    src: url('fonts/aller-light.eot?#iefix') format('embedded-opentype'),
+         url('fonts/aller-light.woff') format('woff'),
+         url('fonts/aller-light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*--------------------- Layout ----------------------------*/
+body {
+  font-family: 'aller-light', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1em;
+}
+
+/*---------------------- Syntax Highlighting -----------------------------*/
+body .k { font-weight: bold }                   /* Keyword */
+body .kd { font-weight: normal }                /* Keyword.Declaration */
+body .n { color: #19469D }                      /* Name */
+
+body .mf { color: #40A070 }                     /* Literal.Number.Float */
+body .mh { color: #40A070 }                     /* Literal.Number.Hex */
+body .mi { color: #40A070 }                     /* Literal.Number.Integer */
+body .mo { color: #40A070 }                     /* Literal.Number.Oct */
+body .il { color: #40A070 }                     /* Literal.Number.Integer.Long */
