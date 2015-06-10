@@ -5,7 +5,7 @@
 // tutorial for the [Rust language](http://www.rust-lang.org/).
 // It is intended to be an interactive, hands-on course: I believe the only way to
 // *really* learn a language is to write code in it, so you should be coding during
-// the course. I am writing this tutorial with a tutorial situation in mind, i.e.,
+// the course. I am writing this with a tutorial situation in mind, i.e.,
 // with a teacher being around to guide students through the course and answer
 // questions as they come up. However, I think they may also be useful if you
 // work through them on your own, you will just have to show more initiative yourself:
@@ -15,7 +15,7 @@
 // the IRC channel is filled with awesome people willing to help you! I spent
 // lots of time there ;-)
 // 
-// I will assume basic familiarity with programming, and hence not explain the basic
+// I will assume some familiarity with programming, and hence not explain the basic
 // concepts common to most languages. Instead, I will focus on what makes Rust special.
 // 
 // Prerequisites
