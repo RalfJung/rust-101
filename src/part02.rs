@@ -135,7 +135,7 @@ pub fn part_main() {
 // *for an existing type*. With the hierarchical approach of, e.g., C++ or Java,
 // that's not possible: We cannot make an existing type suddenly also inherit from our abstract base class.
 
-// **Exercise**: Define a trait "Print" to write a generic version of `SomethingOrNothing::print`.
+// **Exercise**: Define a trait `Print` to write a generic version of `SomethingOrNothing::print`.
 // Implement that trait for `i32`, and change the code above to use it.
 // I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
 // implementations (just compare it to the `impl` block from the previous exercise).

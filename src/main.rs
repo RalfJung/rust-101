@@ -8,8 +8,12 @@
 // the course. I am writing this tutorial with a tutorial situation in mind, i.e.,
 // with a teacher being around to guide students through the course and answer
 // questions as they come up. However, I think they may also be useful if you
-// work through them on your own. Just make sure to actually play with the code.
-// If you have any questions, maybe the "Additional Resources" below are useful.
+// work through them on your own, you will just have to show more initiative yourself:
+// Make sure you actually type some code. It may sound stupid to manually copy code
+// that you could duplicate through the clipboard, but it's actually helpful.
+// If you have questions, check out the "Additional Resources" below. In particular,
+// the IRC channel is filled with awesome people willing to help you! I spent
+// lots of time there ;-)
 // 
 // I will assume basic familiarity with programming, and hence not explain the basic
 // concepts common to most languages. Instead, I will focus on what makes Rust special.
@@ -41,7 +45,7 @@
 // * [Part 00](part00.html)
 // * [Part 01](part01.html)
 // * [Part 02](part02.html)
-// * [Part 03](part03.html) (WIP)
+// * [Part 03](part03.html)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables)]
 mod part00;
