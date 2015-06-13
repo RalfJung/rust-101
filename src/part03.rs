@@ -62,46 +62,11 @@ fn read_vec() -> Vec<i32> {
 // So much for `read_vec`. If there are any questions left, the documentation of the respective function
 // should be very helpful. I will not always provide the links, as the documentation is quite easy to navigate
 // and you should get used to that.
-// 
-// The rest of the code dosn't change, so we just copy it.
 
-enum SomethingOrNothing<T>  {
-    Something(T),
-    Nothing,
-}
-use self::SomethingOrNothing::{Something,Nothing};
-
-trait Minimum : Copy {
-    fn min(a: Self, b: Self) -> Self;
-}
-
-fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
-    let mut min = Nothing;
-    for e in v {
-        min = Something(match min {
-            Nothing => e,
-            Something(n) => T::min(n, e)
-        });
-    }
-    min
-}
-
-// `::std::cmp::min` is a way to refer to this function without importing `std`.
-// We could also have done `use std::cmp;` and later called `cmp::min`. Try that!
-impl Minimum for i32 {
-    fn min(a: Self, b: Self) -> Self {
-        ::std::cmp::min(a, b)
-    }
-}
-
-impl SomethingOrNothing<i32> {
-    fn print(self) {
-        match self {
-            Nothing => println!("The number is: <nothing>"),
-            Something(n) => println!("The number is: {}", n),
-        };
-    }
-}
+// For the rest of the code, we just re-use part 02 by importing it with `use`.
+// I already sneaked a bunch of `pub` in the other module to make this possible: Only
+// items declared public can be imported elsewhere.
+use part02::{SomethingOrNothing,Something,Nothing,vec_min};
 
 // If you update your `main.rs` to use part 03, `cargo run` should now ask you for some numbers,
 // and tell you the minimum. Neat, isn't it?
@@ -123,7 +88,7 @@ pub fn main() {
 // as testing whether `(self, other)` is `(Nothing, Nothing)`, which is the case exactly if
 // both `self` and `other` are `Nothing`. Similar so for the second arm.
 impl SomethingOrNothing<i32> {
-    fn equals(self, other: Self) -> bool {
+    pub fn equals(self, other: Self) -> bool {
         match (self, other) {
             (Nothing     , Nothing     ) => true,
             (Something(n), Something(m)) => n == m,
@@ -163,4 +128,4 @@ fn test_vec_min() {
 // *Hint*: You can figure out the trait bound `read_vec` needs from the documentation of `String::parse`.
 // Furthermore, `std::cmp::min` works not just for `i32`, but also for `f32`.
 
-// [index](main.html) | [previous](part02.html) | next
+// [index](main.html) | [previous](part02.html) | [next](part04.html)

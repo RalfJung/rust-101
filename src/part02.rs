@@ -12,11 +12,12 @@ use std;
 // meaning "many shapes"). You may know something similar from C++ (where it's called
 // *templates*) or Java, or one of the many functional languages. So here, we define
 // a generic type `SomethingOrNothing`.
-enum SomethingOrNothing<T>  {
+pub enum SomethingOrNothing<T>  {
     Something(T),
     Nothing,
 }
-use self::SomethingOrNothing::{Something,Nothing};
+// Instead of writing out all the variants, we can also just import them all at once.
+pub use self::SomethingOrNothing::*;
 // What this does is to define an entire family of types: We can now write
 // `SomethingOrNothing<i32>` to get back our `NumberOrNothing`, but we
 // can also write `SomethingOrNothing<bool>` or even `SomethingOrNothing<SomethingOrNothing<i32>>`.
@@ -64,7 +65,7 @@ fn call_constructor(x: i32) -> SomethingOrNothing<i32> {
 // For now, just ignore the `Copy`, we will come back to this point later.
 // A `trait` is a lot like interfaces in Java: You define a bunch of functions
 // you want to have implemented, and their argument and return types.
-trait Minimum : Copy {
+pub trait Minimum : Copy {
     fn min(a: Self, b: Self) -> Self;
 }
 
@@ -78,7 +79,7 @@ trait Minimum : Copy {
 // we cannot call `min`. Just try it! There is no reason to believe that `T` provides such an operation.
 // This is in strong contrast to C++, where the compiler only checks such details when the
 // function is actually used.
-fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
+pub fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
     let mut min = Nothing;
     for e in v {
         min = Something(match min {
@@ -100,7 +101,7 @@ impl Minimum for i32 {
 // This also shows that we can have multiple `impl` blocks for the same type, and we
 // can provide some methods only for certain instances of a generic type.
 impl SomethingOrNothing<i32> {
-    fn print(self) {
+    pub fn print(self) {
         match self {
             Nothing => println!("The number is: <nothing>"),
             Something(n) => println!("The number is: {}", n),

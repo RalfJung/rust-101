@@ -17,6 +17,24 @@
 // 
 // I will assume some familiarity with programming, and hence not explain the basic
 // concepts common to most languages. Instead, I will focus on what makes Rust special.
+//
+// Why Rust?
+// ---------
+// 
+// When you got here, I am kind of assuming that you already decided to give Rust at
+// least a look, so that I don't have to do much convincing here ;-) . But just in
+// case, here's why I think Rust is worth learning:<br/>
+// At this time, Rust is a language with a pretty unique set of goals. Rust aims to
+// achieve C++-style control over memory and execution behavior (like, static vs. dynamic
+// dispatch), which makes it possible to construct abstractions that carry no run-time
+// cost. This is combined this with providing the comfort of high-level functional languages
+// and guaranteeing safety (as in, the program will not crash). The vast majority of existing
+// languages sacrificies one of these goals for the other. In particular, the
+// first requirement rules out a garbage collector: Rust can run "mare metal".
+// In fact, Rust rules out more classes of bugs than languages that achieve safety
+// with a GC: Besides dangling pointers and double-free, Rust also prevents issues
+// such as iterator invalidation and race conditions.
+// 
 // 
 // Prerequisites
 // -------------
@@ -39,19 +57,27 @@
 // Course Content
 // --------------
 // 
-// The actual course is in the partXX.rs files. I suggest you get started with
-// [the first part](part00.html), or jump directly to where you left off:
+// The actual course is in the partXX.rs files. The part 00-03 cover some basic of the language,
+// to give you a feeling for Rust's syntax and pervasive mechanisms like pattern matching and traits.
+// Parts 04-?? introduce the heart of the language, the mechanism making it different from anything
+// else out there.
+// 
+// I suggest you get started with [the first part](part00.html), or jump directly to where you left off:
 // 
 // * [Part 00](part00.html)
 // * [Part 01](part01.html)
 // * [Part 02](part02.html)
 // * [Part 03](part03.html)
+// * [Part 04](part04.html) (WIP)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables)]
 mod part00;
 mod part01;
 mod part02;
 mod part03;
+mod part04;
+mod part05;
+mod part06;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
