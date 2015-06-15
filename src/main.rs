@@ -70,7 +70,7 @@
 // * [Part 03](part03.html)
 // * [Part 04](part04.html) (WIP)
 // * (to be continued)
-#![allow(dead_code, unused_imports, unused_variables)]
+#![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;
 mod part01;
 mod part02;
@@ -78,6 +78,7 @@ mod part03;
 mod part04;
 mod part05;
 mod part06;
+mod part07;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.

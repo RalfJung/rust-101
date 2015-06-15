@@ -2,29 +2,40 @@ use std::ops;
 use std::cmp;
 use std::fmt;
 
+pub trait Minimum {
+    /// Return the smaller of the two
+    fn min<'a>(&'a self, other: &'a Self) -> &'a Self;
+}
+
+/// Return a pointer to the minimal value of `v`.
+pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
+    let mut min = None;
+    for e in v {
+        min = Some(match min {
+            None => e,
+            Some(n) => e.min(n)
+        });
+    }
+    min
+}
+
 pub struct BigInt {
     data: Vec<u64>, // least significant digits first. The last block will *not* be 0.
 }
 
 // Add with carry, returning the sum and the carry
 fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
-    match u64::checked_add(a, b) {
-        Some(sum) if !carry => (sum, false),
-        Some(sum) => { // we have to increment the sum by 1, where it may overflow again
-            match u64::checked_add(sum, 1) {
-                Some(total_sum) => (total_sum, false),
-                None => (0, true) // we overflowed incrementing by 1, so we are just "at the edge"
-            }
-        },
-        None => {
-            // Get the remainder, i.e., the wrapping sum. This cannot overflow again by adding just 1, so it is safe
-            // to add the carry here.
-            let rem = u64::wrapping_add(a, b) + if carry { 1 } else { 0 };
-            (rem, true)
-        }
+    let sum = u64::wrapping_add(a, b);
+    let carry_n = if carry { 1 } else { 0 };
+    if sum >= a { // the first sum did not overflow
+        let sum_total = u64::wrapping_add(sum, carry_n);
+        let had_overflow = sum_total < sum;
+        (sum_total, had_overflow)
+    } else { // the first sum did overflow
+        // it is impossible for this to overflow again, as we are just adding 0 or 1
+        (sum + carry_n, true)
     }
 }
-
 
 impl BigInt {
     /// Construct a BigInt from a "small" one.
@@ -51,43 +62,6 @@ impl BigInt {
             v.pop();
         }
         BigInt { data: v }
-    }
-
-    /// Return the smaller of the two numbers
-    pub fn min(self, other: Self) -> Self {
-        debug_assert!(self.test_invariant() && other.test_invariant());
-        if self.data.len() < other.data.len() {
-            self
-        } else if self.data.len() > other.data.len() {
-            other
-        } else {
-            // compare back-to-front, i.e., most significant digit first
-            let mut idx = self.data.len()-1;
-            while idx > 0 {
-                if self.data[idx] < other.data[idx] {
-                    return self;
-                } else if self.data[idx] > other.data[idx] {
-                    return other;
-                }
-                else {
-                    idx = idx-1;
-                }
-            }
-            // the two are equal
-            return self;
-        }
-    }
-
-    /// Returns a view on the raw digits representing the number.
-    /// 
-    /// ```
-    /// use solutions::bigint::BigInt;
-    /// let b = BigInt::new(13);
-    /// let d = b.data();
-    /// assert_eq!(d, [13]);
-    /// ```
-    pub fn data(&self) -> &[u64] {
-        &self.data[..]
     }
 
     /// Increments the number by "by".
@@ -129,34 +103,65 @@ impl Clone for BigInt {
     }
 }
 
-
 impl PartialEq for BigInt {
     fn eq(&self, other: &BigInt) -> bool {
         debug_assert!(self.test_invariant() && other.test_invariant());
-        self.data() == other.data()
+        self.data == other.data
+    }
+}
+
+impl Minimum for BigInt {
+    fn min<'a>(&'a self, other: &'a Self) -> &'a Self {
+        debug_assert!(self.test_invariant() && other.test_invariant());
+        if self.data.len() < other.data.len() {
+            self
+        } else if self.data.len() > other.data.len() {
+            other
+        } else {
+            // compare back-to-front, i.e., most significant digit first
+            let mut idx = self.data.len()-1;
+            while idx > 0 {
+                if self.data[idx] < other.data[idx] {
+                    return self;
+                } else if self.data[idx] > other.data[idx] {
+                    return other;
+                }
+                else {
+                    idx = idx-1;
+                }
+            }
+            // the two are equal
+            return self;
+        }
     }
 }
 
 impl fmt::Debug for BigInt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.data().fmt(f)
+        self.data.fmt(f)
     }
 }
 
 impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     type Output = BigInt;
     fn add(self, rhs: &'a BigInt) -> Self::Output {
-        let mut result_vec:Vec<u64> = Vec::with_capacity(cmp::max(self.data().len(), rhs.data().len()));
+        let mut result_vec:Vec<u64> = Vec::with_capacity(cmp::max(self.data.len(), rhs.data.len()));
         let mut carry:bool = false; // the carry bit
-        for (i, val) in self.data().into_iter().enumerate() {
+        for (i, val) in (&self.data).into_iter().enumerate() {
             // compute next digit and carry
-            let rhs_val = if i < rhs.data().len() { rhs.data()[i] } else { 0 };
+            let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
             let (sum, new_carry) = overflowing_add(*val, rhs_val, carry);
             // store them
             result_vec.push(sum);
             carry = new_carry;
         }
-        BigInt::from_vec(result_vec)
+        if carry {
+            result_vec.push(1);
+        }
+        // We know that the invariant holds: overflowing_add would only return (0, false) if
+        // the arguments are (0, 0, false), but we know that in the last iteration, `val` is the
+        // last digit of `self` and hence not 0.
+        BigInt { data: result_vec }
     }
 }
 
