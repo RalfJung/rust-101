@@ -8,12 +8,12 @@ use std::cmp;
 // prevent bugs like this C++ snippet.
 /*
   void foo(std::vector<int> v) {
-      int &first = v[0];
+      int *first = &v[0];
       v.push_back(42);
-      first = 1337; // This is bad!
+      *first = 1337; // This is bad!
   }
 */
-// What's going wrong here? `first` is a reference into the vector `v`.
+// What's going wrong here? `first` is a pointer into the vector `v`.
 // The operation `push_back` may re-allocate the storage for the vector,
 // in case the old buffer was full. If that happens, `first` is now
 // a dangling pointer, and accessing it can crash the program (or worse).
@@ -25,21 +25,21 @@ use std::cmp;
 // of aliasing*. The core tool to achieve that is the notion of *ownership*.
 
 // What does that mean in practice? Consider the following example.
-fn take(v: Vec<i32>) { /* do something */ }
-fn foo1() {
+fn work_on_vector(v: Vec<i32>) { /* do something */ }
+fn ownership_demo() {
     let v = vec![1,2,3,4];
-    take(v);
+    work_on_vector(v);
     /* println!("The first element is: {}", v[0]); */
 }
-// Rust attaches additional meaning to the argument of `take`: The function can assume
-// that it entirely *owns* `v`, and hence can do anything with it. When `take` ends,
+// Rust attaches additional meaning to the argument of `work_on_vector`: The function can assume
+// that it entirely *owns* `v`, and hence can do anything with it. When `work_on_vector` ends,
 // nobody needs `v` anymore, so it will be deleted (including its buffer on the heap).
-// Passing a `Vec<i32>` to `take` is considered *transfer of ownership*: Someone used
+// Passing a `Vec<i32>` to `work_on_vector` is considered *transfer of ownership*: Someone used
 // to own that vector, but now he gave it on to `take` and has no business with it anymore.
 // 
-// If you give a book to your friend, you cannot some to his place next day and get the book!
+// If you give a book to your friend, you cannot come to his place next day and get the book!
 // It's no longer yours. Rust makes sure you don't break this rule. Try enabling the commented
-// line in `foo1`. Rust will tell you that `v` has been *moved*, which is to say that ownership
+// line in `ownership_demo`. Rust will tell you that `v` has been *moved*, which is to say that ownership
 // has been transferred somewhere else. In this particular case, the buffer storing the data
 // does not even exist anymore, so we are lucky that Rust caught this problem!
 // Essentially, ownership rules out aliasing, hence making the kind of problem discussed above
@@ -63,11 +63,13 @@ fn foo1() {
 // mutation through a shared borrow.
 
 // So, let's re-write `vec_min` to work on a shared borrow of a vector. In fact, the only
-// thing we have to change is the type of the function. The `e` in the loop now gets type
-// `&i32`, hence we have to deference it.
+// thing we have to change is the type of the function. `&Vec<i32>` says that we need
+// a vector, but we won't own it. I also took the liberty to convert the function from
+// `SomethingOrNothing` to the standard library type `Option`.
 fn vec_min(v: &Vec<i32>) -> Option<i32> {
     let mut min = None;
     for e in v {
+        // In the loop, `e` now has type `&i32`, so we have to dereference it.
         min = Some(match min {
             None => *e,
             Some(n) => cmp::min(n, *e)
@@ -77,7 +79,7 @@ fn vec_min(v: &Vec<i32>) -> Option<i32> {
 }
 
 // Now that `vec_min` does not acquire ownership of the vector anymore, we can call it multiple times on the same vector and also do things like
-fn foo2() {
+fn shared_borrow_demo() {
     let v = vec![5,4,3,2,1];
     let first = &v[0];
     vec_min(&v);
@@ -87,11 +89,11 @@ fn foo2() {
 // What's going on here? First, `&` is how you create a shared borrow to something. This code creates three
 // shared borrows to `v`: The borrow for `first` begins in the 2nd line of the function and lasts all the way to
 // the end. The other two borrows, created for calling `vec_min`, only last for the duration of that
-// call.
+// respective call.
 // 
 // Technically, of course, borrows are pointers. Notice that since `vec_min` only gets a shared
-// borrow, Rust knows that it cannot mutate `v` in any way. Hence the pointer created before calling
-// `vec_min` remains valid.
+// borrow, Rust knows that it cannot mutate `v` in any way. Hence the pointer into the buffer of `v`
+// that was created before calling `vec_min` remains valid.
 
 // There is a second kind of borrow, a *mutable borrow*. As the name suggests, such a borrow permits
 // mutation, and hence has to prevent aliasing. There can only ever be one mutable borrow to a
@@ -105,7 +107,7 @@ fn vec_inc(v: &mut Vec<i32>) {
 }
 // The type `&mut Vec<i32>` is the type of mutable borrows of `vec<i32>`. Because the borrow is
 // mutable, we can change `e` in the loop. How can we call this function?
-fn foo3() {
+fn mutable_borrow_demo() {
     let mut v = vec![5,4,3,2,1];
     /* let first = &v[0]; */
     vec_inc(&mut v);
@@ -117,31 +119,34 @@ fn foo3() {
 // long as the function call, we can still call `vec_inc` on the same vector twice:
 // The durations of the two borrows do not overlap, so we never have more than one mutable borrow.
 // However, we can *not* create a shared borrow that spans a call to `vec_inc`. Just try
-// enabling the commented-out lines. This is because `vec_inc` could mutate the vector structurally
-// (i.e., it could add or remove elements), and hence the pointer `first` could become invalid.
+// enabling the commented-out lines, and watch Rust complain. This is because `vec_inc` could mutate
+// the vector structurally (i.e., it could add or remove elements), and hence the pointer `first`
+// could become invalid.
 // 
 // Above, I said that having a mutable borrow excludes aliasing. But if you look at the code above carefully,
-// you may say: "Wait! Don't the `v` in `foo3` and the `v` in `vec_inc` alias?" And you are right,
-// they do. However, the `v` in `foo3` is not actually usable, it is not *active*: As long as there is an
+// you may say: "Wait! Don't the `v` in `mutable_borrow_demo` and the `v` in `vec_inc` alias?" And you are right,
+// they do. However, the `v` in `mutable_borrow_demo` is not actually usable, it is not *active*: As long as there is an
 // outstanding borrow, Rust will not allow you to do anything with `v`. This is, in fact, what
-// prevents the creation of a mutable borrow when there already is a shared one.
+// prevents the creation of a mutable borrow when there already is a shared one, as you witnessed
+// when enabling `first` above.
 
-// This also works the other way around: In `foo4`, there is already a mutable borrow active in the `vec_min`
-// line, so the attempt to create another shared borrow is rejected by the compiler.
-fn foo4() {
+// This also works the other way around: In `multiple_borrow_demo`, there is already a mutable borrow
+// active in the `vec_min` line, so the attempt to create another shared borrow is rejected by the compiler.
+fn multiple_borrow_demo() {
     let mut v = vec![5,4,3,2,1];
     let first = &mut v[0];
     /* vec_min(&v); */
-    println!("The first element is: {}", *first);
+    *first += 1;
+    println!("The first element is now: {}", *first);
 }
 
-// So, to summarize: The ownership and borrowing system of Rust enforces the following three rules:
+// So, to summarize - the ownership and borrowing system of Rust enforces the following three rules:
 // 
 // * There is always exactly one owner of a piece of data
 // * If there is an active mutable borrow, then nobody else can have active access to the data
 // * If there is an active shared borrow, then every other active access to the data is also a shared borrow
 // 
 // As it turns out, combined with the abstraction facilities of Rust, this is a very powerful mechanism
-// to tackle many problems beyond basic memory safety.
+// to tackle many problems beyond basic memory safety. You will see some examples for this soon.
 
 // [index](main.html) | [previous](part03.html) | [next](main.html)

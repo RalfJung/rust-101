@@ -53,7 +53,7 @@
 // You are meant to play around with the source code of the course as you go on, so please
 // fetch it from the [git repository](http://www.ralfj.de/git/rust-101.git) (also available
 // [on GitHub](https://github.com/RalfJung/rust-101)).
-// 
+
 // Course Content
 // --------------
 // 

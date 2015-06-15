@@ -1,5 +1,5 @@
-// Rust-101, Part 03: Input, Testing
-// =================================
+// Rust-101, Part 03: Input
+// ========================
 
 // In part 00, I promised that we would eventually replace `read_vec` by a function
 // that actually asks the user to enter a bunch of numbers. Unfortunately,
