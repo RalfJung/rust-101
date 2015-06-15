@@ -3,18 +3,25 @@
 
 // In part 00, I promised that we would eventually replace `read_vec` by a function
 // that actually asks the user to enter a bunch of numbers. Unfortunately,
-// I/O is a complicated topic, so the code to do that is not pretty - but well,
+// I/O is a complicated topic, so the code to do that is not exactly pretty - but well,
 // let's get that behind us.
 
-// IO/ is provided by the module `std::io`, so we first import that.
+// I/O is provided by the module `std::io`, so we first import that.
 // We also import the I/O *prelude*, which brings a bunch of commonly used I/O stuff
 // directly available.
 use std::io::prelude::*;
 use std::io;
 
-// Let's now go over this function line-by-line.
+// Let's now go over this function line-by-line. First, we call the constructor of `Vec`
+// to create an empty vector. As mentioned in the previous part, `new` here is just
+// a static function with no special treatment. While it is possible to call `new`
+// for a particular type (`Vec::<i32>::new()`), the common way to make sure we
+// get the right type is to annotate a type at the *variable*. It is this variable
+// that we interact with for the rest of the function, so having its type available
+// (and visible!) is much more useful. Without knowing the return type of `Vec::new`,
+// specifying its type parameter doesn't tell us all that much.
 fn read_vec() -> Vec<i32> {
-    let mut vec = Vec::new();
+    let mut vec: Vec<i32> = Vec::<i32>::new();
     // The central handle to the standard input is made available by `io::stdin()`.
     let stdin = io::stdin();
     println!("Enter a list of numbers, one per line. End with Ctrl-D.");
@@ -25,24 +32,29 @@ fn read_vec() -> Vec<i32> {
     // it. (See [the documentation](http://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for more
     // details.) 
     for line in stdin.lock().lines() {
-        // The `line` we have here is not yet of type `String`. The problem with I/O is that it can always
-        // go wrong, so `line` has type `io::Result<String>`. This is a lot like `Option<String>` ("a `String` or
+        // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
+        // here is not yet of that type. The problem with I/O is that it can always go wrong, so
+        // `line` has type `io::Result<String>`. This is a lot like `Option<String>` ("a `String` or
         // nothing"), but in the case of "nothing", there is additional information about the error.
         // Again, I recommend to check [the documentation](http://doc.rust-lang.org/stable/std/io/type.Result.html).
         // You will see that `io::Result` is actually just an alias for `Result`, so click on that to obtain
         // the list of all constructors and methods of the type.
 
         // We will be lazy here and just assume that nothing goes wrong: `unwrap()` returns the `String` if there is one,
-        // and halts the program (with an appropriate error message) otherwise. Can you find the documentation
-        // of `Result::unwrap()`?
+        // and panics the program otherwise. Since a `Result` carries some details about the error that occurred,
+        // there will be a somewhat reasonable error message. Still, you would not want a user to see such
+        // an error, so in a "real" program, we would have to do proper error handling.
+        // Can you find the documentation of `Result::unwrap()`?
+        // 
+        // I chose the same name (`line`) for the new variable to ensure that I will never, accidentally,
+        // access the "old" `line` again.
         let line = line.unwrap();
         // Now that we have our `String`, we want to make it an `i32`. `parse` is a method on `String` that
         // can convert a string to anything. Try finding it's documentation!
 
         // In this case, Rust *could* figure out automatically that we need an `i32` (because of the return type
-        // of the function), but that's a bit too much magic for my taste. So I use this opportunity to
-        // introduce the syntax for explicitly giving the type parameter of a generic function: `parse::<i32>` is `parse`
-        // with its generic type set to `i32`.
+        // of the function), but that's a bit too much magic for my taste. We are being more explicit here:
+        // `parse::<i32>` is `parse` with its generic type set to `i32`.
         match line.parse::<i32>() {
         // `parse` returns again a `Result`, and this time we use a `match` to handle errors (like, the user entering
         // something that is not a number).
@@ -60,8 +72,8 @@ fn read_vec() -> Vec<i32> {
 }
 
 // So much for `read_vec`. If there are any questions left, the documentation of the respective function
-// should be very helpful. I will not always provide the links, as the documentation is quite easy to navigate
-// and you should get used to that.
+// should be very helpful. Try finding the one for `Vec::push`. I will not always provide the links,
+// as the documentation is quite easy to navigate and you should get used to that.
 
 // For the rest of the code, we just re-use part 02 by importing it with `use`.
 // I already sneaked a bunch of `pub` in the other module to make this possible: Only
@@ -76,56 +88,23 @@ pub fn main() {
     min.print();
 }
 
-// After all this nit-picking about I/O details, let me show you quickly something unrelated,
-// but really nice: Rust's built-in support for testing.
-// Now that the user can run our program on loads of inputs, we better make sure that it is correct.
-// To be able to test the result of `vec_min`, we first have to write a function that
-// is able to test equality if `SimethingOrNothing`. So let's quickly do that.
-
-// `equals` performs pattern-matching on both `self` and `other` to test the two for being
-// equal. Because we are lazy, we want to write only one `match`. so we group the two into a
-// pair such that we can match on both of them at once. You can read the first arm of the match
-// as testing whether `(self, other)` is `(Nothing, Nothing)`, which is the case exactly if
-// both `self` and `other` are `Nothing`. Similar so for the second arm.
-impl SomethingOrNothing<i32> {
-    pub fn equals(self, other: Self) -> bool {
-        match (self, other) {
-            (Nothing     , Nothing     ) => true,
-            (Something(n), Something(m)) => n == m,
-            // `_` is the syntax for "I don't care", so this is how you add a default case to your `match`.
-            _ => false,
-        }
+// **Exercise**: Define a trait `Print` to write a generic version of `SomethingOrNothing::print`.
+// Implement that trait for `i32`, and change the code above to use it.
+// I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
+// implementations (just compare it to the `impl` block from the previous exercise).
+// You can read this as "For all types `T` satisfying the `Print` trait, I provide an implementation
+// for `SomethingOrNothing<T>`".
+// 
+// Notice that I called the function on `SomethingOrNothing` `print2` to disambiguate from the `print` defined previously.
+// 
+// *Hint*: There is a macro `print!` for printing without appending a newline.
+trait Print {
+    /* Add things here */
+}
+impl<T: Print> SomethingOrNothing<T> {
+    fn print2(self) {
+        panic!("Not yet implemented.")
     }
 }
-
-// Now we are almost done! Writing a test in Rust is shockingly simple. Just write a function
-// that takes no arguments as returns nothing, and add `#[test]` right in front of it.
-// That's called an *attribute*, and the `test` attribute, well, declares the function to
-// be a test.
-
-// Within the function, we can then use `panic!` to indicate test failure. Helpfully, there's
-// a macro `assert!` that panics if its argument becomes `false`.
-// Using `assert!` and our brand-new `equals`, we can now call `vec_min` with some lists
-// and make sure it returns The Right Thing.
-#[test]
-fn test_vec_min() {
-    assert!(vec_min(vec![6,325,33,532,5,7]).equals(Something(5)));
-    assert!(vec_min(vec![6,325,33,532]).equals(Something(6)));
-}
-// To execute the test, run `cargo test`. It should tell you that everything is all right.
-// Now that was simple, wasn't it?
-// 
-// **Exercise**: Add a case to `test_vec_min` that checks the behavior on empty lists.
-// 
-// **Exercise**: Change `vec_min` such that everything still compiles, but the test fails.
-// 
-// **Bonus Exercise**: Because `String::parse` is itself generic, you can change `read_vec` to
-// be a generic function that works for any type, not just for `i32`. However, you will have to add
-// a trait bound to `read_vec`, as not every type supports being parsed. <br/>
-// Once you made `vec_min` generic, copy your generic `print` from the previous part. Implement all
-// our traits (`Minimum` and `Print`) for `f32` (32-bit floating-point numbers), and change `part_main()`
-// such that your program now computes the minimum of a list of floating-point numbers. <br/>
-// *Hint*: You can figure out the trait bound `read_vec` needs from the documentation of `String::parse`.
-// Furthermore, `std::cmp::min` works not just for `i32`, but also for `f32`.
 
 // [index](main.html) | [previous](part02.html) | [next](part04.html)
