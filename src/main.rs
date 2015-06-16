@@ -68,7 +68,8 @@
 // * [Part 01](part01.html)
 // * [Part 02](part02.html)
 // * [Part 03](part03.html)
-// * [Part 04](part04.html) (WIP)
+// * [Part 04](part04.html)
+// * [Part 05](part05.html) (WIP)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;

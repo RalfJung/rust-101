@@ -1,4 +1,4 @@
-// Rust-101, Part 05: Copy, Clone
+// Rust-101, Part 05: Clone, Copy
 // ==============================
 
 use std::cmp;
@@ -86,16 +86,28 @@ impl Clone for BigInt {
 // Making a type clonable is such a common exercise that Rust can even help you doing it:
 // If you add `#[derive(Clone)]' right in front of the definition of `BigInt`, Rust will
 // generate an implementation of `clone` that simply clones all the fields. Try it!
-// 
-// To put this in perspective, `clone` in Rust corresponds to what people usually manually do in
-// the copy constructor of a C++ class: It creates new, independent instance containing the
-// same values. Contrary to that, if you pass something to a function normally (like the
-// second call to `from_vec` in `clone_demo`), only a *shallow* copy is created: The fields
-// are copied, but pointers are simply duplicated. This corresponds to the default copy
-// constructor in C++. Rust assumes that after such a copy, the old value is useless
-// (as the new one uses the same pointers), and hence considers the data semantically
-// moved to the copy. That's another explanation of why Rust does not let you access
-// a vector anymore after you passed ownership to some function.
+
+// We can also make the type `SomethingOrNothing<T>` implement `Clone`. However, that
+// can only work if `T` is `Clone`! So we have to add this bound to `T` when we introduce
+// the type variable.
+use part02::{SomethingOrNothing,Something,Nothing};
+impl<T: Clone> Clone for SomethingOrNothing<T> {
+    fn clone(&self) -> Self {
+        match *self {
+            Nothing => Nothing,
+            // In the second arm of the match, we need to talk about the value `v`
+            // that's stored in `self`. However, if we would write the pattern as
+            // `Something(v)`, that would indicate that we *own* `v` in the code
+            // after the arrow. That can't work though, we have to leave `v` owned by
+            // whoever called us - after all, we don't even own `self`, we just borrowed it.
+            // By writing `Something(ref v)`, we just borrow `v` for the duration of the match
+            // arm. That's good enough for cloning it.
+            Something(ref v) => Something(v.clone()),
+        }
+    }
+}
+// Again, Rust will generate this implementation automatically if you add
+// `#[derive(Clone)]` right before the definition of `SomethingOrNothing`.
 
 // With `BigInt` being about numbers, we should be able to write a version of `vec_min`
 // that computes the minimum of a list of `BigInt`. We start by writing `min` for
@@ -118,16 +130,16 @@ impl BigInt {
         } else if self.data.len() > other.data.len() {
             other
         } else {
-            // **Exercise**: Fill in this code.
+            // **Exercise 05.1**: Fill in this code.
             panic!("Not yet implemented.");
         }
     }
 }
 
+// Now we can write `vec_min`. In order to make it type-check, we have to write it as follows.
 fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
     for e in v {
-        // In the loop, `e` now has type `&i32`, so we have to dereference it.
         min = Some(match min {
             None => e.clone(),
             Some(n) => e.clone().min(n)
@@ -135,3 +147,68 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     }
     min
 }
+// Now, what's happening here? Why do we have to write `clone()`, and why did we not
+// have to write that in our previous version?
+// 
+// The answer is already hidden in the type of `vec_min`: `v` is just borrowed, but
+// the Option<BigInt> that it returns is *owned*. We can't just return one
+// of the elements of `v`, as that would mean that it is no longer in the vector!
+// In our code, this comes up when we update the intermediate variable `min`, which
+// also has type `Option<BigInt>`. If you replace `e.clone()` in the `None` arm
+// with `*e`, Rust will complain "Cannot move out of borrowed content". That's because
+// `e` is a `&BigInt`. Assigning `min` to `*e` works just like a function call:
+// Ownership of the underlying data (in this case, the digits) is transferred from
+// the vector to `min`. But that's not allowed, since we must retain the vector
+// in its existing state. After cloning `e`, we own the copy that was created,
+// and hence we can store it in `min`.<br/>
+// Of course, making such a full copy is expensive, so we'd like to avoid it.
+// That's going to happen in the next part.
+// 
+// But before we go there, I should answer the second question I brought up above:
+// Why did our old `vec_min` work? We stored the minimal `i32` locally without
+// cloning, and Rust did not complain. That's because there isn't really much
+// of an "ownership" when it comes to types like `i32` or `bool`: If you move
+// the value from one place to another, then both instance are independent
+// and complete instances of their type. This is in stark contrast to types
+// like `Vec<i32>`, where merely moving the value results in both the old
+// and the new vector to point to the same underlying buffer.
+//
+// Rust calls types like `i32` that can be freely duplicated `Copy` types.
+// `Copy` is another trait, and it is implemented for the basic types of
+// the language. Remember how we defined the trait `Minimum` by writing
+// `trait Minimum : Copy { ...`? This tells Rust that every type that
+// implements `Minimum` must also implement `Copy`, and that's why Rust
+// accepted our generic `vec_min` in part 02.
+// 
+// Curiously, `Copy` is a trait that does not require any method to
+// be implemented. Implementing `Copy` is merely a semantic statement,
+// saying that the idea of ownership does not really apply to this type.
+// Traits without methods are called *marker traits*. We will see some
+// more examples of such traits later.
+// 
+// If you try to implement `Copy` for `BigInt`, you will notice that Rust
+// does not let you do that. A type can only be `Copy` if all its elements
+// are `Copy`, and that's not the case for `BigInt`. However, we can make
+// `SomethingOrNothing<T>` copy if `T` is `Copy`.
+impl<T: Copy> Copy for SomethingOrNothing<T>{}
+// Again, Rust can generate implementations of `Copy` automatically. If
+// you add `#[derive(Copy,Clone)]` right before the definition of `SomethingOrNothing`,
+// both `Copy` and `Clone` will automatically be implemented.
+
+// In closing this part, I'd like to give you another perspective on the
+// move semantics (i.e., ownership passing) that Rust applies, and how
+// `Copy` and `Clone` fit.<br/>
+// When Rust code is executed, passing a value (like `i32` or `Vec<i32>`)
+// to a function will always result in a shallow copy being performed: Rust
+// just copies the bytes representing that value, and considers itself done.
+// That's just like the default copy constructor in C++. Rust, however, will
+// consider this a destructive operation: After copying the bytes elsewhere,
+// the original value must no longer be used. After all, the two could not
+// share a pointer! If, however, you mark a type `Copy`, then Rust will *not*
+// consider a move destructive, and just like in C++, the old and new value
+// can happily coexist. Now, Rust does not allow to to overload the copy
+// constructor. This means that passing a value around will always be a fast
+// operation, no allocation or copying of large data of the heap will happen.
+// In the situations where you would write a copy constructor in C++ (and hence
+// incur a hidden cost on every copy of this type), you'd have the type *not*
+// implement `Copy`, but only `Clone`. This makes the cost explicit.

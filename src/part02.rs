@@ -30,7 +30,7 @@ type NumberOrNothing = SomethingOrNothing<i32>;
 // The types are so similar, that we can provide a generic function to construct a `SomethingOrNothing<T>`
 // from an `Option<T>`, and vice versa.
 
-// **Exercise**: Implement such functions! I provided a skeleton of the solution. Here,
+// **Exercise 02.1**: Implement such functions! I provided a skeleton of the solution. Here,
 // `panic!` is another macro. This one terminates execution with the given message.
 // 
 // Notice the syntax for giving generic implementations to generic types: Think of the first `<T>` 

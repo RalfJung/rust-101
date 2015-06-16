@@ -88,7 +88,7 @@ pub fn main() {
     min.print();
 }
 
-// **Exercise**: Define a trait `Print` to write a generic version of `SomethingOrNothing::print`.
+// **Exercise 03.1**: Define a trait `Print` to write a generic version of `SomethingOrNothing::print`.
 // Implement that trait for `i32`, and change the code above to use it.
 // I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
 // implementations (just compare it to the `impl` block from the previous exercise).
