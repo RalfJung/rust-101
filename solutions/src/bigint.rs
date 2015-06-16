@@ -64,6 +64,26 @@ impl BigInt {
         BigInt { data: v }
     }
 
+    /// Increments the number by 1. Solution to 05.1.
+    pub fn inc1(&mut self) {
+        let mut idx = 0;
+        // This loop adds "(1 << idx)". If there is no more carry, we leave.
+        while idx < self.data.len() {
+            let cur = self.data[idx];
+            let sum = u64::wrapping_add(cur, 1);
+            self.data[idx] = sum;
+            if sum >= cur {
+                // No overflow, we are done.
+                return;
+            } else {
+                // We need to go on.
+                idx += 1;
+            }
+        }
+        // If we came here, there is a last carry to add
+        self.data.push(1);
+    }
+
     /// Increments the number by "by".
     pub fn inc(&mut self, mut by: u64) {
         let mut idx = 0;
@@ -191,6 +211,7 @@ impl ops::Add<BigInt> for BigInt {
 
 #[cfg(test)]
 mod tests {
+    use std::u64;
     use super::overflowing_add;
     use super::BigInt;
 
@@ -201,6 +222,21 @@ mod tests {
         assert_eq!(overflowing_add(1 << 63, 1 << 63, false), (0, true));
         assert_eq!(overflowing_add(1 << 63, 1 << 63, true), (1, true));
         assert_eq!(overflowing_add(1 << 63, (1 << 63) -1 , true), (0, true));
+    }
+
+    #[test]
+    fn test_inc1() {
+        let mut b = BigInt::new(0);
+        b.inc1();
+        assert_eq!(b, BigInt::new(1));
+        b.inc1();
+        assert_eq!(b, BigInt::new(2));
+
+        b = BigInt::new(u64::MAX);
+        b.inc1();
+        assert_eq!(b, BigInt::from_vec(vec![0, 1]));
+        b.inc1();
+        assert_eq!(b, BigInt::from_vec(vec![1, 1]));
     }
 
     #[test]

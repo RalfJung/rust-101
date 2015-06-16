@@ -76,7 +76,7 @@ fn read_vec() -> Vec<i32> {
 // as the documentation is quite easy to navigate and you should get used to that.
 
 // For the rest of the code, we just re-use part 02 by importing it with `use`.
-// I already sneaked a bunch of `pub` in the other module to make this possible: Only
+// I already sneaked a bunch of `pub` in part 02 to make this possible: Only
 // items declared public can be imported elsewhere.
 use part02::{SomethingOrNothing,Something,Nothing,vec_min};
 
@@ -103,7 +103,7 @@ trait Print {
 }
 impl<T: Print> SomethingOrNothing<T> {
     fn print2(self) {
-        panic!("Not yet implemented.")
+        unimplemented!()
     }
 }
 

@@ -33,7 +33,8 @@ type NumberOrNothing = SomethingOrNothing<i32>;
 // The types are so similar, that we can provide a generic function to construct a `SomethingOrNothing<T>`
 // from an `Option<T>`, and vice versa.
 // **Exercise 02.1**: Implement such functions! I provided a skeleton of the solution. Here,
-// `panic!` is another macro. This one terminates execution with the given message.
+// `unimplemented!` is another macro. This one terminates execution saying that something has not yet
+// been implemented.
 // 
 // Notice the syntax for giving generic implementations to generic types: Think of the first `<T>` 
 // as *declaring* a type variable ("I am doing something for all types `T`"), and the second `<T>` as
@@ -44,11 +45,11 @@ type NumberOrNothing = SomethingOrNothing<i32>;
 // Remember that `self` is the `this` of Rust, and implicitly has type `Self`.
 impl<T> SomethingOrNothing<T> {
     fn new(o: Option<T>) -> Self {
-        panic!("Not yet implemented.")
+        unimplemented!()
     }
 
     fn to_option(self) -> Option<T> {
-        panic!("Not yet implemented.")
+        unimplemented!()
     }
 }
 // Observe how `new` does *not* have a `self` parameter. This corresponds to a `static` method

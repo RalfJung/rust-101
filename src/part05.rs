@@ -2,15 +2,13 @@
 // ========================
 
 // ## Big Numbers
-// In the course of the next few parts, we are going to build a data-structure for
-// computations with *bug* numbers. We would like to not have an upper bound
-// to how large these numbers can get, with the memory of the machine being the
-// only limit.
+// In the course of the next few parts, we are going to build a data-structure for computations with
+// *big* numbers. We would like to not have an upper bound to how large these numbers can get, with
+// the memory of the machine being the only limit.
 // 
 // We start by deciding how to represent such big numbers. One possibility here is
-// to use a vector of "small" numbers, which we will then consider the "digits"
-// of the big number. This is like "1337" being a vector of 4 small numbers (1, 3, 3, 7),
-// except that we will use `u64` as type of our base numbers. Now we just have to decide
+// to use a vector "digits" of the big number. This is like "1337" being a vector of four digits (1, 3, 3, 7),
+// except that we will use `u64` as type of our digits. Now we just have to decide
 // the order in which we store numbers. I decided that we will store the least significant
 // digit first. This means that "1337" would actually become (7, 3, 3, 1).<br/>
 // Finally, we declare that there must not be any trailing zeros (corresponding to
@@ -18,11 +16,10 @@
 // the same number can only be stored in one way.
 
 // To write this down in Rust, we use a `struct`, which is a lot like structs in C:
-// Just a collection of a bunch of named fields. Every field can be private to the current module
-// (which is the default), or public (which would be indicated by a `pub` in front of the name).
-// For the sake of the tutorial, we make `dat` public - otherwise, the next parts of this
-// course could not work on `BigInt`s. Of course, in a real program, one would make the field
-// private to ensure that the invariant (no trailing zeros) is maintained.
+// Just a bunch of named fields. Every field can be private to the current module (which is the default),
+// or public (which is indicated by a `pub` in front of the name). For the sake of the tutorial, we make
+// `data` public - otherwise, the next parts of this course could not work on `BigInt`s. Of course, in a
+// real program, one would make the field private to ensure that the invariant (no trailing zeros) is maintained.
 pub struct BigInt {
     pub data: Vec<u64>,
 }
@@ -62,6 +59,11 @@ impl BigInt {
     }
 }
 
+// **Exercise 05.1**: Write a function on `BigInt` that returns the number of digits. Write another one
+// that increments the number by 1.
+// 
+// *Hint*: To take `self` as a mutable borrow, write `fn inc1(&mut self)`.
+
 // ## Cloning
 // If you have a close look at the type of `BigInt::from_vec`, you will notice that it
 // consumes the vector `v`. The caller hence loses access. There is however something
@@ -88,6 +90,8 @@ impl Clone for BigInt {
 // Making a type clonable is such a common exercise that Rust can even help you doing it:
 // If you add `#[derive(Clone)]` right in front of the definition of `BigInt`, Rust will
 // generate an implementation of `Clone` that simply clones all the fields. Try it!
+// These `#[...]` annotations at types (and functions, modules, crates) are called *attributes*.
+// We will see some more examples of attributes later.
 
 // We can also make the type `SomethingOrNothing<T>` implement `Clone`. However, that
 // can only work if `T` is `Clone`! So we have to add this bound to `T` when we introduce
@@ -141,6 +145,6 @@ fn work_on_variant(mut var: Variant, text: String) {
 // that address, and Rust would eat your laundry - or whatever.)
 // 
 // I hope this example clarifies why Rust has to rule out mutation in the presence of aliasing *in general*,
-// not just for the specific 
+// not just for the specific case of a buffer being reallocated, and old pointers becoming hence invalid.
 
 // [index](main.html) | [previous](part04.html) | [next](part06.html)

@@ -59,8 +59,10 @@
 // 
 // The actual course is in the partXX.rs files. The part 00-03 cover some basic of the language,
 // to give you a feeling for Rust's syntax and pervasive mechanisms like pattern matching and traits.
-// Parts 04-?? introduce the heart of the language, the mechanism making it different from anything
-// else out there.
+// Parts 04-06 introduce the heart of the language, the mechanism making it different from anything
+// else out there: Ownership, borrowing, lifetimes. In part 07-??, we continue our tour through
+// Rust. Finally, in parts ??-??, we implement our own version of `grep`, exhibiting useful Rust
+// features as we go.
 // 
 // I suggest you get started with [the first part](part00.html), or jump directly to where you left off:
 // 
@@ -70,7 +72,8 @@
 // * [Part 03: Input](part03.html)
 // * [Part 04: Ownership, Borrowing](part04.html)
 // * [Part 05: Clone](part05.html) (WIP)
-// * [Part 06: Copy](part06.html) (WIP)
+// * [Part 06: Copy, Lifetimes](part06.html) (WIP)
+// * [Part 07: Operator Overloading, Tests, Output](part07.html) (WIP)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;
@@ -82,12 +85,13 @@ mod part05;
 mod part06;
 mod part07;
 mod part08;
+mod part09;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
 
 fn main() {
-    part00::main();
+    part03::main();
 }
 
 // Additional material
