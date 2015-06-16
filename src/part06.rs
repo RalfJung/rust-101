@@ -1,17 +1,17 @@
-// Rust-101, Part 06: Copy
-// =======================
+// Rust-101, Part 06: Copy, Lifetimes
+// ==================================
 
+// We continue to work on our `BigInt`, so we start by importing what we already established.
 use part05::BigInt;
 
 // With `BigInt` being about numbers, we should be able to write a version of `vec_min`
 // that computes the minimum of a list of `BigInt`. We start by writing `min` for
 // `BigInt`. Now our assumption of having no trailing zeros comes in handy!
 impl BigInt {
-    fn min(self, other: Self) -> Self {
-        // Just to be sure, we first check that both operands actually satisfy our invariant.
-        // `debug_assert!` is a macro that checks that its argument (must be of type `bool`)
-        // is `true`, and panics otherwise. It gets removed in release builds, which you do with
-        // `cargo build --release`.
+    fn min_try1(self, other: Self) -> Self {
+        // Just to be sure, we first check that both operands actually satisfy our invariant. `debug_assert!` is a
+        // macro that checks that its argument (must be of type `bool`) is `true`, and panics otherwise. It gets
+        // removed in release builds, which you do with `cargo build --release`.
         debug_assert!(self.test_invariant() && other.test_invariant());
         // If the lengths of the two numbers differ, we already know which is larger.
         if self.data.len() < other.data.len() {
@@ -19,8 +19,8 @@ impl BigInt {
         } else if self.data.len() > other.data.len() {
             other
         } else {
-            // **Exercise 05.1**: Fill in this code.
-            panic!("Not yet implemented.");
+            // **Exercise 06.1**: Fill in this code.
+            unimplemented!()
         }
     }
 }
@@ -31,7 +31,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     for e in v {
         min = Some(match min {
             None => e.clone(),
-            Some(n) => e.clone().min(n)
+            Some(n) => e.clone().min_try1(n)
         });
     }
     min
@@ -48,7 +48,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 // underlying data is transferred from where `e` borrows from to `min`. But that's not allowed, since
 // we just borrowed `e`, so we cannot empty it! We can, however, call `clone()` on it. Then we own
 // the copy that was created, and hence we can store it in `min`.<br/>
-// Of course, making such a full copy is expensive, so we'd like to avoid it. We'll some to that soon.
+// Of course, making such a full copy is expensive, so we'd like to avoid it. We'll some to that in the next part.
 
 // ## `Copy` types
 // But before we go there, I should answer the second question I brought up above: Why did our old `vec_min` work?
@@ -58,12 +58,11 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 // stark contrast to types like `Vec<i32>`, where moving the value results in both the old and the new vector to
 // point to the same underlying buffer. We don't have two vectors, there's no duplication.
 //
-// Rust calls types that can be freely duplicated `Copy` types. `Copy` is another trait, and it
-// is implemented for types like `i32` and `bool`. Remember how we defined the trait `Minimum` by writing
-// `trait Minimum : Copy { ...`? This tells Rust that every type that implements `Minimum` must also
-// implement `Copy`, and that's why the compiler accepted our generic `vec_min` in part 02.
-// `Copy` is the first *marker trait* that we encounter: It does not provide any methods, but
-// makes a promise about the behavior of the type - in this case, being duplicable.
+// Rust calls types that can be freely duplicated `Copy` types. `Copy` is another trait, and it is implemented for
+// types like `i32` and `bool`. Remember how we defined the trait `Minimum` by writing `trait Minimum : Copy { ...`?
+// This tells Rust that every type that implements `Minimum` must also implement `Copy`, and that's why the compiler
+// accepted our generic `vec_min` in part 02. `Copy` is the first *marker trait* that we encounter: It does not provide
+// any methods, but makes a promise about the behavior of the type - in this case, being duplicable.
 
 // If you try to implement `Copy` for `BigInt`, you will notice that Rust
 // does not let you do that. A type can only be `Copy` if all its elements
@@ -91,7 +90,7 @@ impl<T: Copy> Copy for SomethingOrNothing<T>{}
 // `Clone`. This makes the cost explicit.
 
 // ## Lifetimes
-// To fix the performance problems of `vec_min`, we need ti avoid using `clone()`. We'd like
+// To fix the performance problems of `vec_min`, we need to avoid using `clone()`. We'd like
 // the return value to not be owned (remember that this was the source of our need for cloning), but *borrowed*.
 
 // This is demonstrated by the function `head` that borrows the first element of a vector if it is non-empty.
@@ -147,4 +146,4 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
 // Most of the time, we don't have to explicitly add lifetimes to function types. This is thanks to *lifetimes elision*,
 // where Rust will automatically insert lifetimes we did not specify, following some [simple, well-documented rules](http://doc.rust-lang.org/stable/book/lifetimes.html#lifetime-elision).
 
-// [index](main.html) | [previous](part05.html) | [next](main.html)
+// [index](main.html) | [previous](part05.html) | [next](part07.html)
