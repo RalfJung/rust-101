@@ -55,16 +55,16 @@ impl BigInt {
         }
     }
 
-    /// Construct a BigInt from a vector of 64-bit "digits", with the last significant digit being first
+    /// Construct a BigInt from a vector of 64-bit "digits", with the last significant digit being first. Solution to 05.1.
     pub fn from_vec(mut v: Vec<u64>) -> Self {
-        // remove trailing zeroes
+        // remove trailing zeros
         while v.len() > 0 && v[v.len()-1] == 0 {
             v.pop();
         }
         BigInt { data: v }
     }
 
-    /// Increments the number by 1. Solution to 05.1.
+    /// Increments the number by 1.
     pub fn inc1(&mut self) {
         let mut idx = 0;
         // This loop adds "(1 << idx)". If there is no more carry, we leave.
@@ -131,6 +131,7 @@ impl PartialEq for BigInt {
 }
 
 impl Minimum for BigInt {
+    // This is essentially the solution to 06.1.
     fn min<'a>(&'a self, other: &'a Self) -> &'a Self {
         debug_assert!(self.test_invariant() && other.test_invariant());
         if self.data.len() < other.data.len() {

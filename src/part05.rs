@@ -7,9 +7,9 @@
 // the memory of the machine being the only limit.
 // 
 // We start by deciding how to represent such big numbers. One possibility here is
-// to use a vector "digits" of the big number. This is like "1337" being a vector of four digits (1, 3, 3, 7),
-// except that we will use `u64` as type of our digits. Now we just have to decide
-// the order in which we store numbers. I decided that we will store the least significant
+// to use a vector "digits" of the number. This is like "1337" being a vector of four digits (1, 3, 3, 7),
+// except that we will use `u64` as type of our digits, meaning we have 2^64 individual digits. Now we just
+// have to decide the order in which we store numbers. I decided that we will store the least significant
 // digit first. This means that "1337" would actually become (7, 3, 3, 1).<br/>
 // Finally, we declare that there must not be any trailing zeros (corresponding to
 // useless leading zeros in our usual way of writing numbers). This is to ensure that
@@ -49,24 +49,19 @@ impl BigInt {
 
     // We can convert any vector of digits into a number, by removing trailing zeros. The `mut`
     // declaration for `v` here is just like the one in `let mut ...`, it says that we will locally
-    // change the vector `v`. In this case, we need to make that annotation to be able to call `pop`
-    // on `v`.
+    // change the vector `v`.
+    // 
+    // **Exercise 05.1**: Implement this function.
+    // 
+    // *Hint*: You can use `pop()` to remove the last element of a vector.
     pub fn from_vec(mut v: Vec<u64>) -> Self {
-        while v.len() > 0 && v[v.len()-1] == 0 {
-            v.pop();
-        }
-        BigInt { data: v }
+        unimplemented!()
     }
 }
 
-// **Exercise 05.1**: Write a function on `BigInt` that returns the number of digits. Write another one
-// that increments the number by 1.
-// 
-// *Hint*: To take `self` as a mutable borrow, write `fn inc1(&mut self)`.
-
 // ## Cloning
 // If you have a close look at the type of `BigInt::from_vec`, you will notice that it
-// consumes the vector `v`. The caller hence loses access. There is however something
+// consumes the vector `v`. The caller hence loses access to its vector. There is however something
 // we can do if we don't want that to happen: We can explicitly `clone` the vector,
 // which means that a full (or *deep*) copy will be performed. Technically,
 // `clone` takes a borrowed vector, and returns a fully owned one.
@@ -124,7 +119,7 @@ enum Variant {
     Text(String),
 }
 // Now consider the following piece of code. Like above, `n` will be a borrow of a part of `var`,
-// and since we wrote `ref mut`, they will be mutable borrows. In other words, right after the match, `ptr`
+// and since we wrote `ref mut`, the borrow will be mutable. In other words, right after the match, `ptr`
 // points to the number that's stored in `var`, where `var` is a `Number`. Remember that `_` means
 // "we don't care".
 fn work_on_variant(mut var: Variant, text: String) {

@@ -129,7 +129,8 @@ fn mutable_borrow_demo() {
 // they do. However, the `v` in `mutable_borrow_demo` is not actually usable, it is not *active*: As long as there is an
 // outstanding borrow, Rust will not allow you to do anything with `v`.
 
-// So, to summarize - the ownership and borrowing system of Rust enforces the following three rules:
+// ## Summary
+// The ownership and borrowing system of Rust enforces the following three rules:
 // 
 // * There is always exactly one owner of a piece of data
 // * If there is an active mutable borrow, then nobody else can have active access to the data

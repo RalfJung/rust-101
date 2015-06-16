@@ -56,14 +56,15 @@ fn read_vec() -> Vec<i32> {
         // of the function), but that's a bit too much magic for my taste. We are being more explicit here:
         // `parse::<i32>` is `parse` with its generic type set to `i32`.
         match line.parse::<i32>() {
-        // `parse` returns again a `Result`, and this time we use a `match` to handle errors (like, the user entering
-        // something that is not a number).
-        // This is a common pattern in Rust: Operations that could go wrong will return `Option` or `Result`.
-        // The only way to get to the value we are interested in is through pattern matching (and through helper functions
-        // like `unwrap()`). If we call a function that returns a `Result`, and throw the return value away,
-        // the compiler will emit a warning. It is hence impossible for us to *forget* handling an error,
-        // or to accidentally use a value that doesn't make any sense because there was an error producing it.
+            // `parse` returns again a `Result`, and this time we use a `match` to handle errors (like, the user entering
+            // something that is not a number).
+            // This is a common pattern in Rust: Operations that could go wrong will return `Option` or `Result`.
+            // The only way to get to the value we are interested in is through pattern matching (and through helper functions
+            // like `unwrap()`). If we call a function that returns a `Result`, and throw the return value away,
+            // the compiler will emit a warning. It is hence impossible for us to *forget* handling an error,
+            // or to accidentally use a value that doesn't make any sense because there was an error producing it.
             Ok(num) => vec.push(num),
+            // We don't care about the particular error, so we ignore it with a `_`.
             Err(_) => println!("What did I say about numbers?"),
         }
     }
