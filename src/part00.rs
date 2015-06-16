@@ -7,6 +7,7 @@
 // We are going to make use of the standard library, so let's import that:
 use std;
 
+// ## Getting started
 // Let us start by thinking about the *type* of our function. Rust forces us to give the types of
 // all arguments, and the return type, before we even start writing the body. In the case of our minimum
 // function, we may be inclined to say that it returns a number. But then we would be in trouble: What's

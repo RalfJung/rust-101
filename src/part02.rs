@@ -8,6 +8,8 @@ use std;
 // we want a `CharOrNothing`, and later a `FloatOrNothing`? Certainly we don't
 // want to re-write the type and all its inherent methods.
 
+// ## Generic datatypes
+
 // The solution to this is called *generics* or *polymorphism* (the latter is Greek,
 // meaning "many shapes"). You may know something similar from C++ (where it's called
 // *templates*) or Java, or one of the many functional languages. So here, we define
@@ -27,9 +29,9 @@ type NumberOrNothing = SomethingOrNothing<i32>;
 // Go check out its [documentation](http://doc.rust-lang.org/stable/std/option/index.html)!
 // (And don't worry, there's indeed lots of material mentioned there that we did not cover yet.)
 
+// ## Generic `impl`, Static functions
 // The types are so similar, that we can provide a generic function to construct a `SomethingOrNothing<T>`
 // from an `Option<T>`, and vice versa.
-
 // **Exercise 02.1**: Implement such functions! I provided a skeleton of the solution. Here,
 // `panic!` is another macro. This one terminates execution with the given message.
 // 
@@ -58,6 +60,7 @@ fn call_constructor(x: i32) -> SomethingOrNothing<i32> {
     SomethingOrNothing::new(Some(x))
 }
 
+// ## Traits
 // Now that we have a generic `SomethingOrNothing`, wouldn't it be nice to also gave a generic
 // `vec_min`? Of course, we can't take the minimum of a vector of *any* type. It has to be a type
 // supporting a `min` operation. Rust calls such properties that we may demand of types *traits*.
@@ -108,6 +111,7 @@ pub fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
 // This behavior is similar to C++ templates. The optimizer (Rust is using LLVM) then has all the
 // information it could want to, e.g., inline function calls.
 
+// ## Trait implementations
 // To make the function usable with a `Vec<i32>`, we implement the `Minimum` trait for `i32`.
 impl Minimum for i32 {
     fn min(self, b: Self) -> Self {
@@ -115,11 +119,10 @@ impl Minimum for i32 {
     }
 }
 
-// In order to run our code and see the result, we again provide a `print` function.
-// This also shows that we can have multiple `impl` blocks for the same type (remember
-// that `NumberOrNothing` is just a type alias for `SomethingOrNothing<i32>`), and we
-// can provide some methods only for certain instances of a generic type.
-impl NumberOrNothing{
+// We again provide a `print` function. This also shows that we can have multiple `impl` blocks
+// for the same type (remember that `NumberOrNothing` is just a type alias for `SomethingOrNothing<i32>`),
+// and we can provide some methods only for certain instances of a generic type.
+impl NumberOrNothing {
     pub fn print(self) {
         match self {
             Nothing => println!("The number is: <nothing>"),

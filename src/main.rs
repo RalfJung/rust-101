@@ -64,12 +64,13 @@
 // 
 // I suggest you get started with [the first part](part00.html), or jump directly to where you left off:
 // 
-// * [Part 00](part00.html)
-// * [Part 01](part01.html)
-// * [Part 02](part02.html)
-// * [Part 03](part03.html)
-// * [Part 04](part04.html)
-// * [Part 05](part05.html) (WIP)
+// * [Part 00: Algebraic datatypes](part00.html)
+// * [Part 01: Expressions, Inherent methods](part01.html)
+// * [Part 02: Generic types, Traits](part02.html)
+// * [Part 03: Input](part03.html)
+// * [Part 04: Ownership, Borrowing](part04.html)
+// * [Part 05: Clone](part05.html) (WIP)
+// * [Part 06: Copy](part06.html) (WIP)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;
@@ -80,6 +81,7 @@ mod part04;
 mod part05;
 mod part06;
 mod part07;
+mod part08;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.

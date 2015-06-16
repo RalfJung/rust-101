@@ -1,9 +1,7 @@
-// Rust-101, Part 05: Clone, Copy
-// ==============================
+// Rust-101, Part 05: Clone
+// ========================
 
-use std::cmp;
-use std::ops;
-
+// ## Big Numbers
 // In the course of the next few parts, we are going to build a data-structure for
 // computations with *bug* numbers. We would like to not have an upper bound
 // to how large these numbers can get, with the memory of the machine being the
@@ -64,6 +62,7 @@ impl BigInt {
     }
 }
 
+// ## Cloning
 // If you have a close look at the type of `BigInt::from_vec`, you will notice that it
 // consumes the vector `v`. The caller hence loses access. There is however something
 // we can do if we don't want that to happen: We can explicitly `clone` the vector,
@@ -71,9 +70,12 @@ impl BigInt {
 // `clone` takes a borrowed vector, and returns a fully owned one.
 fn clone_demo() {
     let v = vec![0,1 << 16];
-    let b1 = BigInt::from_vec(v.clone());
+    let b1 = BigInt::from_vec((&v).clone());
     let b2 = BigInt::from_vec(v);
 }
+// Rust has special treatment for methods that borrow its `self` argument (like `clone`, or
+// like `test_invariant` above): It is not necessary to explicitly borrow the receiver of the
+// method. Hence you could replace `(&v).clone()` by `v.clone()` above. Just try it!
 
 // To be clonable is a property of a type, and as such, naturally expressed with a trait.
 // In fact, Rust already comes with a trait `Clone` for exactly this purpose. We can hence
@@ -84,8 +86,8 @@ impl Clone for BigInt {
     }
 }
 // Making a type clonable is such a common exercise that Rust can even help you doing it:
-// If you add `#[derive(Clone)]' right in front of the definition of `BigInt`, Rust will
-// generate an implementation of `clone` that simply clones all the fields. Try it!
+// If you add `#[derive(Clone)]` right in front of the definition of `BigInt`, Rust will
+// generate an implementation of `Clone` that simply clones all the fields. Try it!
 
 // We can also make the type `SomethingOrNothing<T>` implement `Clone`. However, that
 // can only work if `T` is `Clone`! So we have to add this bound to `T` when we introduce
@@ -100,7 +102,7 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
             // `Something(v)`, that would indicate that we *own* `v` in the code
             // after the arrow. That can't work though, we have to leave `v` owned by
             // whoever called us - after all, we don't even own `self`, we just borrowed it.
-            // By writing `Something(ref v)`, we just borrow `v` for the duration of the match
+            // By writing `Something(ref v)`, we borrow `v` for the duration of the match
             // arm. That's good enough for cloning it.
             Something(ref v) => Something(v.clone()),
         }
@@ -109,106 +111,36 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
 // Again, Rust will generate this implementation automatically if you add
 // `#[derive(Clone)]` right before the definition of `SomethingOrNothing`.
 
-// With `BigInt` being about numbers, we should be able to write a version of `vec_min`
-// that computes the minimum of a list of `BigInt`. We start by writing `min` for
-// `BigInt`. Now our assumption of having no trailing zeros comes in handy!
-impl BigInt {
-    fn min(self, other: Self) -> Self {
-        // Just to be sure, we first check that both operands actually satisfy our invariant.
-        // `debug_assert!` is a macro that checks that its argument (must be of type `bool`)
-        // is `true`, and panics otherwise. It gets removed in release builds, which you do with
-        // `cargo build --release`.
-        // 
-        // If you carefully check the type of `BigInt::test_invariant`, you may be surprised that
-        // we can call the function this way. Doesn't it take `self` in borrowed form? Indeed,
-        // the explicit way to do that would be to call `(&other).test_invariant()`. However, the
-        // `self` argument of a method is treated specially by Rust, and borrowing happens automatically here.
-        debug_assert!(self.test_invariant() && other.test_invariant());
-        // If the lengths of the two numbers differ, we already know which is larger.
-        if self.data.len() < other.data.len() {
-            self
-        } else if self.data.len() > other.data.len() {
-            other
-        } else {
-            // **Exercise 05.1**: Fill in this code.
-            panic!("Not yet implemented.");
-        }
-    }
+// ## Mutation + aliasing considered harmful (part 2)
+// Now that we know how to borrow a part of an `enum` (like `v` above), there's another example for why we
+// have to rule out mutation in the presence of aliasing. First, we define an `enum` that can hold either
+// a number, or a string.
+enum Variant {
+    Number(i32),
+    Text(String),
 }
-
-// Now we can write `vec_min`. In order to make it type-check, we have to write it as follows.
-fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
-    let mut min: Option<BigInt> = None;
-    for e in v {
-        min = Some(match min {
-            None => e.clone(),
-            Some(n) => e.clone().min(n)
-        });
+// Now consider the following piece of code. Like above, `n` will be a borrow of a part of `var`,
+// and since we wrote `ref mut`, they will be mutable borrows. In other words, right after the match, `ptr`
+// points to the number that's stored in `var`, where `var` is a `Number`. Remember that `_` means
+// "we don't care".
+fn work_on_variant(mut var: Variant, text: String) {
+    let mut ptr: &mut i32;
+    match var {
+        Variant::Number(ref mut n) => ptr = n,
+        Variant::Text(_) => return,
     }
-    min
+    /* var = Variant::Text(text); */
+    *ptr = 1337;
 }
-// Now, what's happening here? Why do we have to write `clone()`, and why did we not
-// have to write that in our previous version?
+// Now, imagine what would happen if we were permitted to also mutate `var`. We could, for example,
+// make it a `Text`. However, `ptr` still points to the old location! Hence `ptr` now points somewhere
+// into the representation of a `String`. By changing `ptr`, we manipulate the string in completely
+// unpredictable ways, and anything could happen if we were to use it again! (Technically, the first field
+// of a `String` is a pointer to its character data, so by overwriting that pointer with an integer,
+// we make it a completely invalid address. When the destructor of `var` runs, it would try to deallocate
+// that address, and Rust would eat your laundry - or whatever.)
 // 
-// The answer is already hidden in the type of `vec_min`: `v` is just borrowed, but
-// the Option<BigInt> that it returns is *owned*. We can't just return one
-// of the elements of `v`, as that would mean that it is no longer in the vector!
-// In our code, this comes up when we update the intermediate variable `min`, which
-// also has type `Option<BigInt>`. If you replace `e.clone()` in the `None` arm
-// with `*e`, Rust will complain "Cannot move out of borrowed content". That's because
-// `e` is a `&BigInt`. Assigning `min` to `*e` works just like a function call:
-// Ownership of the underlying data (in this case, the digits) is transferred from
-// the vector to `min`. But that's not allowed, since we must retain the vector
-// in its existing state. After cloning `e`, we own the copy that was created,
-// and hence we can store it in `min`.<br/>
-// Of course, making such a full copy is expensive, so we'd like to avoid it.
-// That's going to happen in the next part.
-// 
-// But before we go there, I should answer the second question I brought up above:
-// Why did our old `vec_min` work? We stored the minimal `i32` locally without
-// cloning, and Rust did not complain. That's because there isn't really much
-// of an "ownership" when it comes to types like `i32` or `bool`: If you move
-// the value from one place to another, then both instance are independent
-// and complete instances of their type. This is in stark contrast to types
-// like `Vec<i32>`, where merely moving the value results in both the old
-// and the new vector to point to the same underlying buffer.
-//
-// Rust calls types like `i32` that can be freely duplicated `Copy` types.
-// `Copy` is another trait, and it is implemented for the basic types of
-// the language. Remember how we defined the trait `Minimum` by writing
-// `trait Minimum : Copy { ...`? This tells Rust that every type that
-// implements `Minimum` must also implement `Copy`, and that's why Rust
-// accepted our generic `vec_min` in part 02.
-// 
-// Curiously, `Copy` is a trait that does not require any method to
-// be implemented. Implementing `Copy` is merely a semantic statement,
-// saying that the idea of ownership does not really apply to this type.
-// Traits without methods are called *marker traits*. We will see some
-// more examples of such traits later.
-// 
-// If you try to implement `Copy` for `BigInt`, you will notice that Rust
-// does not let you do that. A type can only be `Copy` if all its elements
-// are `Copy`, and that's not the case for `BigInt`. However, we can make
-// `SomethingOrNothing<T>` copy if `T` is `Copy`.
-impl<T: Copy> Copy for SomethingOrNothing<T>{}
-// Again, Rust can generate implementations of `Copy` automatically. If
-// you add `#[derive(Copy,Clone)]` right before the definition of `SomethingOrNothing`,
-// both `Copy` and `Clone` will automatically be implemented.
+// I hope this example clarifies why Rust has to rule out mutation in the presence of aliasing *in general*,
+// not just for the specific 
 
-// In closing this part, I'd like to give you another perspective on the
-// move semantics (i.e., ownership passing) that Rust applies, and how
-// `Copy` and `Clone` fit.<br/>
-// When Rust code is executed, passing a value (like `i32` or `Vec<i32>`)
-// to a function will always result in a shallow copy being performed: Rust
-// just copies the bytes representing that value, and considers itself done.
-// That's just like the default copy constructor in C++. Rust, however, will
-// consider this a destructive operation: After copying the bytes elsewhere,
-// the original value must no longer be used. After all, the two could not
-// share a pointer! If, however, you mark a type `Copy`, then Rust will *not*
-// consider a move destructive, and just like in C++, the old and new value
-// can happily coexist. Now, Rust does not allow to to overload the copy
-// constructor. This means that passing a value around will always be a fast
-// operation, no allocation or copying of large data of the heap will happen.
-// In the situations where you would write a copy constructor in C++ (and hence
-// incur a hidden cost on every copy of this type), you'd have the type *not*
-// implement `Copy`, but only `Clone`. This makes the cost explicit.
+// [index](main.html) | [previous](part04.html) | [next](part06.html)

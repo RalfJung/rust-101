@@ -9,6 +9,7 @@ use std;
 // terms you write down are not just *statements* (executing code), but *expressions*
 // (returning a value). This applies even to the body of entire functions!
 
+// ## Expression-based programming
 // For example, consider `sqr`:
 fn sqr(i: i32) -> i32 { i * i }
 // Between the curly braces, we are giving the *expression* that computes the return value.
@@ -55,6 +56,7 @@ fn vec_min(v: Vec<i32>) -> NumberOrNothing {
 // Now that's already much shorter! Make sure you can go over the code above and actually understand
 // every step of what's going on.
 
+// ## Inherent implementations
 // So much for `vec_min`. Let us now reconsider `print_number_or_nothing`. That function
 // really belongs pretty close to the type `NumberOrNothing`. In C++ or Java, you would
 // probably make it a method of the type. In Rust, we can achieve something very similar
