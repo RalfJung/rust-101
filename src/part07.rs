@@ -1,5 +1,5 @@
-// Rust-101, Part 07: Operator Overloading, Tests, Output
-// ======================================================
+// Rust-101, Part 07: Operator Overloading, Tests, Formatting
+// ==========================================================
 
 pub use part05::BigInt;
 
