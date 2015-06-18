@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # A little wrapper around pycco, to add Rust support.
 import pycco, pycco_resources
 from pygments import lexers, formatters
