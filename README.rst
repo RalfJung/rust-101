@@ -9,10 +9,10 @@ Usage
 -----
 
 You can either read through the sources in ``src/``, or generate the HTML in 
-``docs/`` using ``make docs`` (this step needs Docco_), or go directly to 
+``docs/`` using ``make docs`` (this step needs Pycco_), or go directly to 
 `the rendered output`_.
 
-.. _Docco: https://jashkenas.github.io/docco/
+.. _Pycco: https://fitzgen.github.io/pycco/
 .. _the rendered output: https://www.ralfj.de/projects/rust-101/main.html
 
 Source, License
