@@ -27,8 +27,8 @@
 // At this time, Rust is a language with a pretty unique set of goals. Rust aims to
 // achieve C++-style control over memory and execution behavior (like, static vs. dynamic
 // dispatch), which makes it possible to construct abstractions that carry no run-time
-// cost. This is combined this with providing the comfort of high-level functional languages
-// and guaranteeing safety (as in, the program will not crash). The vast majority of existing
+// cost. This is combined with the comfort of high-level functional languages and guaranteed
+// safety (as in, the program will not crash). The vast majority of existing
 // languages sacrificies one of these goals for the other. In particular, the
 // first requirement rules out a garbage collector: Rust can run "mare metal".
 // In fact, Rust rules out more classes of bugs than languages that achieve safety
