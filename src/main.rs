@@ -36,23 +36,27 @@
 // such as iterator invalidation and race conditions.
 // 
 // 
-// Prerequisites
-// -------------
+// Getting started
+// ---------------
 // 
 // You will need to have Rust installed, of course. It is available for download on
 // [the Rust website](http://www.rust-lang.org/). At this point, I plan to restrict
 // myself to stable Rust, so "Recommended" version is just right.
 // You can find some more installation instructions in
 // [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
-// When you are done, running `cargo build` in the root of Rust-101 should successfully compile
-// all the code.
+
+// Next, fetch the Rust-101 source code from the [git repository](http://www.ralfj.de/git/rust-101.git)
+// (also available [on GitHub](https://github.com/RalfJung/rust-101)). Running `cargo build`
+// in the root of the repository should now succeed.
 // 
-// Getting the source
-// ------------------
+// I suggest you copy the folder `workspace` somewhere you like, so that you can still easily
+// `git pull` updates in the main repository. After copying, try `cargo build` in the
+// new location. It should complain about `part00::main()` not being found. Now you can start
+// by following [Part 00](part00.html), typing in `part00.rs`. If you need to add a new file, remember to also
+// add it to `main.rs` so that Rust finds it.
 // 
-// You are meant to play around with the source code of the course as you go on, so please
-// fetch it from the [git repository](http://www.ralfj.de/git/rust-101.git) (also available
-// [on GitHub](https://github.com/RalfJung/rust-101)).
+// If you do not want to copy all the code yourself, and wish to start with my code and just edit
+// it, you can copy the files from `src` in this repository, to `src` in your workspace copy.
 
 // Course Content
 // --------------
@@ -64,7 +68,7 @@
 // Rust. Finally, in parts ??-??, we implement our own version of `grep`, exhibiting useful Rust
 // features as we go.
 // 
-// I suggest you get started with [the first part](part00.html), or jump directly to where you left off:
+// You should start with [the first part](part00.html), or jump directly to where you left off:
 // 
 // * [Part 00: Algebraic datatypes](part00.html)
 // * [Part 01: Expressions, Inherent methods](part01.html)
