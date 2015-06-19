@@ -89,8 +89,9 @@ pub fn main() {
 // You will have to replace `part00` by `part01` in the `main` function in
 // `main.rs` to run this code.
 
-// **Exercise 01.1**: Write a funtion `vec_avg` that computes the average value of a `Vec<i32>`.
+// **Exercise 01.1**: Write a funtion `vec_avg` that computes the average value of a `Vec<i32>` (rounded down to
+// the next integer).
 // 
-// *Hint*: `vec.len()` returns the length of a vector `vec`.
+// *Hint*: `vec.len() as i32` returns the length of a vector `vec` as signed integer.
 
 // [index](main.html) | [previous](part00.html) | [next](part02.html)
