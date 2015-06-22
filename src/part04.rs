@@ -86,10 +86,10 @@ fn shared_borrow_demo() {
     vec_min(&v);
     println!("The first element is: {}", *first);
 }
-// What's going on here? First, `&` is how you create a shared borrow to something. This code creates three
-// shared borrows to `v`: The borrow for `first` begins in the 2nd line of the function and lasts all the way to
-// the end. The other two borrows, created for calling `vec_min`, only last for the duration of that
-// respective call.
+// What's going on here? First, `&` is how you create a shared borrow to something. All borrows are created like
+// this - there is no way to have something like a  NULL pointer. This code creates three shared borrows to `v`:
+// The borrow for `first` begins in the 2nd line of the function and lasts all the way to the end. The other two
+// borrows, created for calling `vec_min`, only last for the duration of that respective call.
 // 
 // Technically, of course, borrows are pointers. Notice that since `vec_min` only gets a shared
 // borrow, Rust knows that it cannot mutate `v` in any way. Hence the pointer into the buffer of `v`

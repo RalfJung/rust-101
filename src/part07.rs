@@ -27,9 +27,7 @@ pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
 // Notice that the return type `Option<&T>` is technically (leaving the borrowing story aside) a
 // pointer to a `T`, that could optionally be invalid. In other words, it's just like a pointer in
 // C(++) or Java that can be `NULL`! However, thanks to `Option` being an `enum`, we cannot forget
-// to check the pointer for validity, avoiding the safety issues of C(++). At the same time, when we
-// have a borrow like `v` above that's not an `Option`, we *know* that is has to be a valid
-// pointer, so we don't even need to do the `NULL`-check that Java does all the time.<br/>
+// to check the pointer for validity, avoiding the safety issues of C(++).<br/>
 // Also, if you are worried about wasting space, notice that Rust knows that `&T` can never be
 // `NULL`, and hence optimizes `Option<&T>` to be no larger than `&T`. The `None` case is represented
 // as `NULL`. This is another great example of a zero-cost abstraction: `Option<&T>` is exactly like
