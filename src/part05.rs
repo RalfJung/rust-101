@@ -110,6 +110,9 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
 // Again, Rust will generate this implementation automatically if you add
 // `#[derive(Clone)]` right before the definition of `SomethingOrNothing`.
 
+// **Exercise 05.2**: Write some more functions on `BigInt`. What about a function that returns the number of
+// digits? The number of non-zero digits? The smallest/largest digit?
+
 // ## Mutation + aliasing considered harmful (part 2)
 // Now that we know how to borrow a part of an `enum` (like `v` above), there's another example for why we
 // have to rule out mutation in the presence of aliasing. First, we define an `enum` that can hold either

@@ -25,7 +25,8 @@ impl BigInt {
     }
 }
 
-// Now we can write `vec_min`. In order to make it type-check, we have make a deep copy of e.
+// Now we can write `vec_min`. However, in order to make it type-check, we have to make a full (deep) copy of e
+// by calling `clone()`.
 fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
     for e in v {
