@@ -108,4 +108,7 @@ impl<T: Print> SomethingOrNothing<T> {
     }
 }
 
+// **Exercise 03.2**: Building on exercise 02.2, implement all the things you need on `f32` to make your
+// program work with floating-point numbers.
+
 // [index](main.html) | [previous](part02.html) | [next](part04.html)

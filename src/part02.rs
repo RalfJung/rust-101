@@ -3,10 +3,9 @@
 
 use std;
 
-// Let us for a moment reconsider the type `NumberOrNothing`. Isn't it a bit
-// annoying that we had to hard-code the type `i32` in there? What if tomorrow,
-// we want a `CharOrNothing`, and later a `FloatOrNothing`? Certainly we don't
-// want to re-write the type and all its inherent methods.
+// Let us for a moment reconsider the type `NumberOrNothing`. Isn't it a bit annoying that we
+// had to hard-code the type `i32` in there? What if tomorrow, we want a `CharOrNothing`, and
+// later a `FloatOrNothing`? Certainly we don't want to re-write the type and all its inherent methods.
 
 // ## Generic datatypes
 
@@ -24,9 +23,8 @@ pub use self::SomethingOrNothing::*;
 // `SomethingOrNothing<i32>` to get back our `NumberOrNothing`.
 type NumberOrNothing = SomethingOrNothing<i32>;
 // However, we can also write `SomethingOrNothing<bool>` or even `SomethingOrNothing<SomethingOrNothing<i32>>`.
-// In fact, such a type is so useful that it is already present in the standard
-// library: It's called an *option type*, written `Option<T>`.
-// Go check out its [documentation](http://doc.rust-lang.org/stable/std/option/index.html)!
+// In fact, such a type is so useful that it is already present in the standard library: It's called an
+// *option type*, written `Option<T>`. Go check out its [documentation](http://doc.rust-lang.org/stable/std/option/index.html)!
 // (And don't worry, there's indeed lots of material mentioned there that we did not cover yet.)
 
 // ## Generic `impl`, Static functions
@@ -145,5 +143,8 @@ pub fn main() {
 }
 
 // If this printed `3`, then you generic `vec_min` is working! So get ready for the next part.
+
+// **Exercise 02.2**: Change your program such that it computes the minimum ofa `Vec<f32>` (where `f32` is the type
+// of 32-bit floating-point numbers). You should not change `vec_min` in any way, obviously!
 
 // [index](main.html) | [previous](part01.html) | [next](part03.html)
