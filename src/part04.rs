@@ -1,8 +1,6 @@
 // Rust-101, Part 04: Ownership, Borrowing
 // =======================================
 
-use std::cmp;
-
 // Rust aims to be a "safe systems language". As a systems language, of course it
 // provides *references* (or *pointers*). But as a safe language, it has to
 // prevent bugs like this C++ snippet.
@@ -67,6 +65,8 @@ fn ownership_demo() {
 // I also took the liberty to convert the function from `SomethingOrNothing` to the standard
 // library type `Option`.
 fn vec_min(v: &Vec<i32>) -> Option<i32> {
+    use std::cmp;
+
     let mut min = None;
     for e in v {
         // In the loop, `e` now has type `&i32`, so we have to dereference it to obtain an `i32`.

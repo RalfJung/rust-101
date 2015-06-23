@@ -4,9 +4,6 @@
 // As our first piece of Rust code, we want to write a function that computes the
 // minimum of a list.
 
-// We are going to make use of the standard library, so let's import that:
-use std;
-
 // ## Getting started
 // Let us start by thinking about the *type* of our function. Rust forces us to give the types of
 // all arguments, and the return type, before we even start writing the body. In the case of our minimum
@@ -48,15 +45,25 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
             NumberOrNothing::Nothing => {
                 min = NumberOrNothing::Number(el);
             },
-            // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it.
+            // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it. We will write
+            // the function `min_i32` just after we completed this one.
             NumberOrNothing::Number(n) => {
-                let new_min = std::cmp::min(n, el);
+                let new_min = min_i32(n, el);
                 min = NumberOrNothing::Number(new_min);
             }
         }
     }
     // Finally, we return the result of the computation.
     return min;
+}
+
+// Now that we reduced the problem to computing the minimum of two integers, let's do that.
+fn min_i32(a: i32, b: i32) -> i32 {
+    if a < b {
+        return a;
+    } else {
+        return b;
+    }
 }
 
 // Phew. We wrote our first Rust function! But all this `NumberOrNothing::` is getting kind of

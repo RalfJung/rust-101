@@ -1,8 +1,6 @@
 // Rust-101, Part 01: Expressions, Inherent methods
 // ================================================
 
-use std;
-
 // Even though our code from the first part works, we can still learn a
 // lot by making it prettier. To understand how, it is important to
 // understand that Rust is an "expression-based" language. This means that most of the
@@ -35,8 +33,15 @@ fn number_or_default(n: NumberOrNothing, default: i32) -> i32 {
     }
 }
 
-// With this fresh knowledge, let us now refactor `vec_min`.
+// Let us now refactor `vec_min`.
 fn vec_min(v: Vec<i32>) -> NumberOrNothing {
+    // Remember that helper function `min_i32`? Rust allows us to define such helper functions *inside* other
+    // functions. This is just a matter of namespacing, the inner function has no access to the data of the outer
+    // one. Still, being able to nicely group functions can be very useful.
+    fn min_i32(a: i32, b: i32) -> i32 {
+        if a < b { a } else { b }
+    }
+
     let mut min = Nothing;
     for e in v {
         // Notice that all we do here is compute a new value for `min`, and that it will always end
@@ -44,7 +49,7 @@ fn vec_min(v: Vec<i32>) -> NumberOrNothing {
         // can express this uniformity.
         min = Number(match min {
             Nothing => e,
-            Number(n) => std::cmp::min(n, e)
+            Number(n) => min_i32(n, e)
         });
     }
     // The `return` keyword exists in Rust, but it is rarely used. Instead, we typically

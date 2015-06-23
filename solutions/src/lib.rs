@@ -1,2 +1,2 @@
 pub mod bigint;
-pub mod vec_min;
+pub mod vec;

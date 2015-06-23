@@ -1,8 +1,6 @@
 // Rust-101, Part 02: Generic types, Traits
 // ========================================
 
-use std;
-
 // Let us for a moment reconsider the type `NumberOrNothing`. Isn't it a bit annoying that we
 // had to hard-code the type `i32` in there? What if tomorrow, we want a `CharOrNothing`, and
 // later a `FloatOrNothing`? Certainly we don't want to re-write the type and all its inherent methods.
@@ -114,7 +112,7 @@ pub fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
 // To make the function usable with a `Vec<i32>`, we implement the `Minimum` trait for `i32`.
 impl Minimum for i32 {
     fn min(self, b: Self) -> Self {
-        std::cmp::min(self, b)
+        if self < b { self } else { b }
     }
 }
 
@@ -144,7 +142,7 @@ pub fn main() {
 
 // If this printed `3`, then you generic `vec_min` is working! So get ready for the next part.
 
-// **Exercise 02.2**: Change your program such that it computes the minimum ofa `Vec<f32>` (where `f32` is the type
+// **Exercise 02.2**: Change your program such that it computes the minimum of a `Vec<f32>` (where `f32` is the type
 // of 32-bit floating-point numbers). You should not change `vec_min` in any way, obviously!
 
 // [index](main.html) | [previous](part01.html) | [next](part03.html)
