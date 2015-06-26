@@ -35,8 +35,7 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
     //@ immutable per default, and you need to tell Rust if you want
     //@ to change a variable later.
 
-    // Now we want to *iterate* over the list. Rust has some nice syntax for
-    // iterators:
+    // Now we want to *iterate* over the list. Rust has some nice syntax for iterators:
     for el in vec {
         // So `el` is al element of the list. We need to update `min` accordingly, but how do we get the current
         // number in there? This is what pattern matching can do:

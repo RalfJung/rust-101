@@ -33,8 +33,8 @@ fn read_vec() -> Vec<i32> {
     //@ details.) 
     for line in stdin.lock().lines() {
         // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
-        // here is not yet of that type: It rather has type `io::Result<String>`.
-        //@ The problem with I/O is that it can always go wrong. The type of `line`is a lot like `Option<String>` ("a `String` or
+        // here is not yet of that type: It has type `io::Result<String>`.
+        //@ The problem with I/O is that it can always go wrong. The type of `line` is a lot like `Option<String>` ("a `String` or
         //@ nothing"), but in the case of "nothing", there is additional information about the error.
         //@ Again, I recommend to check [the documentation](http://doc.rust-lang.org/stable/std/io/type.Result.html).
         //@ You will see that `io::Result` is actually just an alias for `Result`, so click on that to obtain

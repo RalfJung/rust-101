@@ -17,7 +17,7 @@ fn read_vec() -> Vec<i32> {
     println!("Enter a list of numbers, one per line. End with Ctrl-D.");
     for line in stdin.lock().lines() {
         // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
-        // here is not yet of that type: It rather has type `io::Result<String>`.
+        // here is not yet of that type: It has type `io::Result<String>`.
 
         // I chose the same name (`line`) for the new variable to ensure that I will never, accidentally,
         // access the "old" `line` again.

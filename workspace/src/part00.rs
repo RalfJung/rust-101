@@ -17,8 +17,7 @@ enum NumberOrNothing {
 fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
     let mut min = NumberOrNothing::Nothing;
 
-    // Now we want to *iterate* over the list. Rust has some nice syntax for
-    // iterators:
+    // Now we want to *iterate* over the list. Rust has some nice syntax for iterators:
     for el in vec {
         // So `el` is al element of the list. We need to update `min` accordingly, but how do we get the current
         // number in there? This is what pattern matching can do:
