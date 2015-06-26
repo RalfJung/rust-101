@@ -51,7 +51,8 @@
 // (You can also execute it with `cargo run`, but you'll need to do some work before this will succeed.)
 // 
 // If you later want to update the course, do `git pull` (or re-download the zip archive).
-// Then copy the files from `workspace/src/` to your workspace that you did not yet work on. (Of course you can also
+// Then copy the files from `workspace/src/` to your workspace that you did not yet work on. Definitely
+// copy `main.rs` to make sure all the new files are actually compiled. (Of course you can also
 // copy the rest, but that would replace all your hard work by the original files with all the holes!)
 
 // Course Content

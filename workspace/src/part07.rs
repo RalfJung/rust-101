@@ -1,5 +1,3 @@
-// ***Remember to enable/add this part in `main.rs`!***
-
 // Rust-101, Part 07: Operator Overloading, Tests, Formatting
 // ==========================================================
 
