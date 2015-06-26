@@ -33,3 +33,4 @@ workspace/src/main.rs:
 crates:
 	@cargo build
 	@cd solutions && cargo build
+	@cd workspace && cargo build
