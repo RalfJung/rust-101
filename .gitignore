@@ -1,4 +1,3 @@
 target/
 sync-docs
 .tmp/
-workspace/src/part*.rs
