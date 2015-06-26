@@ -100,4 +100,4 @@ pub fn main() {
 
 // **Exercise 01.2**: Write a function `vec_print` that takes a vector and prints all its elements.
 
-// [index](main.html) | [previous](part00.html) | [next](part02.html)
+//@ [index](main.html) | [previous](part00.html) | [next](part02.html)

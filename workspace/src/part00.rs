@@ -63,8 +63,6 @@ fn read_vec() -> Vec<i32> {
 
 // Finally, let's call our functions and run the code!
 // But, wait, we would like to actually see something, so we need to print the result.
-// Of course Rust can print numbers, but after calling `vec_min`, we have a `NumberOrNothing`.
-// So let's write a small helper function that prints such values.
 
 fn print_number_or_nothing(n: NumberOrNothing) {
     unimplemented!()

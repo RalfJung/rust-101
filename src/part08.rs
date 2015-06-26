@@ -1,5 +1,5 @@
-// Rust-101, Part 08: Associated Types, Modules
-// ============================================
+// Rust-101, Part 08: Associated Types, Modules (WIP)
+// ==================================================
 
 use std::cmp;
 use std::ops;

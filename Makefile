@@ -24,7 +24,7 @@ workspace/src/%.rs: src/%.rs Makefile dup-unimpl.sed
 	@echo "$< -> $@"
 	@echo "// ***Remember to enable/add this part in \`main.rs\`!***" > $@
 	@echo >> $@
-	@sed '/^\s*\/\/@/d;s|\(\s*\)[^\s].*/\*@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed >> $@
+	@sed '/^\s*\/\/@/d;s|\(\s*\)\S.*/\*@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed >> $@
 
 workspace/src/main.rs:
 	# Don't touch this file
