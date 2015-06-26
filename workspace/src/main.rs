@@ -1,10 +1,13 @@
-mod part00;
-mod part01;
-mod part02;
-mod part03;
+#![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 
-#[cfg(not(test))] /* If you get warnings about functions not being used on "crate test", adding this attribute will fix them.
-                     It says that the function is only to be compiled if we are *not* compiling for tests. */
+// Only the files imported here will be compiled. Remember to add or enable new
+// parts here as you progress through the course.
+mod part00;
+// mod part01;
+// mod part02;
+// mod part03;
+
+// This decides which part is actually run.
 fn main() {
    part00::main();
 }

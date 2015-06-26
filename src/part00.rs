@@ -4,36 +4,36 @@
 // As our first piece of Rust code, we want to write a function that computes the
 // minimum of a list.
 
-// ## Getting started
-// Let us start by thinking about the *type* of our function. Rust forces us to give the types of
-// all arguments, and the return type, before we even start writing the body. In the case of our minimum
-// function, we may be inclined to say that it returns a number. But then we would be in trouble: What's
-// the minimum of an empty list? The type of the function says we have to return *something*.
-// We could just choose 0, but that would be kind of arbitrary. What we need
-// is a type that is "a number, or nothing". Such a type (of multiple exclusive options)
-// is called an "algebraic datatype", and Rust lets us define such types with the keyword `enum`.
-// Coming from C(++), you can think of such a type as a `union`, together with a field that
-// stores the variant of the union that's currently used.
+//@ ## Getting started
+//@ Let us start by thinking about the *type* of our function. Rust forces us to give the types of
+//@ all arguments, and the return type, before we even start writing the body. In the case of our minimum
+//@ function, we may be inclined to say that it returns a number. But then we would be in trouble: What's
+//@ the minimum of an empty list? The type of the function says we have to return *something*.
+//@ We could just choose 0, but that would be kind of arbitrary. What we need
+//@ is a type that is "a number, or nothing". Such a type (of multiple exclusive options)
+//@ is called an "algebraic datatype", and Rust lets us define such types with the keyword `enum`.
+//@ Coming from C(++), you can think of such a type as a `union`, together with a field that
+//@ stores the variant of the union that's currently used.
 
 // An `enum` for "a number or nothing" could look as follows:
 enum NumberOrNothing {
     Number(i32),
     Nothing
 }
-// Notice that `i32` is the type of (signed, 32-bit) integers. To write down the type of
-// the minimum function, we need just one more ingredient: `Vec<i32>` is the type of
-// (growable) arrays of numbers, and we will use that as our list type.
+//@ Notice that `i32` is the type of (signed, 32-bit) integers. To write down the type of
+//@ the minimum function, we need just one more ingredient: `Vec<i32>` is the type of
+//@ (growable) arrays of numbers, and we will use that as our list type.
 
 // Observe how in Rust, the return type comes *after* the arguments.
 fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
-    // In the function, we first need some variable to store the minimum as computed so far.
-    // Since we start out with nothing computed, this will again be a 
-    // "number or nothing":
+    //@ In the function, we first need some variable to store the minimum as computed so far.
+    //@ Since we start out with nothing computed, this will again be a 
+    //@ "number or nothing":
     let mut min = NumberOrNothing::Nothing;
-    // We do not have to write a type next to `min`, Rust can figure that out automatically
-    // (a bit like `auto` in C++11). Also notice the `mut`: In Rust, variables are
-    // immutable per default, and you need to tell Rust if you want
-    // to change a variable later.
+    //@ We do not have to write a type next to `min`, Rust can figure that out automatically
+    //@ (a bit like `auto` in C++11). Also notice the `mut`: In Rust, variables are
+    //@ immutable per default, and you need to tell Rust if you want
+    //@ to change a variable later.
 
     // Now we want to *iterate* over the list. Rust has some nice syntax for
     // iterators:
@@ -43,13 +43,13 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
         match min {
             // In this case (*arm*) of the `match`, `min` is currently nothing, so let's just make it the number `el`.
             NumberOrNothing::Nothing => {
-                min = NumberOrNothing::Number(el);
+                min = NumberOrNothing::Number(el);                  /*@*/
             },
             // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it. We will write
             // the function `min_i32` just after we completed this one.
             NumberOrNothing::Number(n) => {
-                let new_min = min_i32(n, el);
-                min = NumberOrNothing::Number(new_min);
+                let new_min = min_i32(n, el);                       /*@*/
+                min = NumberOrNothing::Number(new_min);             /*@*/
             }
         }
     }
@@ -60,9 +60,9 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
 // Now that we reduced the problem to computing the minimum of two integers, let's do that.
 fn min_i32(a: i32, b: i32) -> i32 {
     if a < b {
-        return a;
+        return a;                                                   /*@*/
     } else {
-        return b;
+        return b;                                                   /*@*/
     }
 }
 
@@ -88,9 +88,9 @@ fn read_vec() -> Vec<i32> {
 // Of course Rust can print numbers, but after calling `vec_min`, we have a `NumberOrNothing`.
 // So let's write a small helper function that prints such values.
 
-// `println!` is again a macro, where the first argument is a *format string*. For
-// now, you just need to know that `{}` is the placeholder for a value, and that Rust
-// will check at compile-time that you supplied the right number of arguments.
+//@ `println!` is again a macro, where the first argument is a *format string*. For
+//@ now, you just need to know that `{}` is the placeholder for a value, and that Rust
+//@ will check at compile-time that you supplied the right number of arguments.
 fn print_number_or_nothing(n: NumberOrNothing) {
     match n {
         Nothing => println!("The number is: <nothing>"),
@@ -107,8 +107,8 @@ pub fn main() {
 
 // Now try `cargo run` on the console to run above code.
 
-// Yay, it said "1"! That's actually the right answer. Okay, we could have
-// computed that ourselves, but that's besides the point. More importantly:
-// You completed the first part of the course.
+//@ Yay, it said "1"! That's actually the right answer. Okay, we could have
+//@ computed that ourselves, but that's besides the point. More importantly:
+//@ You completed the first part of the course.
 
 // [index](main.html) | previous | [next](part01.html)

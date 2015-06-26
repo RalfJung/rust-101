@@ -1,18 +1,33 @@
 FILES=$(wildcard src/*.rs)
 DOCFILES=$(addsuffix .html,$(addprefix docs/,$(notdir $(basename $(FILES)))))
+WORKSPACEFILES=$(addprefix workspace/,$(FILES))
 
-all: docs crates
-.PHONY: docs rawsrc crates
+all: docs workspace crates
+.PHONY: docs workspace crates
 
+# Documentation
 docs: $(DOCFILES)
 
-docs/%.html: src/%.rs
-	@./pycco-rs $^
+.tmp/docs/%.rs: src/%.rs Makefile
+	@mkdir -p .tmp/docs
+	@echo "$< -> $@"
+	@sed 's|^\(\s*//\)@|\1|;s|\s*/\*@\*/||' $< > $@
 
-rawsrc:
-	@mkdir -p rawsrc
-	@for file in $(FILES); do echo "$$file -> rawsrc/$$file"; egrep -v "^[[:space:]]*// " "$$file" > "rawsrc/""$$file"; done
+docs/%.html: .tmp/docs/%.rs
+	@./pycco-rs $<
 
+# Workspace
+workspace: $(WORKSPACEFILES)
+
+workspace/src/%.rs: src/%.rs Makefile dup-unimpl.sed
+	@mkdir -p .tmp/docs
+	@echo "$< -> $@"
+	@sed '/^\s*\/\/@/d;s|\(\s*\)[^\s].*/\*@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
+
+workspace/src/main.rs:
+	# Don't touch this file
+
+# Crates
 crates:
 	@cargo build
 	@cd solutions && cargo build
