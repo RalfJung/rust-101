@@ -5,14 +5,10 @@
 // tutorial for the [Rust language](http://www.rust-lang.org/).
 // It is intended to be an interactive, hands-on course: I believe the only way to
 // *really* learn a language is to write code in it, so you should be coding during
-// the course. I am writing this with a tutorial situation in mind, i.e.,
-// with a teacher being around to guide students through the course and answer
-// questions as they come up. However, I think they may also be useful if you
-// work through them on your own, you will just have to show more initiative yourself:
-// Make sure you actually type some code. It may sound stupid to manually copy code
-// that you could duplicate through the clipboard, but it's actually helpful.
-// If you have questions, check out the "Additional Resources" below. In particular,
-// the IRC channel is filled with awesome people willing to help you! I spent
+// the course.
+// 
+// If you have any questions that are not answered here, check out the "Additional Resources"
+// below. In particular, the IRC channel is filled with awesome people willing to help you! I spent
 // lots of time there ;-)
 // 
 // I will assume some familiarity with programming, and hence not explain the basic
@@ -30,7 +26,7 @@
 // cost. This is combined with the comfort of high-level functional languages and guaranteed
 // safety (as in, the program will not crash). The vast majority of existing
 // languages sacrificies one of these goals for the other. In particular, the
-// first requirement rules out a garbage collector: Rust can run "mare metal".
+// first requirement rules out a garbage collector: Rust can run "bare metal".
 // In fact, Rust rules out more classes of bugs than languages that achieve safety
 // with a GC: Besides dangling pointers and double-free, Rust also prevents issues
 // such as iterator invalidation and race conditions.
@@ -43,17 +39,18 @@
 // [the Rust website](http://www.rust-lang.org/). You should go for either the "stable"
 // or the "beta" channel. More detailed installation instructions are provided in
 // [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
+// This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
 
 // Next, fetch the Rust-101 source code from the [git repository](http://www.ralfj.de/git/rust-101.git)
-// (also available [on GitHub](https://github.com/RalfJung/rust-101)).
-// To generate your workspace, run `make workspace` (this needs GNU sed). I suggest you now copy the
-// `workspace` folder somewhere else - that will make it much easier to later update the course without
+// (also available [on GitHub](https://github.com/RalfJung/rust-101), and as [zip archive](https://github.com/RalfJung/rust-101/archive/master.zip)).
+// There is a workspace prepared for you in the `workspace` folder. I suggest you copy this
+// folder somewhere else - that will make it much easier to later update the course without
 // overwriting your changes. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
 // (You can also execute it with `cargo run`, but you'll need to do some work before this will succeed.)
 // 
-// If you later want to update the course, do `git pull` followed by `make workspace`. Then copy the files
-// from `workspace/src/` to your workspace that you did not yet work on. (Of course you can also copy the rest,
-// but that would replace all your hard work by the original files with all the holes!)
+// If you later want to update the course, do `git pull` (or re-download the tip archive).
+// Then copy the files from `workspace/src/` to your workspace that you did not yet work on. (Of course you can also
+// copy the rest, but that would replace all your hard work by the original files with all the holes!)
 
 // Course Content
 // --------------
@@ -62,7 +59,7 @@
 // mechanisms like pattern matching and traits. Parts 04-06 introduce the heart of the language, the ideas
 // making it different from anything else out there: Ownership, borrowing, lifetimes. In part 07-??, we
 // continue our tour through Rust with another example. Finally, in parts ??-??, we implement our own
-// version of `grep`, exhibiting useful Rust features as we go.
+// version of `grep`, exhibiting some more Rust features as we go.
 // 
 // Now, open `your-workspace/src/part00.rs` in your favorite editor, and follow the link below for
 // the explanations and exercises. Have fun!

@@ -27,8 +27,7 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
             NumberOrNothing::Nothing => {
                 unimplemented!()
             },
-            // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it. We will write
-            // the function `min_i32` just after we completed this one.
+            // In this arm, `min` is currently the number `n`, so let's compute the new minimum and store it.
             NumberOrNothing::Number(n) => {
                 unimplemented!()
             }
@@ -58,10 +57,8 @@ use self::NumberOrNothing::{Number,Nothing};
 // To call this function, we now just need a list. Of course, ultimately we want to ask the user for
 // a list of numbers, but for now, let's just hard-code something.
 
-// `vec!` is a *macro* (as you can tell from the `!`) that constructs a constant `Vec<_>` with the given
-// elements.
 fn read_vec() -> Vec<i32> {
-    vec![18,5,7,1,9,27]
+    unimplemented!()
 }
 
 // Finally, let's call our functions and run the code!
@@ -70,10 +67,7 @@ fn read_vec() -> Vec<i32> {
 // So let's write a small helper function that prints such values.
 
 fn print_number_or_nothing(n: NumberOrNothing) {
-    match n {
-        Nothing => println!("The number is: <nothing>"),
-        Number(n) => println!("The number is: {}", n),
-    };
+    unimplemented!()
 }
 
 // Putting it all together:
@@ -83,7 +77,7 @@ pub fn main() {
     print_number_or_nothing(min);
 }
 
-// Now try `cargo run` on the console to run above code.
+// You can now use `cargo build` to compile your code. If all goes well, try `cargo run` on the
+// console to run it.
 
 
-// [index](main.html) | previous | [next](part01.html)
