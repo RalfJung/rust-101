@@ -22,7 +22,9 @@ workspace: $(WORKSPACEFILES)
 workspace/src/%.rs: src/%.rs Makefile dup-unimpl.sed
 	@mkdir -p .tmp/docs
 	@echo "$< -> $@"
-	@sed '/^\s*\/\/@/d;s|\(\s*\)[^\s].*/\*@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
+	@echo "// ***Remember to enable/add this part in \`main.rs\`!***" > $@
+	@echo >> $@
+	@sed '/^\s*\/\/@/d;s|\(\s*\)[^\s].*/\*@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed >> $@
 
 workspace/src/main.rs:
 	# Don't touch this file

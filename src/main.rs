@@ -40,35 +40,32 @@
 // ---------------
 // 
 // You will need to have Rust installed, of course. It is available for download on
-// [the Rust website](http://www.rust-lang.org/). At this point, I plan to restrict
-// myself to stable Rust, so "Recommended" version is just right.
-// You can find some more installation instructions in
+// [the Rust website](http://www.rust-lang.org/). You should go for either the "stable"
+// or the "beta" channel. More detailed installation instructions are provided in
 // [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 
 // Next, fetch the Rust-101 source code from the [git repository](http://www.ralfj.de/git/rust-101.git)
-// (also available [on GitHub](https://github.com/RalfJung/rust-101)). Running `cargo build`
-// in the root of the repository should now succeed.
+// (also available [on GitHub](https://github.com/RalfJung/rust-101)).
+// To generate your workspace, run `make workspace` (this needs GNU sed). I suggest you now copy the
+// `workspace` folder somewhere else - that will make it much easier to later update the course without
+// overwriting your changes. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
+// (You can also execute it with `cargo run`, but you'll need to do some work before this will succeed.)
 // 
-// I suggest you copy the folder `workspace` somewhere you like, so that you can still easily
-// `git pull` updates in the main repository. After copying, try `cargo build` in the
-// new location. It should complain about `part00::main()` not being found. Now you can start
-// by following [Part 00](part00.html), typing in `part00.rs`. If you need to add a new file, remember to also
-// add it to `main.rs` so that Rust finds it.
-// 
-// If you do not want to copy all the code yourself, and wish to start with my code and just edit
-// it, you can copy the files from `src` in this repository, to `src` in your workspace copy.
+// If you later want to update the course, do `git pull` followed by `make workspace`. Then copy the files
+// from `workspace/src/` to your workspace that you did not yet work on. (Of course you can also copy the rest,
+// but that would replace all your hard work by the original files with all the holes!)
 
 // Course Content
 // --------------
 // 
-// The actual course is in the partXX.rs files. The part 00-03 cover some basic of the language,
-// to give you a feeling for Rust's syntax and pervasive mechanisms like pattern matching and traits.
-// Parts 04-06 introduce the heart of the language, the mechanism making it different from anything
-// else out there: Ownership, borrowing, lifetimes. In part 07-??, we continue our tour through
-// Rust. Finally, in parts ??-??, we implement our own version of `grep`, exhibiting useful Rust
-// features as we go.
+// The part 00-03 cover some basic of the language, to give you a feeling for Rust's syntax and pervasive
+// mechanisms like pattern matching and traits. Parts 04-06 introduce the heart of the language, the ideas
+// making it different from anything else out there: Ownership, borrowing, lifetimes. In part 07-??, we
+// continue our tour through Rust with another example. Finally, in parts ??-??, we implement our own
+// version of `grep`, exhibiting useful Rust features as we go.
 // 
-// You should start with [the first part](part00.html), or jump directly to where you left off:
+// Now, open `your-workspace/src/part00.rs` in your favorite editor, and follow the link below for
+// the explanations and exercises. Have fun!
 // 
 // * [Part 00: Algebraic datatypes](part00.html)
 // * [Part 01: Expressions, Inherent methods](part01.html)
