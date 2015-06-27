@@ -19,6 +19,30 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.1em;
 }
 
+@media print {
+    #background {
+        background: none;
+        border: none;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        margin-top: 20px;
+    }
+    div.docs {
+        max-width: 99%;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    div.docs p {
+        margin-bottom: 5px;
+    }
+    div.code {
+        margin: 0px;
+        padding-top: 2px;
+        padding-bottom: 5px;
+        clear: both;
+    }
+}
+
 /*---------------------- Syntax Highlighting -----------------------------*/
 body .k { font-weight: bold }                   /* Keyword */
 body .kd { font-weight: normal }                /* Keyword.Declaration */
