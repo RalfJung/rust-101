@@ -22,7 +22,7 @@ fn read_vec() -> Vec<i32> {
         let line = line.unwrap();
         // Now that we have our `String`, we want to make it an `i32`.
 
-        match line.parse::<i32>() {
+        match line.trim().parse::<i32>() {
             Ok(num) => {
                 unimplemented!()
             },

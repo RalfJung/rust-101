@@ -50,12 +50,13 @@ fn read_vec() -> Vec<i32> {
         // access the "old" `line` again.
         let line = line.unwrap();
         // Now that we have our `String`, we want to make it an `i32`.
+        //@ We first `trim()` the `line` to remove leading and trailing whitespace.
         //@ `parse` is a method on `String` that can convert a string to anything. Try finding it's documentation!
 
         //@ In this case, Rust *could* figure out automatically that we need an `i32` (because of the return type
         //@ of the function), but that's a bit too much magic for my taste. We are being more explicit here:
         //@ `parse::<i32>` is `parse` with its generic type set to `i32`.
-        match line.parse::<i32>() {
+        match line.trim().parse::<i32>() {
             //@ `parse` returns again a `Result`, and this time we use a `match` to handle errors (like, the user entering
             //@ something that is not a number).
             //@ This is a common pattern in Rust: Operations that could go wrong will return `Option` or `Result`.
