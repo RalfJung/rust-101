@@ -36,5 +36,5 @@ workspace/src/main.rs:
 ## Crates
 crates: $(WORKSPACEFILES)
 	@cargo build
-	@cd solutions && cargo build
 	@cd workspace && cargo build
+	@cd solutions && cargo build && cargo test

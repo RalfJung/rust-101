@@ -12,11 +12,22 @@
 
 /*--------------------- Layout ----------------------------*/
 body {
-  font-family: 'aller-light', sans-serif;
+    font-family: 'aller-light', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  line-height: 1.1em;
+    line-height: 1.1em;
+}
+
+div.docs {
+    max-width: 580px;
+    padding-left: 35px;
+}
+#background {
+    left: 640px;
+}
+div.code {
+    margin-left: 640px;
 }
 
 @media print {
