@@ -49,7 +49,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ `e` is a `&BigInt`. Assigning `min = Some(*e)` works just like a function call: Ownership of the
 //@ underlying data is transferred from where `e` borrows from to `min`. But that's not allowed, since
 //@ we just borrowed `e`, so we cannot empty it! We can, however, call `clone()` on it. Then we own
-//@ the copy that was created, and hence we can store it in `min`.<br/>
+//@ the copy that was created, and hence we can store it in `min`. <br/>
 //@ Of course, making such a full copy is expensive, so we'd like to avoid it. We'll some to that in the next part.
 
 // ## `Copy` types
@@ -78,7 +78,7 @@ impl<T: Copy> Copy for SomethingOrNothing<T> {}
 
 //@ ## An operational perspective
 //@ Instead of looking at what happens "at the surface" (i.e., visible in Rust), one can also explain
-//@ ownership passing and how `Copy` and `Clone` fit in by looking at what happens on the machine.<br/>
+//@ ownership passing and how `Copy` and `Clone` fit in by looking at what happens on the machine. <br/>
 //@ When Rust code is executed, passing a value (like `i32` or `Vec<i32>`) to a function will always
 //@ result in a shallow copy being performed: Rust just copies the bytes representing that value, and
 //@ considers itself done. That's just like the default copy constructor in C++. Rust, however, will

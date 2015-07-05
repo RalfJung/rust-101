@@ -62,7 +62,7 @@ fn call_constructor(x: i32) -> SomethingOrNothing<i32> {
 //@ So, as a first step towards a generic `vec_min`, we define a `Minimum` trait.
 //@ For now, just ignore the `Copy`, we will come back to this point later.
 //@ A `trait` is a lot like interfaces in Java: You define a bunch of functions
-//@ you want to have implemented, and their argument and return types.<br/>
+//@ you want to have implemented, and their argument and return types. <br/>
 //@ The function `min` takes to arguments of the same type, but I made the
 //@ first argument the special `self` argument. I could, alternatively, have
 //@ made `min` a static function as follows: `fn min(a: Self, b: Self) -> Self`.
@@ -79,7 +79,7 @@ pub trait Minimum : Copy {
 //@ 
 //@ There is a crucial difference to templates in C++: We actually have to declare which traits
 //@ we want the type to satisfy. If we left away the `Minimum`, Rust would have complained that
-//@ we cannot call `min`. Just try it!<br/>
+//@ we cannot call `min`. Just try it! <br/>
 //@ This is in strong contrast to C++, where the compiler only checks such details when the
 //@ function is actually used.
 pub fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {

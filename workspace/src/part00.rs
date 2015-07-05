@@ -58,8 +58,7 @@ fn read_vec() -> Vec<i32> {
     unimplemented!()
 }
 
-// Finally, let's call our functions and run the code!
-// But, wait, we would like to actually see something, so we need to print the result.
+// Of course, we would also like to actually see the result of the computation, so we need to print the result.
 
 fn print_number_or_nothing(n: NumberOrNothing) {
     unimplemented!()
@@ -72,7 +71,6 @@ pub fn main() {
     print_number_or_nothing(min);
 }
 
-// You can now use `cargo build` to compile your code. If all goes well, try `cargo run` on the
-// console to run it.
+// Finally, try `cargo run` on the console to run it.
 
 

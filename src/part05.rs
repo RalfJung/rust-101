@@ -10,7 +10,7 @@
 //@ to use a vector "digits" of the number. This is like "1337" being a vector of four digits (1, 3, 3, 7),
 //@ except that we will use `u64` as type of our digits, meaning we have 2^64 individual digits. Now we just
 //@ have to decide the order in which we store numbers. I decided that we will store the least significant
-//@ digit first. This means that "1337" would actually become (7, 3, 3, 1).<br/>
+//@ digit first. This means that "1337" would actually become (7, 3, 3, 1). <br/>
 //@ Finally, we declare that there must not be any trailing zeros (corresponding to
 //@ useless leading zeros in our usual way of writing numbers). This is to ensure that
 //@ the same number can only be stored in one way.

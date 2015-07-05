@@ -27,7 +27,7 @@ pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
 //@ Notice that the return type `Option<&T>` is technically (leaving the borrowing story aside) a
 //@ pointer to a `T`, that could optionally be invalid. In other words, it's just like a pointer in
 //@ C(++) or Java that can be `NULL`! However, thanks to `Option` being an `enum`, we cannot forget
-//@ to check the pointer for validity, avoiding the safety issues of C(++).<br/>
+//@ to check the pointer for validity, avoiding the safety issues of C(++). <br/>
 //@ Also, if you are worried about wasting space, notice that Rust knows that `&T` can never be
 //@ `NULL`, and hence optimizes `Option<&T>` to be no larger than `&T`. The `None` case is represented
 //@ as `NULL`. This is another great example of a zero-cost abstraction: `Option<&T>` is exactly like
@@ -147,4 +147,4 @@ fn test_vec_min() {
 // of course, need a `Display` bound on `T`.) Then you should be able to use them with `println!` just like you do
 // with numbers, and get rid of the inherent functions to print `SomethingOrNothing<i32>` and `SomethingOrNothing<f32>`.
 
-//@ [index](main.html) | [previous](part06.html) | [next](main.html)
+//@ [index](main.html) | [previous](part06.html) | [next](part08.html)

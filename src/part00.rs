@@ -82,8 +82,7 @@ fn read_vec() -> Vec<i32> {
     vec![18,5,7,1,9,27]                                             /*@*/
 }
 
-// Finally, let's call our functions and run the code!
-// But, wait, we would like to actually see something, so we need to print the result.
+// Of course, we would also like to actually see the result of the computation, so we need to print the result.
 //@ Of course Rust can print numbers, but after calling `vec_min`, we have a `NumberOrNothing`.
 //@ So let's write a small helper function that prints such values.
 
@@ -104,8 +103,9 @@ pub fn main() {
     print_number_or_nothing(min);
 }
 
-// You can now use `cargo build` to compile your code. If all goes well, try `cargo run` on the
-// console to run it.
+//@ You can now use `cargo build` to compile your *crate*. That's Rust's name for a *compilation unit*, which in
+//@ the case of Rust means an application or a library. <br/>
+// Finally, try `cargo run` on the console to run it.
 
 //@ Yay, it said "1"! That's actually the right answer. Okay, we could have
 //@ computed that ourselves, but that's besides the point. More importantly:

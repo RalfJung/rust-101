@@ -166,12 +166,14 @@ impl fmt::Debug for BigInt {
 impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     type Output = BigInt;
     fn add(self, rhs: &'a BigInt) -> Self::Output {
-        let mut result_vec:Vec<u64> = Vec::with_capacity(cmp::max(self.data.len(), rhs.data.len()));
+        let max_len = cmp::max(self.data.len(), rhs.data.len());
+        let mut result_vec:Vec<u64> = Vec::with_capacity(max_len);
         let mut carry:bool = false; // the carry bit
-        for (i, val) in (&self.data).into_iter().enumerate() {
+        for i in 0..max_len {
             // compute next digit and carry
+            let lhs_val = if i < self.data.len() { self.data[i] } else { 0 };
             let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
-            let (sum, new_carry) = overflowing_add(*val, rhs_val, carry);
+            let (sum, new_carry) = overflowing_add(lhs_val, rhs_val, carry);
             // store them
             result_vec.push(sum);
             carry = new_carry;
@@ -180,8 +182,8 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
             result_vec.push(1);
         }
         // We know that the invariant holds: overflowing_add would only return (0, false) if
-        // the arguments are (0, 0, false), but we know that in the last iteration, `val` is the
-        // last digit of `self` and hence not 0.
+        // the arguments are (0, 0, false), but we know that in the last iteration, one od the two digits
+        // is the last of its number and hence not 0.
         BigInt { data: result_vec }
     }
 }
@@ -223,6 +225,14 @@ mod tests {
         assert_eq!(overflowing_add(1 << 63, 1 << 63, false), (0, true));
         assert_eq!(overflowing_add(1 << 63, 1 << 63, true), (1, true));
         assert_eq!(overflowing_add(1 << 63, (1 << 63) -1 , true), (0, true));
+    }
+
+    #[test]
+    fn test_add() {
+        let b1 = BigInt::new(1 << 32);
+        let b2 = BigInt::from_vec(vec![0, 1]);
+
+        assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
     }
 
     #[test]

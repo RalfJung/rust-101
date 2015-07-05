@@ -75,6 +75,7 @@
 // * [Part 05: Clone](part05.html)
 // * [Part 06: Copy, Lifetimes](part06.html)
 // * [Part 07: Operator Overloading, Tests, Formating](part07.html)
+// * [Part 08: Associated Types, Modules](part08.html)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;
@@ -86,7 +87,7 @@ mod part05;
 mod part06;
 mod part07;
 mod part08;
-mod part09;
+//mod part09;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
