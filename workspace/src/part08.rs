@@ -46,9 +46,9 @@ impl ops::Add<BigInt> for BigInt {
         let mut result_vec:Vec<u64> = Vec::with_capacity(max_len);
         let mut carry = false; /* the current carry bit */
         for i in 0..max_len {
-            // Compute next digit and carry. Store the digit for the result, and the carry for later.
             let lhs_val = if i < self.data.len() { self.data[i] } else { 0 };
             let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
+            // Compute next digit and carry. Then, store the digit for the result, and the carry for later.
             unimplemented!()
         }
         // **Exercise 08.2**: Handle the final `carry`, and return the sum.
@@ -59,7 +59,8 @@ impl ops::Add<BigInt> for BigInt {
 // ## Traits and borrowed types
 
 // Writing this out becomes a bit tedious, because trait implementations (unlike functions) require full explicit annotation
-// of lifetimes. Make sure you understand exactly what the following definition says.
+// of lifetimes. Make sure you understand exactly what the following definition says. Notice that we can implement a trait for
+// a borrowed type!
 impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     type Output = BigInt;
     fn add(self, rhs: &'a BigInt) -> Self::Output {
@@ -70,14 +71,7 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
 
 // ## Modules
 
-// Rust calls a bunch of definitions that are grouped together a *module*. You can put definitions in a submodule as follows.
-mod my_mod {
-    type MyType = i32;
-    fn my_fun() -> MyType { 42 }
-}
-
-// For the purpose of testing, one typically introduces a module called `tests` and tells the compiler
-// (by means of the `cfg` attribute) to only compile this module for tests.
+// Rust calls a bunch of definitions that are grouped together a *module*. You can put the tests in a submodule as follows.
 #[cfg(test)]
 mod tests {
     #[test]
@@ -86,7 +80,10 @@ mod tests {
         let b2 = BigInt::from_vec(vec![0, 1]);
 
         assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
-        // **Exercise 08.4**: Add some more testcases.
+        // **Exercise 08.4**: Add some more cases to this test.
     }
 }
+
+// **Exercise 08.4**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
+// For example, you may want to return an `Option`, to panic, or to return `0`.
 

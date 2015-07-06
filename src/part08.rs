@@ -47,15 +47,14 @@ fn test_overflowing_add() {
 
 // ## Associated Types
 //@ Now we are equipped to write the addition function for `BigInt`. As you may have guessed, the `+` operator
-//@ is tied to a trait (`std::ops::Add`), which we are now going to implement for `BigInt`.
+//@ is tied to a trait (`std::ops::Add`), which we are going to implement for `BigInt`.
 //@ 
-//@ In general, addition need not be homogeneous: For example, we could add a vector (in 3-dimensional
-//@ space, say) to a point. So when implementing `Add` for a type, one has to specify the type of
-//@ the other operand. In this case, it will also be `BigInt` (and we could have left it away, since that's the default).
+//@ In general, addition need not be homogeneous: You could add things of different types, like vectors and points. So when implementing
+//@ `Add` for a type, one has to specify the type of the other operand. In this case, it will also be `BigInt` (and we could have left it
+//@ away, since that's the default).
 impl ops::Add<BigInt> for BigInt {
-    //@ Besides static functions and methods, traits can contain *associated types*: This is a type
-    //@ chosen by every particular implementation of the trait. The methods of the trait can then
-    //@ refer to that type. In the case of addition, it is used to give the type of the result.
+    //@ Besides static functions and methods, traits can contain *associated types*: This is a type chosen by every particular implementation
+    //@ of the trait. The methods of the trait can then refer to that type. In the case of addition, it is used to give the type of the result.
     //@ (Also see the [documentation of `Add`](http://doc.rust-lang.org/stable/std/ops/trait.Add.html).)
     //@ 
     //@ In general, you can consider the two `BigInt` given above (in the `impl` line) *input* types of trait search: When
@@ -74,9 +73,10 @@ impl ops::Add<BigInt> for BigInt {
         let mut result_vec:Vec<u64> = Vec::with_capacity(max_len);
         let mut carry = false; /* the current carry bit */
         for i in 0..max_len {
-            // Compute next digit and carry. Store the digit for the result, and the carry for later.
             let lhs_val = if i < self.data.len() { self.data[i] } else { 0 };
             let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
+            // Compute next digit and carry. Then, store the digit for the result, and the carry for later.
+            //@ Notice how we can obtain names for the two components of the pair that `overflowing_add` returns.
             let (sum, new_carry) = overflowing_add(lhs_val, rhs_val, carry);    /*@*/
             result_vec.push(sum);                                               /*@*/
             carry = new_carry;                                                  /*@*/
@@ -87,12 +87,12 @@ impl ops::Add<BigInt> for BigInt {
 }
 
 // ## Traits and borrowed types
-//@ If you inspect the addition function above closely, you will notice that it actually requires
-//@ *ownership* of its arguments: Both operands are consumed to produce the result. This is, of
-//@ course, in general not what we want. We'd rather like to be able to add two `&BigInt`.
+//@ If you inspect the addition function above closely, you will notice that it actually consumes ownership of both operands
+//@ to produce the result. This is, of course, in general not what we want. We'd rather like to be able to add two `&BigInt`.
 
 // Writing this out becomes a bit tedious, because trait implementations (unlike functions) require full explicit annotation
-// of lifetimes. Make sure you understand exactly what the following definition says.
+// of lifetimes. Make sure you understand exactly what the following definition says. Notice that we can implement a trait for
+// a borrowed type!
 impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     type Output = BigInt;
     fn add(self, rhs: &'a BigInt) -> Self::Output {
@@ -106,10 +106,19 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
 //@ considered good style to bundle all tests together. This is particularly useful in cases where
 //@ you wrote utility functions for the tests, that no other code should use.
 
-// Rust calls a bunch of definitions that are grouped together a *module*. You can put definitions in a submodule as follows.
-mod my_mod {
-    type MyType = i32;
-    fn my_fun() -> MyType { 42 }
+// Rust calls a bunch of definitions that are grouped together a *module*. You can put the tests in a submodule as follows.
+//@ The `cfg` attribute controls whether this module is even compiled: If we added some functions that are useful for testing,
+//@ Rust would not bother compiling them when you just build your program for normal use. Other than that, tests work as usually.
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_add() {
+        let b1 = BigInt::new(1 << 32);
+        let b2 = BigInt::from_vec(vec![0, 1]);
+
+        assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
+        // **Exercise 08.4**: Add some more cases to this test.
+    }
 }
 //@ As already mentioned, outside of the module, only those items declared public with `pub` may be used. Submodules can access
 //@ everything defined in their parents. Modules themselves are also hidden from the outside per default, and can be made public
@@ -126,25 +135,12 @@ mod my_mod {
 //@ Modules can be put into separate files with the syntax `mod name;`. To explain this, let me take a small detour through
 //@ the Rust compilation process. Cargo starts by invoking`rustc` on the file `src/lib.rs` or `src/main.rs`, depending on whether
 //@ you compile an application or a library. When `rustc` encounters a `mod name;`, it looks for the files `name.rs` and
-//@ `name/mod.rs` and goes on compiling there. (It is an error for both of them to exist). You can think of the contents of the
+//@ `name/mod.rs` and goes on compiling there. (It is an error for both of them to exist.) You can think of the contents of the
 //@ file being embedded at this place. However, only the file where compilation started, and files `name/mod.rs` can load modules
 //@ from other files. This ensures that the directory structure mirrors the structure of the modules, with `mod.rs`, `lib.rs`
 //@ and `main.rs` representing a directory or crate itself (similar to, e.g., `__init__.py` in Python).
 
-// For the purpose of testing, one typically introduces a module called `tests` and tells the compiler
-// (by means of the `cfg` attribute) to only compile this module for tests.
-#[cfg(test)]
-mod tests {
-    //@ If we added some functions here that are useful for testing, Rust would not bother compiling
-    //@ them when you just build your program for normal use. Other than that, tests work as usually.
-    #[test]
-    fn test_add() {
-        let b1 = BigInt::new(1 << 32);
-        let b2 = BigInt::from_vec(vec![0, 1]);
-
-        assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
-        // **Exercise 08.4**: Add some more testcases.
-    }
-}
+// **Exercise 08.4**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
+// For example, you may want to return an `Option`, to panic, or to return `0`.
 
 //@ [index](main.html) | [previous](part07.html) | [next](main.html)

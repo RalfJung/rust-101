@@ -231,8 +231,15 @@ mod tests {
     fn test_add() {
         let b1 = BigInt::new(1 << 32);
         let b2 = BigInt::from_vec(vec![0, 1]);
+        let b3 = BigInt::from_vec(vec![0, 0, 1]);
+        let b4 = BigInt::new(1 << 63);
 
         assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
+        assert_eq!(&b2 + &b1, BigInt::from_vec(vec![1 << 32, 1]));
+        assert_eq!(&b2 + &b3, BigInt::from_vec(vec![0, 1, 1]));
+        assert_eq!(&b2 + &b3 + &b4 + &b4, BigInt::from_vec(vec![0, 2, 1]));
+        assert_eq!(&b2 + &b4 + &b3 + &b4, BigInt::from_vec(vec![0, 2, 1]));
+        assert_eq!(&b4 + &b2 + &b3 + &b4, BigInt::from_vec(vec![0, 2, 1]));
     }
 
     #[test]
