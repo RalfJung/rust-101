@@ -37,6 +37,20 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     }
 }
 
+// Subtract with carry, returning the difference and the carry
+fn overflowing_sub(a: u64, b: u64, carry: bool) -> (u64, bool) {
+    let diff = u64::wrapping_sub(a, b);
+    let carry_n = if carry { 1 } else { 0 };
+    if diff <= a { // the first diff did not wrap
+        let diff_total = u64::wrapping_sub(diff, carry_n);
+        let had_wrap = diff_total > diff;
+        (diff_total, had_wrap)
+    } else { // the first diff did wrap
+        // it is impossible for this to wrap again, as we are just substracting 0 or 1
+        (diff - carry_n, true)
+    }
+}
+
 impl BigInt {
     /// Construct a BigInt from a "small" one.
     pub fn new(x: u64) -> Self {
@@ -212,11 +226,57 @@ impl ops::Add<BigInt> for BigInt {
     }
 }
 
+impl<'a, 'b> ops::Sub<&'a BigInt> for &'b BigInt {
+    type Output = BigInt;
+    fn sub(self, rhs: &'a BigInt) -> Self::Output {
+        let max_len = cmp::max(self.data.len(), rhs.data.len());
+        let mut result_vec:Vec<u64> = Vec::with_capacity(max_len);
+        let mut carry:bool = false; // the carry bit
+        for i in 0..max_len {
+            // compute next digit and carry
+            let lhs_val = if i < self.data.len() { self.data[i] } else { 0 };
+            let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
+            let (sum, new_carry) = overflowing_sub(lhs_val, rhs_val, carry);
+            // store them
+            result_vec.push(sum);
+            carry = new_carry;
+        }
+        if carry {
+            panic!("Wrapping subtraction of BigInt");
+        }
+        // We may have trailing zeroes, so get rid of them
+        BigInt::from_vec(result_vec)
+    }
+}
+
+impl<'a> ops::Sub<BigInt> for &'a BigInt {
+    type Output = BigInt;
+    #[inline]
+    fn sub(self, rhs: BigInt) -> Self::Output {
+        self - &rhs
+    }
+}
+
+impl<'a> ops::Sub<&'a BigInt> for BigInt {
+    type Output = BigInt;
+    #[inline]
+    fn sub(self, rhs: &'a BigInt) -> Self::Output {
+        &self - rhs
+    }
+}
+
+impl ops::Sub<BigInt> for BigInt {
+    type Output = BigInt;
+    #[inline]
+    fn sub(self, rhs: BigInt) -> Self::Output {
+        &self - &rhs
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::u64;
-    use super::overflowing_add;
-    use super::BigInt;
+    use super::{overflowing_add,overflowing_sub,BigInt};
 
     #[test]
     fn test_overflowing_add() {
@@ -225,6 +285,15 @@ mod tests {
         assert_eq!(overflowing_add(1 << 63, 1 << 63, false), (0, true));
         assert_eq!(overflowing_add(1 << 63, 1 << 63, true), (1, true));
         assert_eq!(overflowing_add(1 << 63, (1 << 63) -1 , true), (0, true));
+    }
+
+    #[test]
+    fn test_overflowing_sub() {
+        assert_eq!(overflowing_sub(100, 10, false), (90, false));
+        assert_eq!(overflowing_sub(100, 10, true), (89, false));
+        assert_eq!(overflowing_sub(10, 1 << 63, false), ((1 << 63) + 10, true));
+        assert_eq!(overflowing_sub(10, 1 << 63, true), ((1 << 63) + 9, true));
+        assert_eq!(overflowing_sub(42, 42 , true), (u64::max_value(), true));
     }
 
     #[test]
@@ -240,6 +309,21 @@ mod tests {
         assert_eq!(&b2 + &b3 + &b4 + &b4, BigInt::from_vec(vec![0, 2, 1]));
         assert_eq!(&b2 + &b4 + &b3 + &b4, BigInt::from_vec(vec![0, 2, 1]));
         assert_eq!(&b4 + &b2 + &b3 + &b4, BigInt::from_vec(vec![0, 2, 1]));
+    }
+
+    #[test]
+    fn test_sub() {
+        let b1 = BigInt::new(1 << 32);
+        let b2 = BigInt::from_vec(vec![0, 1]);
+        let b3 = BigInt::from_vec(vec![0, 0, 1]);
+        let b4 = BigInt::new(1 << 63);
+
+        assert_eq!(&b2 - &b1, BigInt::from_vec(vec![u64::max_value() - (1 << 32) + 1]));
+        assert_eq!(&b3 - &b2, BigInt::from_vec(vec![0, u64::max_value(), 0]));
+        assert_eq!(&b2 - &b4 - &b4, BigInt::from_vec(vec![0]));
+        assert_eq!(&b3 - &b2 - &b4 - &b4, BigInt::from_vec(vec![0, u64::max_value() - 1]));
+        assert_eq!(&b3 - &b4 - &b2 - &b4, BigInt::from_vec(vec![0, u64::max_value() - 1]));
+        assert_eq!(&b3 - &b4 - &b4 - &b2, BigInt::from_vec(vec![0, u64::max_value() - 1]));
     }
 
     #[test]
