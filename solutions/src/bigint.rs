@@ -320,10 +320,22 @@ mod tests {
 
         assert_eq!(&b2 - &b1, BigInt::from_vec(vec![u64::max_value() - (1 << 32) + 1]));
         assert_eq!(&b3 - &b2, BigInt::from_vec(vec![0, u64::max_value(), 0]));
-        assert_eq!(&b2 - &b4 - &b4, BigInt::from_vec(vec![0]));
+        assert_eq!(&b2 - &b4 - &b4, BigInt::new(0));
         assert_eq!(&b3 - &b2 - &b4 - &b4, BigInt::from_vec(vec![0, u64::max_value() - 1]));
         assert_eq!(&b3 - &b4 - &b2 - &b4, BigInt::from_vec(vec![0, u64::max_value() - 1]));
         assert_eq!(&b3 - &b4 - &b4 - &b2, BigInt::from_vec(vec![0, u64::max_value() - 1]));
+    }
+
+    #[test]
+    #[should_panic(expected = "Wrapping subtraction of BigInt")]
+    fn test_sub_panic1() {
+        let _ = BigInt::new(1) - BigInt::new(5);
+    }
+
+    #[test]
+    #[should_panic(expected = "Wrapping subtraction of BigInt")]
+    fn test_sub_panic2() {
+        let _ = BigInt::from_vec(vec![5,8,3,33,1<<13,46,1<<49, 1, 583,1<<60,2533]) - BigInt::from_vec(vec![5,8,3,33,1<<13,46,1<<49, 5, 583,1<<60,2533]);
     }
 
     #[test]
