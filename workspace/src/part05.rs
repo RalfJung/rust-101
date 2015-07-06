@@ -72,7 +72,7 @@ fn work_on_variant(mut var: Variant, text: String) {
         Variant::Number(ref mut n) => ptr = n,
         Variant::Text(_) => return,
     }
-    /* var = Variant::Text(text); */
+    /* var = Variant::Text(text); */                                /* BAD! */
     *ptr = 1337;
 }
 

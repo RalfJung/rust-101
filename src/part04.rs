@@ -27,7 +27,7 @@ fn work_on_vector(v: Vec<i32>) { /* do something */ }
 fn ownership_demo() {
     let v = vec![1,2,3,4];
     work_on_vector(v);
-    /* println!("The first element is: {}", v[0]); */
+    /* println!("The first element is: {}", v[0]); */               /* BAD! */
 }
 //@ Rust attaches additional meaning to the argument of `work_on_vector`: The function can assume
 //@ that it entirely *owns* `v`, and hence can do anything with it. When `work_on_vector` ends,
@@ -114,7 +114,7 @@ fn mutable_borrow_demo() {
     /* let first = &v[0]; */
     vec_inc(&mut v);
     vec_inc(&mut v);
-    /* println!("The first element is: {}", *first); */
+    /* println!("The first element is: {}", *first); */             /* BAD! */
 }
 //@ `&mut` is the operator to create a mutable borrow. We have to mark `v` as mutable in order to create such a
 //@ borrow. Because the borrow passed to `vec_inc` only lasts as long as the function call, we can still call
