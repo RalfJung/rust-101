@@ -111,7 +111,7 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
 //@ `#[derive(Clone)]` right before the definition of `SomethingOrNothing`.
 
 // **Exercise 05.2**: Write some more functions on `BigInt`. What about a function that returns the number of
-// digits? The number of non-zero digits? The smallest/largest digit?
+// digits? The number of non-zero digits? The smallest/largest digit? Of course, these should all just borrow `self`.
 
 // ## Mutation + aliasing considered harmful (part 2)
 //@ Now that we know how to borrow a part of an `enum` (like `v` above), there's another example for why we
