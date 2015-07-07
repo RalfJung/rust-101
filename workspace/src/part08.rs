@@ -69,6 +69,8 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     }
 }
 
+// **Exercise 08.4**: Implement the two missing combinations of arguments for `Add`. You should not have to duplicate the implementation.
+
 // ## Modules
 
 // Rust calls a bunch of definitions that are grouped together a *module*. You can put the tests in a submodule as follows.
@@ -80,10 +82,10 @@ mod tests {
         let b2 = BigInt::from_vec(vec![0, 1]);
 
         assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
-        // **Exercise 08.4**: Add some more cases to this test.
+        // **Exercise 08.5**: Add some more cases to this test.
     }
 }
 
-// **Exercise 08.4**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
+// **Exercise 08.6**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
 // For example, you may want to return an `Option`, to panic, or to return `0`.
 

@@ -101,6 +101,8 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     }
 }
 
+// **Exercise 08.4**: Implement the two missing combinations of arguments for `Add`. You should not have to duplicate the implementation.
+
 // ## Modules
 //@ As you learned, tests can be written right in the middle of your development in Rust. However, it is
 //@ considered good style to bundle all tests together. This is particularly useful in cases where
@@ -117,7 +119,7 @@ mod tests {
         let b2 = BigInt::from_vec(vec![0, 1]);
 
         assert_eq!(&b1 + &b2, BigInt::from_vec(vec![1 << 32, 1]));
-        // **Exercise 08.4**: Add some more cases to this test.
+        // **Exercise 08.5**: Add some more cases to this test.
     }
 }
 //@ As already mentioned, outside of the module, only those items declared public with `pub` may be used. Submodules can access
@@ -140,7 +142,7 @@ mod tests {
 //@ from other files. This ensures that the directory structure mirrors the structure of the modules, with `mod.rs`, `lib.rs`
 //@ and `main.rs` representing a directory or crate itself (similar to, e.g., `__init__.py` in Python).
 
-// **Exercise 08.4**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
+// **Exercise 08.6**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
 // For example, you may want to return an `Option`, to panic, or to return `0`.
 
 //@ [index](main.html) | [previous](part07.html) | [next](main.html)
