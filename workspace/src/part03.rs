@@ -10,7 +10,7 @@ use std::io;
 
 fn read_vec() -> Vec<i32> {
     let mut vec: Vec<i32> = Vec::<i32>::new();
-    // The central handle to the standard input is made available by `io::stdin()`.
+    // The central handle to the standard input is made available by the function `io::stdin`.
     let stdin = io::stdin();
     println!("Enter a list of numbers, one per line. End with Ctrl-D.");
     for line in stdin.lock().lines() {

@@ -21,7 +21,7 @@
 //@ `data` public - otherwise, the next parts of this course could not work on `BigInt`s. Of course, in a
 //@ real program, one would make the field private to ensure that the invariant (no trailing zeros) is maintained.
 pub struct BigInt {
-    pub data: Vec<u64>,
+    pub data: Vec<u64>, // least significant digit first, no trailing zeros
 }
 
 // Now that we fixed the data representation, we can start implementing methods on it.
@@ -31,7 +31,7 @@ impl BigInt {
     //@ fields and initial values assigned to them.
     pub fn new(x: u64) -> Self {
         if x == 0 {
-            BigInt { data: vec![] }
+            BigInt { data: vec![] }                                 /*@*/
         } else {
             BigInt { data: vec![x] }                                /*@*/
         }
@@ -53,7 +53,7 @@ impl BigInt {
     // 
     // **Exercise 05.1**: Implement this function.
     // 
-    // *Hint*: You can use `pop()` to remove the last element of a vector.
+    // *Hint*: You can use `pop` to remove the last element of a vector.
     pub fn from_vec(mut v: Vec<u64>) -> Self {
         unimplemented!()
     }

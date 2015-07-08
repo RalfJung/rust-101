@@ -145,4 +145,4 @@ mod tests {
 // **Exercise 08.6**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
 // For example, you may want to return an `Option`, to panic, or to return `0`.
 
-//@ [index](main.html) | [previous](part07.html) | [next](main.html)
+//@ [index](main.html) | [previous](part07.html) | [next](part09.html)

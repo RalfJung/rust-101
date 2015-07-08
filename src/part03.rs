@@ -22,13 +22,13 @@ use std::io;
 //@ specifying its type parameter doesn't tell us all that much.
 fn read_vec() -> Vec<i32> {
     let mut vec: Vec<i32> = Vec::<i32>::new();
-    // The central handle to the standard input is made available by `io::stdin()`.
+    // The central handle to the standard input is made available by the function `io::stdin`.
     let stdin = io::stdin();
     println!("Enter a list of numbers, one per line. End with Ctrl-D.");
     //@ We would now like to iterate over standard input line-by-line. We can use a `for` loop
     //@ for that, but there is a catch: What happens if there is some other piece of code running
     //@ concurrently, that also reads from standard input? The result would be a mess. Hence
-    //@ Rust requires us to `lock()` standard input if we want to perform large operations on
+    //@ Rust requires us to `lock` standard input if we want to perform large operations on
     //@ it. (See [the documentation](http://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for more
     //@ details.) 
     for line in stdin.lock().lines() {
@@ -40,17 +40,17 @@ fn read_vec() -> Vec<i32> {
         //@ You will see that `io::Result` is actually just an alias for `Result`, so click on that to obtain
         //@ the list of all constructors and methods of the type.
 
-        //@ We will be lazy here and just assume that nothing goes wrong: `unwrap()` returns the `String` if there is one,
+        //@ We will be lazy here and just assume that nothing goes wrong: `unwrap` returns the `String` if there is one,
         //@ and panics the program otherwise. Since a `Result` carries some details about the error that occurred,
         //@ there will be a somewhat reasonable error message. Still, you would not want a user to see such
         //@ an error, so in a "real" program, we would have to do proper error handling.
-        //@ Can you find the documentation of `Result::unwrap()`?
+        //@ Can you find the documentation of `Result::unwrap`?
         //@ 
         // I chose the same name (`line`) for the new variable to ensure that I will never, accidentally,
         // access the "old" `line` again.
         let line = line.unwrap();
         // Now that we have our `String`, we want to make it an `i32`.
-        //@ We first `trim()` the `line` to remove leading and trailing whitespace.
+        //@ We first `trim` the `line` to remove leading and trailing whitespace.
         //@ `parse` is a method on `String` that can convert a string to anything. Try finding it's documentation!
 
         //@ In this case, Rust *could* figure out automatically that we need an `i32` (because of the return type
@@ -61,7 +61,7 @@ fn read_vec() -> Vec<i32> {
             //@ something that is not a number).
             //@ This is a common pattern in Rust: Operations that could go wrong will return `Option` or `Result`.
             //@ The only way to get to the value we are interested in is through pattern matching (and through helper functions
-            //@ like `unwrap()`). If we call a function that returns a `Result`, and throw the return value away,
+            //@ like `unwrap`). If we call a function that returns a `Result`, and throw the return value away,
             //@ the compiler will emit a warning. It is hence impossible for us to *forget* handling an error,
             //@ or to accidentally use a value that doesn't make any sense because there was an error producing it.
             Ok(num) => {

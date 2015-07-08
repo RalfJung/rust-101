@@ -4,14 +4,14 @@
 // ## Big Numbers
 
 pub struct BigInt {
-    pub data: Vec<u64>,
+    pub data: Vec<u64>, // least significant digit first, no trailing zeros
 }
 
 // Now that we fixed the data representation, we can start implementing methods on it.
 impl BigInt {
     pub fn new(x: u64) -> Self {
         if x == 0 {
-            BigInt { data: vec![] }
+            unimplemented!()
         } else {
             unimplemented!()
         }
@@ -31,7 +31,7 @@ impl BigInt {
     // 
     // **Exercise 05.1**: Implement this function.
     // 
-    // *Hint*: You can use `pop()` to remove the last element of a vector.
+    // *Hint*: You can use `pop` to remove the last element of a vector.
     pub fn from_vec(mut v: Vec<u64>) -> Self {
         unimplemented!()
     }

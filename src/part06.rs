@@ -26,7 +26,7 @@ impl BigInt {
 }
 
 // Now we can write `vec_min`.
-//@ However, in order to make it type-check, we have to make a full (deep) copy of e by calling `clone()`.
+//@ However, in order to make it type-check, we have to make a full (deep) copy of e by calling `clone`.
 fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
     for e in v {
@@ -48,7 +48,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ `e.clone()`, Rust will complain "Cannot move out of borrowed content". That's because
 //@ `e` is a `&BigInt`. Assigning `min = Some(*e)` works just like a function call: Ownership of the
 //@ underlying data is transferred from where `e` borrows from to `min`. But that's not allowed, since
-//@ we just borrowed `e`, so we cannot empty it! We can, however, call `clone()` on it. Then we own
+//@ we just borrowed `e`, so we cannot empty it! We can, however, call `clone` on it. Then we own
 //@ the copy that was created, and hence we can store it in `min`. <br/>
 //@ Of course, making such a full copy is expensive, so we'd like to avoid it. We'll some to that in the next part.
 
@@ -92,7 +92,7 @@ impl<T: Copy> Copy for SomethingOrNothing<T> {}
 //@ `Clone`. This makes the cost explicit.
 
 // ## Lifetimes
-//@ To fix the performance problems of `vec_min`, we need to avoid using `clone()`. We'd like
+//@ To fix the performance problems of `vec_min`, we need to avoid using `clone`. We'd like
 //@ the return value to not be owned (remember that this was the source of our need for cloning), but *borrowed*.
 
 //@ The function `head` demonstrates how that could work: It borrows the first element of a vector if it is non-empty.
