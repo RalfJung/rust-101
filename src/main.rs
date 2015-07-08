@@ -89,12 +89,13 @@ mod part06;
 mod part07;
 mod part08;
 mod part09;
+mod part10;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
 
 fn main() {
-    part00::main();
+    part10::main();
 }
 
 // Additional material
