@@ -26,11 +26,13 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     if sum >= a {
         // The addition did not overflow. <br/>
         // **Exercise 08.1**: Write the code to handle adding the carry in this case.
-        unimplemented!()
+        let sum_total = u64::wrapping_add(sum, if carry { 1 } else { 0 });      /*@@*/
+        let had_overflow = sum_total < sum;                                     /*@@*/
+        (sum_total, had_overflow)                                               /*@@*/
     } else {
         // Otherwise, the addition *did* overflow. It is impossible for the addition of the carry
         // to overflow again, as we are just adding 0 or 1.
-        (sum + if carry { 1 } else { 0 }, true)                     /*@*/
+        (sum + if carry { 1 } else { 0 }, true)                                 /*@*/
     }
 }
 
@@ -82,7 +84,10 @@ impl ops::Add<BigInt> for BigInt {
             carry = new_carry;                                                  /*@*/
         }
         // **Exercise 08.2**: Handle the final `carry`, and return the sum.
-        unimplemented!()
+        if carry {                                                              /*@@*/
+            result_vec.push(1);                                                 /*@@*/
+        }                                                                       /*@@*/
+        BigInt { data: result_vec }                                             /*@@*/
     }
 }
 

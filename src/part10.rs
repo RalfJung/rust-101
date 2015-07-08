@@ -28,19 +28,14 @@ impl Action for PrintWithString {
     }
 }
 
-fn read_one_line() -> String {
-    println!("Please enter a line of text.");
-    let mut stdin = io::stdin();
-    let mut prefix = "".to_string();
-    stdin.read_line(&mut prefix).unwrap();
-    prefix
+fn print_with_prefix_v1(b: &BigInt, prefix: String) {
+    let my_action = PrintWithString { prefix: prefix };
+    b.act_v1(my_action);
 }
 
-pub fn main_v1() {
-    let prefix = read_one_line();
-    let my_action = PrintWithString { prefix: prefix };
+pub fn main() {
     let bignum = BigInt::new(1 << 63) + BigInt::new(1 << 16) + BigInt::new(1 << 63);
-    bignum.act_v1(my_action);
+    print_with_prefix_v1(&bignum, "Digit: ".to_string());
 }
 
 impl BigInt {
@@ -51,10 +46,8 @@ impl BigInt {
     }
 }
 
-pub fn main() {
-    let prefix = read_one_line();
-    let bignum = BigInt::new(1 << 63) + BigInt::new(1 << 16) + BigInt::new(1 << 63);
-    bignum.act(|digit| println!("{}{}", prefix, digit) );
+pub fn print_with_prefix(b: &BigInt, prefix: String) {
+    b.act(|digit| println!("{}{}", prefix, digit) );
 }
 
 //@ [index](main.html) | [previous](part08.html) | [next](main.html)

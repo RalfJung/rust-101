@@ -8,11 +8,12 @@ all: docs workspace crates
 ## Documentation
 docs: $(DOCFILES)
 
-.tmp/docs/%.rs: src/%.rs Makefile
+.tmp/docs/%.rs: src/%.rs Makefile dup-unimpl.sed
 	@mkdir -p .tmp/docs
 	@echo "$< -> $@"
-	@# sed-fu: remove the "@" from "//@", and remove trailing "/*@*/".
-	@sed 's|^\(\s*//\)@|\1|;s|\s*/\*@\*/$$||' $< > $@
+	@# sed-fu: remove the "@" from "//@", and remove trailing "/*@*/", replace lines ending in  "/*@@*/" by "unimplemented!()".
+	@# Also coalesce multiple adjacent such lines to one.
+	@sed 's|^\(\s*//\)@|\1|;s|\s*/\*@\*/$$||;s|\(\s*\)\S.*/\*@@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
 
 docs/%.html: .tmp/docs/%.rs
 	@./pycco-rs $<
