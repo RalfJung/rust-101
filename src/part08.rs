@@ -28,7 +28,7 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
         // **Exercise 08.1**: Write the code to handle adding the carry in this case.
         unimplemented!()
     } else {
-        // The addition *did* overflow. It is impossible for the addition of the carry
+        // Otherwise, the addition *did* overflow. It is impossible for the addition of the carry
         // to overflow again, as we are just adding 0 or 1.
         (sum + if carry { 1 } else { 0 }, true)                     /*@*/
     }

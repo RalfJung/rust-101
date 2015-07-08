@@ -1,0 +1,11 @@
+* Closures: Working on iterators
+* Arrays/slices
+* Trait objects
+* Drop
+* ?unsafe?
+* ?interior mutability?
+
+* Arc, concurrency, channels: Some grep-like thing, "rgrep"
+* Send, Sync
+* External dependencies: regexp crate, add to rgrep
+* 

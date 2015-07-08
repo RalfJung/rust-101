@@ -76,7 +76,7 @@
 // * [Part 06: Copy, Lifetimes](part06.html)
 // * [Part 07: Operator Overloading, Tests, Formating](part07.html)
 // * [Part 08: Associated Types, Modules](part08.html)
-// * [Part 09: Iterators](part08.html)
+// * [Part 09: Iterators](part09.html)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;
