@@ -76,7 +76,7 @@ pub fn print_and_count(b: &BigInt) {
 
 // Let's say we want to write a function that increments every entry of a `Vec` by some number, then looks for numbers larger than some threshold, and prints them.
 fn inc_print_even(v: &Vec<i32>, offset: i32, threshold: i32) {
-    for i in v.iter().map(|n| n + offset).filter(|n| *n > threshold) {
+    for i in v.iter().map(|n| *n + offset).filter(|n| *n > threshold) {
         println!("{}", i);
     }
 }

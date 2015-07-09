@@ -115,7 +115,7 @@ fn inc_print_even(v: &Vec<i32>, offset: i32, threshold: i32) {
     //@ 
     //@ Since all these closures compile down to the pattern described above, there is actually no heap allocation going on here. This makes
     //@ closures very efficient, and it makes optimization fairly trivial: The resulting code will look like you hand-rolled the loop in C.
-    for i in v.iter().map(|n| n + offset).filter(|n| *n > threshold) {
+    for i in v.iter().map(|n| *n + offset).filter(|n| *n > threshold) {
         println!("{}", i);
     }
 }
