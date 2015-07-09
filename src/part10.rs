@@ -132,8 +132,9 @@ fn print_enumerated<T: fmt::Display>(v: &Vec<T>) {
 // And as a final example, one can also collect all elements of an iterator, and put them, e.g., in a vector.
 fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
     //@ Here, the return type of `collect` is inferred based on the return type of our function. In general, it can return anything implementing
-    //@ [`FromIterator`](http://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html).
-    v.iter().filter(|n| *n % divisor == 0).collect()
+    //@ [`FromIterator`](http://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html). Notice that `iter` gives us an iterator over
+    //@ borrowed `i32`, but we want to own them for the result, so we insert a `map` to dereference.
+    v.iter().map(|n| *n).filter(|n| *n % divisor == 0).collect()
 }
 
 // **Exercise 10.1**: Look up the [documentation of `Iterator`](http://doc.rust-lang.org/stable/std/iter/trait.Iterator.html) to learn about more functions

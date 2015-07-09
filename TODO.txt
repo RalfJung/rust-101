@@ -1,5 +1,3 @@
-* Closures: Working on iterators
-
 * Arrays/slices
 * Trait objects
 
