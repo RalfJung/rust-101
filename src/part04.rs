@@ -119,7 +119,9 @@ fn mutable_borrow_demo() {
     /* println!("The first element is: {}", *first); */             /* BAD! */
 }
 //@ `&mut` is the operator to create a mutable borrow. We have to mark `v` as mutable in order to create such a
-//@ borrow. Because the borrow passed to `vec_inc` only lasts as long as the function call, we can still call
+//@ borrow: Even though we completely own `v`, Rust tries to protect us from accidentally mutating things.
+//@ Hence owned variables that you intend to mutate, have to be annotated with `mut`.
+//@ Because the borrow passed to `vec_inc` only lasts as long as the function call, we can still call
 //@ `vec_inc` on the same vector twice: The durations of the two borrows do not overlap, so we never have more
 //@ than one mutable borrow. However, we can *not* create a shared borrow that spans a call to `vec_inc`. Just try
 //@ enabling the commented-out lines, and watch Rust complain. This is because `vec_inc` could mutate

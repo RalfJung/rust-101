@@ -35,6 +35,12 @@ fn number_or_default(n: NumberOrNothing, default: i32) -> i32 {
     }
 }
 
+// It is even the case that blocks are expressions, evaluating to the last expression they contain.
+fn compute_stuff(x: i32) -> i32 {
+    let y = { let z = x*x; z + 14 };
+    y*y
+}
+
 // Let us now refactor `vec_min`.
 fn vec_min(v: Vec<i32>) -> NumberOrNothing {
     //@ Remember that helper function `min_i32`? Rust allows us to define such helper functions *inside* other

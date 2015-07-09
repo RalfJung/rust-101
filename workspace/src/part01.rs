@@ -24,6 +24,12 @@ fn number_or_default(n: NumberOrNothing, default: i32) -> i32 {
     }
 }
 
+// It is even the case that blocks are expressions, evaluating to the last expression they contain.
+fn compute_stuff(x: i32) -> i32 {
+    let y = { let z = x*x; z + 14 };
+    y*y
+}
+
 // Let us now refactor `vec_min`.
 fn vec_min(v: Vec<i32>) -> NumberOrNothing {
     fn min_i32(a: i32, b: i32) -> i32 {

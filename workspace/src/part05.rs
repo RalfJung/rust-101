@@ -26,8 +26,10 @@ impl BigInt {
     }
 
     // We can convert any vector of digits into a number, by removing trailing zeros. The `mut`
-    // declaration for `v` here is just like the one in `let mut ...`, it says that we will locally
-    // change the vector `v`.
+    // declaration for `v` here is just like the one in `let mut ...`: We completely own `v`, but Rust
+    // still asks us to make our intention of modifying it explicit. This `mut` is *not* part of the
+    // type of `from_vec` - the caller has to give up ownership of `v` anyway, so they don't care anymore
+    // what you do to it.
     // 
     // **Exercise 05.1**: Implement this function.
     // 
