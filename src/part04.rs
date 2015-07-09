@@ -68,7 +68,9 @@ fn vec_min(v: &Vec<i32>) -> Option<i32> {
     use std::cmp;
 
     let mut min = None;
-    for e in v {
+    // This time, we explicitly request an iterator for the vector `v`. The method `iter` borrows the vector
+    // it works on, and provides shared borrows of the elements.
+    for e in v.iter() {
         // In the loop, `e` now has type `&i32`, so we have to dereference it to obtain an `i32`.
         min = Some(match min {
             None => *e,
@@ -102,9 +104,9 @@ fn shared_borrow_demo() {
 
 //@ As an example, consider a function which increments every element of a vector by 1.
 //@ The type `&mut Vec<i32>` is the type of mutable borrows of `vec<i32>`. Because the borrow is
-//@ mutable, we can change `e` in the loop.
+//@ mutable, we can use a mutable iterator, providing a mutable borrow of the elements.
 fn vec_inc(v: &mut Vec<i32>) {
-    for e in v {
+    for e in v.iter_mut() {
         *e += 1;
     }
 }

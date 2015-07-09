@@ -29,7 +29,7 @@ workspace/src/%.rs: src/%.rs Makefile dup-unimpl.sed
 	@echo "$< -> $@"
 	@# sed-fu: remove lines starting with "//@", and replace those ending in "/*@*/" by "unimplemented!()".
 	@# Also coalesce multiple adjacent such lines to one.
-	@sed '/^\s*\/\/@/d;s|\(\s*\)\S.*/\*@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
+	@sed '/^\s*\/\/@/d;s|\(\s*\)\S.*/\*@@?\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
 
 workspace/src/main.rs:
 	# Don't touch this file

@@ -35,7 +35,7 @@ pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
 
 // **Exercise 07.1**: For our `vec_min` to be usable with `BigInt`, you will have to provide an implementation of
 // `Minimum`. You should be able to pretty much copy the code you wrote for exercise 06.1. You should *not*
-// make any copies!
+// make any copies of `BigInt`!
 impl Minimum for BigInt {
     fn min<'a>(&'a self, other: &'a Self) -> &'a Self {
         unimplemented!()

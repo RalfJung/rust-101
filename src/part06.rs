@@ -26,9 +26,9 @@ impl BigInt {
 }
 
 // Now we can write `vec_min`.
-//@ However, in order to make it type-check, we have to make a full (deep) copy of e by calling `clone`.
 fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
+    // If `v` is a shared borrowed vector, then the default for iterating over it is to call `iter`, the iterator that borrows the elements.
     for e in v {
         let e = e.clone();                                          /*@*/
         min = Some(match min {                                      /*@*/
@@ -38,7 +38,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     }
     min
 }
-//@ Now, what's happening here? Why do we have to clone `e`, and why did we not
+//@ Now, what's happening here? Why do we have to to make a full (deep) copy of `e`, and why did we not
 //@ have to do that in our previous version?
 //@ 
 //@ The answer is already hidden in the type of `vec_min`: `v` is just borrowed, but

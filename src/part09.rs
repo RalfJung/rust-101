@@ -119,9 +119,9 @@ fn iter_invalidation_demo() {
 //@ which Rust successfully prevents.
 
 // ## Iterator conversion trait
-//@ If you closely compare the `for` loop in `main` above, with the one in `vec_min`, you will notice that we were able to write
+//@ If you closely compare the `for` loop in `main` above, with the one in `part06::vec_min`, you will notice that we were able to write
 //@ `for e in v` earlier, but now we have to call `iter`. Why is that? Well, the `for` sugar is not actually tied to `Iterator`.
-//@ Instead, if demands an implementation of [`IntoIterator`](http://doc.rust-lang.org/beta/std/iter/trait.IntoIterator.html).
+//@ Instead, it demands an implementation of [`IntoIterator`](http://doc.rust-lang.org/beta/std/iter/trait.IntoIterator.html).
 //@ That's a trait of types that provide a *conversion* function into some kind of iterator. These conversion traits are a frequent
 //@ pattern in Rust: Rather than demanding that something is an iterator, or a string, or whatever; one demands that something
 //@ can be converted to an iterator/string/whatever. This provides convenience similar to overloading of functions: The function
@@ -130,7 +130,7 @@ fn iter_invalidation_demo() {
 //@ of the right type, the conversion function will not do anything and trivially be optimized away.
 
 //@ If you have a look at the documentation of `IntoIterator`, you will notice that the function `into_iter` it provides actually
-//@ consumes its argument. So, we'd like to make `Self` a borrowed type, such that the number is not lost after the iteration.
+//@ consumes its argument. So we implement the trait for *borrowed* numbers, such that the number is not lost after the iteration.
 impl<'a> IntoIterator for &'a BigInt {
     type Item = u64;
     type IntoIter = Iter<'a>;
@@ -139,10 +139,11 @@ impl<'a> IntoIterator for &'a BigInt {
     }
 }
 // With this in place, you can now replace `b.iter()` in `main` by `&b`. Go ahead and try it! <br/>
-//@ Wait, `&b`? Why that? Well, we implemented `IntoIterator` for `&BigInt`, so we have to borrow `b`. If we wanted to be able to write
-//@ just `b`, we'd have to also implement `IntoIterator` for `BigInt` - which, as already mentioned, would mean that `b` is actually consumed
-//@ by the iteration, and gone. This can easily happen, for example, with a `Vec`: Both `Vec` and `&Vec` implement `IntoIterator`, so if
-//@ you do `for e in v`, and `v` has type `Vec`, then you will obtain ownership of the elements during the iteration - and destroy the vector
-//@ in the process. We actually did that in `vec_min`, but we did not care. You can write `for e in &v` or `for e in v.iter()` to avoid this.
+//@ Wait, `&b`? Why that? Well, we implemented `IntoIterator` for `&BigInt`. If we are in a place where `b` is already borrowed, we can
+//@ just do `for digit in b`. If however, we own `b`, we have to borrow it. Alternatively, we could implement `IntoIterator`
+//@ for `BigInt` - which, as already mentioned, would mean that `b` is actually consumed by the iteration, and gone. This can easily happen,
+//@ for example, with a `Vec`: Both `Vec` and `&Vec` (and `&mut Vec`) implement `IntoIterator`, so if you do `for e in v`, and `v` has type `Vec`,
+//@ then you will obtain ownership of the elements during the iteration - and destroy the vector in the process. We actually did that in
+//@ `part01::vec_min`, but we did not care. You can write `for e in &v` or `for e in v.iter()` to avoid this.
 
 //@ [index](main.html) | [previous](part08.html) | [next](main.html)

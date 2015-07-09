@@ -13,9 +13,7 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     if sum >= a {
         // The addition did not overflow. <br/>
         // **Exercise 08.1**: Write the code to handle adding the carry in this case.
-        let sum_total = u64::wrapping_add(sum, if carry { 1 } else { 0 });      /*@@*/
-        let had_overflow = sum_total < sum;                                     /*@@*/
-        (sum_total, had_overflow)                                               /*@@*/
+        unimplemented!()
     } else {
         // Otherwise, the addition *did* overflow. It is impossible for the addition of the carry
         // to overflow again, as we are just adding 0 or 1.
@@ -54,10 +52,7 @@ impl ops::Add<BigInt> for BigInt {
             unimplemented!()
         }
         // **Exercise 08.2**: Handle the final `carry`, and return the sum.
-        if carry {                                                              /*@@*/
-            result_vec.push(1);                                                 /*@@*/
-        }                                                                       /*@@*/
-        BigInt { data: result_vec }                                             /*@@*/
+        unimplemented!()
     }
 }
 
@@ -81,7 +76,9 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
 // Rust calls a bunch of definitions that are grouped together a *module*. You can put the tests in a submodule as follows.
 #[cfg(test)]
 mod tests {
-    #[test]
+    use part05::BigInt;
+
+    /*#[test]*/
     fn test_add() {
         let b1 = BigInt::new(1 << 32);
         let b2 = BigInt::from_vec(vec![0, 1]);
