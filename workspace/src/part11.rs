@@ -1,5 +1,5 @@
-// Rust-101, Part 11: Trait Objects, Box, Rc
-// =========================================
+// Rust-101, Part 11: Trait Objects, Box, Rc, Lifetime bounds
+// ==========================================================
 
 mod callbacks {
     // For now, we just decide that the callbacks have an argument of type `i32`.

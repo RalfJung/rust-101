@@ -1,5 +1,5 @@
-// Rust-101, Part 11: Trait Objects, Box, Rc
-// =========================================
+// Rust-101, Part 11: Trait Objects, Box, Rc, Lifetime bounds
+// ==========================================================
 
 //@ We will play around with closures a bit more. Let us implement some kind of generic "callback"
 //@ mechanism, providing two functions: Registering a new callback, and calling all registered callbacks. There will be two
