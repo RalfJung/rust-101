@@ -1,8 +1,7 @@
 // Rust-101, Part 10: Closures
 // ===========================
 
-use std::io::prelude::*;
-use std::{fmt,io};
+use std::fmt;
 use part05::BigInt;
 
 //@ Assume we want to write a function that does *something* on, say, every digit of a `BigInt`.
@@ -24,7 +23,7 @@ impl BigInt {
         //@ Remember that the `mut` above is just an annotation to Rust, telling it that we're okay with `a` being mutated.
         //@ Calling `do_action` on `a` takes a mutable borrow, so mutation could indeed happen.
         for digit in self {
-            a.do_action(digit);
+            a.do_action(digit);                                     /*@*/
         }
     }
 }
@@ -40,7 +39,7 @@ impl Action for PrintWithString {
     // Here we perform performs the actual printing of the prefix and the digit. We're not making use of our ability to
     // change `self` here, but we could replace the prefix if we wanted.
     fn do_action(&mut self, digit: u64) {
-        println!("{}{}", self.prefix, digit);
+        println!("{}{}", self.prefix, digit);                       /*@*/
     }
 }
 
@@ -73,7 +72,7 @@ impl BigInt {
     fn act<A: FnMut(u64)>(&self, mut a: A) {
         for digit in self {
             // We can call closures as if they were functions - but really, what's happening here is translated to essentially what we wrote above, in `act_v1`.
-            a(digit);
+            a(digit);                                               /*@*/
         }
     }
 }
@@ -134,7 +133,7 @@ fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
     //@ Here, the return type of `collect` is inferred based on the return type of our function. In general, it can return anything implementing
     //@ [`FromIterator`](http://doc.rust-lang.org/stable/std/iter/trait.FromIterator.html). Notice that `iter` gives us an iterator over
     //@ borrowed `i32`, but we want to own them for the result, so we insert a `map` to dereference.
-    v.iter().map(|n| *n).filter(|n| *n % divisor == 0).collect()
+    v.iter().map(|n| *n).filter(|n| *n % divisor == 0).collect()    /*@*/
 }
 
 // **Exercise 10.1**: Look up the [documentation of `Iterator`](http://doc.rust-lang.org/stable/std/iter/trait.Iterator.html) to learn about more functions
@@ -142,4 +141,4 @@ fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
 // product of those numbers that sit at odd positions? A function that checks whether a vector contains a certain number? Whether all numbers are
 // smaller than some threshold? Be creative!
 
-//@ [index](main.html) | [previous](part08.html) | [next](main.html)
+//@ [index](main.html) | [previous](part09.html) | [next](main.html)

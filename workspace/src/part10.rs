@@ -1,8 +1,7 @@
 // Rust-101, Part 10: Closures
 // ===========================
 
-use std::io::prelude::*;
-use std::{fmt,io};
+use std::fmt;
 use part05::BigInt;
 
 
@@ -15,7 +14,7 @@ trait Action {
 impl BigInt {
     fn act_v1<A: Action>(&self, mut a: A) {
         for digit in self {
-            a.do_action(digit);
+            unimplemented!()
         }
     }
 }
@@ -28,7 +27,7 @@ impl Action for PrintWithString {
     // Here we perform performs the actual printing of the prefix and the digit. We're not making use of our ability to
     // change `self` here, but we could replace the prefix if we wanted.
     fn do_action(&mut self, digit: u64) {
-        println!("{}{}", self.prefix, digit);
+        unimplemented!()
     }
 }
 
@@ -52,7 +51,7 @@ impl BigInt {
     fn act<A: FnMut(u64)>(&self, mut a: A) {
         for digit in self {
             // We can call closures as if they were functions - but really, what's happening here is translated to essentially what we wrote above, in `act_v1`.
-            a(digit);
+            unimplemented!()
         }
     }
 }
@@ -90,7 +89,7 @@ fn print_enumerated<T: fmt::Display>(v: &Vec<T>) {
 
 // And as a final example, one can also collect all elements of an iterator, and put them, e.g., in a vector.
 fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
-    v.iter().map(|n| *n).filter(|n| *n % divisor == 0).collect()
+    unimplemented!()
 }
 
 // **Exercise 10.1**: Look up the [documentation of `Iterator`](http://doc.rust-lang.org/stable/std/iter/trait.Iterator.html) to learn about more functions
