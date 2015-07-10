@@ -7,7 +7,7 @@ use part05::BigInt;
 
 // So, let us write a function to "add with carry", and give it the appropriate type. Notice Rust's native support for pairs.
 fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
-    let sum = u64::wrapping_add(a, b);
+    let sum = a.wrapping_add(b);
     // If an overflow happened, then the sum will be smaller than *both* summands. Without an overflow, of course, it will be
     // at least as large as both of them. So, let's just pick one and check.
     if sum >= a {

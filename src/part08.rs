@@ -20,19 +20,19 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     //@ function (see [the documentation](http://doc.rust-lang.org/stable/std/primitive.u64.html#method.wrapping_add),
     //@ there are similar functions for other arithmetic operations). There are also similar functions
     //@ `checked_add` etc. to enforce the overflow check.
-    let sum = u64::wrapping_add(a, b);
+    let sum = a.wrapping_add(b);
     // If an overflow happened, then the sum will be smaller than *both* summands. Without an overflow, of course, it will be
     // at least as large as both of them. So, let's just pick one and check.
     if sum >= a {
         // The addition did not overflow. <br/>
         // **Exercise 08.1**: Write the code to handle adding the carry in this case.
-        let sum_total = u64::wrapping_add(sum, if carry { 1 } else { 0 });      /*@@*/
-        let had_overflow = sum_total < sum;                                     /*@@*/
-        (sum_total, had_overflow)                                               /*@@*/
+        let sum_total = sum.wrapping_add(if carry { 1 } else { 0 });/*@@*/
+        let had_overflow = sum_total < sum;                         /*@@*/
+        (sum_total, had_overflow)                                   /*@@*/
     } else {
         // Otherwise, the addition *did* overflow. It is impossible for the addition of the carry
         // to overflow again, as we are just adding 0 or 1.
-        (sum + if carry { 1 } else { 0 }, true)                                 /*@*/
+        (sum + if carry { 1 } else { 0 }, true)                     /*@*/
     }
 }
 

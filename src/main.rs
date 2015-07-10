@@ -78,6 +78,7 @@
 // * [Part 08: Associated Types, Modules](part08.html)
 // * [Part 09: Iterators](part09.html)
 // * [Part 10: Closures](part10.html)
+// * [Part 11: Trait Objects, Box, Rc, Lifetime bounds](part11.html)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut)]
 mod part00;

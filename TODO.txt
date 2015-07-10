@@ -1,5 +1,4 @@
 * Arrays/slices
-* Trait objects
 
 * Arc, concurrency, channels: Some grep-like thing, "rgrep"
 * Send, Sync
