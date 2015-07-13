@@ -13,6 +13,7 @@ mod part08;
 mod part09;
 mod part10;
 mod part11;
+mod part12;
 
 // This decides which part is actually run.
 fn main() {

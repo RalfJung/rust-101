@@ -29,7 +29,7 @@
 // first requirement rules out a garbage collector: Rust can run "bare metal".
 // In fact, Rust rules out more classes of bugs than languages that achieve safety
 // with a GC: Besides dangling pointers and double-free, Rust also prevents issues
-// such as iterator invalidation and race conditions.
+// such as iterator invalidation and data races.
 // 
 // 
 // Getting started
@@ -93,6 +93,7 @@ mod part08;
 mod part09;
 mod part10;
 mod part11;
+mod part12;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
