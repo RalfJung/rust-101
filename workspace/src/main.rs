@@ -1,4 +1,4 @@
-#![allow(dead_code, unused_imports, unused_variables, unused_mut)]
+#![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]
 
 // Only the files imported here will be compiled.
 mod part00;
@@ -14,6 +14,7 @@ mod part09;
 mod part10;
 mod part11;
 mod part12;
+mod part13;
 
 // This decides which part is actually run.
 fn main() {

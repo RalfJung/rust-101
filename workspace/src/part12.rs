@@ -11,17 +11,17 @@ use std::sync::Arc;
 // to complete the job: Which files to work on, which pattern to look for, and how to output. <br/>
 // Besides just printing all the matching lines, we will also offer to count them, or alternatively to sort them.
 #[derive(Clone,Copy)]
-enum OutputMode {
+pub enum OutputMode {
     Print,
     SortAndPrint,
     Count,
 }
 use self::OutputMode::*;
 
-struct Options {
-    files: Vec<String>,
-    pattern: String,
-    output_mode: OutputMode,
+pub struct Options {
+    pub files: Vec<String>,
+    pub pattern: String,
+    pub output_mode: OutputMode,
 }
 
 
@@ -70,7 +70,7 @@ fn output_lines(options: Arc<Options>, in_channel: Receiver<String>) {
         },
         SortAndPrint => {
             // We are asked to sort the matching lines before printing. So let's collect them all in a local vector...
-            let data: Vec<String> = in_channel.iter().collect();
+            let mut data: Vec<String> = in_channel.iter().collect();
             // ...and implement the actual sorting later.
             unimplemented!()
         }
@@ -79,7 +79,7 @@ fn output_lines(options: Arc<Options>, in_channel: Receiver<String>) {
 
 // With the operations of the three threads defined, we can now implement a function that performs grepping according
 // to some given options.
-fn run(options: Options) {
+pub fn run(options: Options) {
     // We move the `options` into an `Arc`, as that's what the thread workers expect.
     let options = Arc::new(options);
 
@@ -105,7 +105,7 @@ fn run(options: Options) {
     handle3.join().unwrap();
 }
 
-// Now we have all the pieces together for testing our `rgrep` with some hard-coded options.
+// Now we have all the pieces together for testing our rgrep with some hard-coded options.
 pub fn main() {
     let options = Options {
         files: vec!["src/part10.rs".to_string(), "src/part11.rs".to_string(), "src/part12.rs".to_string()],
@@ -115,7 +115,7 @@ pub fn main() {
     run(options);
 }
 
-// **Exercise 12.1**: Change `rgrep` such that it prints now only the matching lines, but also the name of the file
+// **Exercise 12.1**: Change rgrep such that it prints now only the matching lines, but also the name of the file
 // and the number of the line in the file. You will have to change the type of the channels from `String` to something
 // that records this extra information.
 

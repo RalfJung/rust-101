@@ -1,5 +1,5 @@
 use std::io::prelude::*;
-use std::{io, fs, thread, process};
+use std::{io, fs, thread, process, cmp};
 use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
 use std::sync::Arc;
 
@@ -23,6 +23,17 @@ struct Line {
     line: usize,
 }
 
+impl PartialEq for Line {
+    fn eq(&self, other: &Line) -> bool {
+        self.data.eq(&other.data)
+    }
+}
+impl PartialOrd for Line {
+    fn partial_cmp(&self, other: &Line) -> Option<cmp::Ordering> {
+        self.data.partial_cmp(&other.data)
+    }
+}
+
 fn read_files(options: Arc<Options>, out_channel: SyncSender<Line>) {
     for (fileidx, file) in options.files.iter().enumerate() {
         let file = fs::File::open(file).unwrap();
@@ -42,6 +53,33 @@ fn filter_lines(options: Arc<Options>, in_channel: Receiver<Line>, out_channel: 
     }
 }
 
+fn sort<T: PartialOrd>(data: &mut [T]) {
+    if data.len() < 2 { return; }
+
+    let mut lpos = 1;
+    let mut rpos = data.len();
+    // Invariant: pivot is data[0]; (0,lpos) is <= pivot; [rpos,len) is >= pivot; lpos < rpos
+    loop {
+        while lpos < rpos && data[lpos] <= data[0] {
+            lpos += 1;
+        }
+        while rpos > lpos && data[rpos-1] >= data[0] {
+            rpos -= 1;
+        }
+        if rpos == lpos {
+            break;
+        }
+
+        data.swap(lpos, rpos-1);
+    }
+
+    data.swap(0, lpos-1); // put pivot in the right place
+
+    let (part1, part2) = data.split_at_mut(lpos);
+    sort(&mut part1[..lpos-1]);
+    sort(part2);
+}
+
 fn output_lines(options: Arc<Options>, in_channel: Receiver<Line>) {
     match options.output_mode {
         Print => {
@@ -54,8 +92,11 @@ fn output_lines(options: Arc<Options>, in_channel: Receiver<Line>) {
             println!("{} hits for {}.", count, options.pattern);
         },
         SortAndPrint => {
-            let _data: Vec<Line> = in_channel.iter().collect();
-            unimplemented!()
+            let mut data: Vec<Line> = in_channel.iter().collect();
+            sort(&mut data[..]);
+            for line in data.iter() {
+                println!("{}:{}: {}", options.files[line.file], line.line, line.data);
+            }
         }
     }
 }
