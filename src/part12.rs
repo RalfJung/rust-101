@@ -124,6 +124,9 @@ pub fn run(options: Options) {
     let handle3 = thread::spawn(move || output_lines(options3, filtered_receiver));
 
     // Finally, wait until all three threads did their job.
+    //@ Joining a thread waits for its termination. This can fail if that thread panicked: In this case, we could get
+    //@ access to the data that it provided to `panic!`. Here, we just assert that they did not panic - so we will panic ourselves
+    //@ if that happened.
     handle1.join().unwrap();
     handle2.join().unwrap();
     handle3.join().unwrap();

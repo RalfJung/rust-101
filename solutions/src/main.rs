@@ -8,6 +8,7 @@ extern crate docopt;
 pub mod bigint;
 pub mod vec;
 pub mod rgrep;
+pub mod counter;
 
 pub fn main() {
     rgrep::main();
