@@ -41,7 +41,10 @@ mod callbacks {
         c.call(0);
 
         let mut count: usize = 0;
-        c.register(Box::new(move |val| { count = count+1; println!("Callback 2, {}. time: {}", count, val); } ));
+        c.register(Box::new(move |val| {
+            count = count+1;
+            println!("Callback 2, {}. time: {}", count, val);
+        } ));
         c.call(1); c.call(2);
     }
 }

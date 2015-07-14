@@ -1,8 +1,3 @@
-* Arrays/slices
 
-* Arc, concurrency, channels: Some grep-like thing, "rgrep"
-* Send, Sync
-* External dependencies: regexp crate, add to rgrep
-
-* Shared-memoty concurrency, interior mutability: Concurrent counter
+* Shared-memoty concurrency, interior mutability, Sync: Concurrent counter
 * Drop, unsafe: doubly-linked list

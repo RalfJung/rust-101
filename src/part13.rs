@@ -1,21 +1,21 @@
 // Rust-101, Part 13: Slices, Arrays, External Dependencies
-// =================
+// ========================================================
 
 //@ To complete rgrep, there are two pieces we still need to implement: Sorting, and taking the job options
 //@ as argument to the program, rather than hard-coding them. Let's start with sorting.
 
 // ## Slices
 //@ Again, we first have to think about the type we want to give to our sorting function. We may be inclined to
-//@ pass it a `Vec<T>`. Now, sorting does not actually consume the argument, so we could make that a `&mut Vec<T>`.
+//@ pass it a `Vec<T>`. Of course, sorting does not actually consume the argument, so we should make that a `&mut Vec<T>`.
 //@ But there's a problem with that: If we want to implement some divide-and-conquer sorting algorithm (say,
 //@ Quicksort), then we will have to *split* our argument at some point, and operate recursively on the two parts.
 //@ But we can't split a `Vec`! We could now extend the function signature to also take some indices, marking the
 //@ part of the vector we are supposed to sort, but that's all rather clumsy. Rust offers a nicer solution.
-//@ 
+
 //@ `[T]` is the type of an (unsized) *array*, with elements of type `T`. All this means is that there's a contiguous
-//@ region of memory, where a bunch of `T` are stored. How many` We can't tell! This is an unsized type. Just like for
-//@ trait objects, this means we can only operate on pointers to that type, and these pointers will containing the missing
-//@ information - namely, the length. Such a pointer is called a *slice*. As we will see, a slice can be split!
+//@ region of memory, where a bunch of `T` are stored. How many? We can't tell! This is an unsized type. Just like for
+//@ trait objects, this means we can only operate on pointers to that type, and these pointers will carry the missing
+//@ information - namely, the length. Such a pointer is called a *slice*. As we will see, a slice can be split.
 //@ Our function can thus take a borrowed slice, and promise to sort all elements in there.
 pub fn sort<T: PartialOrd>(data: &mut [T]) {
     if data.len() < 2 { return; }
@@ -24,9 +24,11 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     // making sure that everything on the left is no larger than the pivot, and everything on the right is no smaller.
     let mut lpos = 1;
     let mut rpos = data.len();
-    /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot; [rpos,len) is >= pivot; lpos < rpos */
+    /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot;
+       [rpos,len) is >= pivot; lpos < rpos */
     loop {
-        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements.
+        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
+        // test function for `sort`.
         unimplemented!()
     }
 
@@ -38,14 +40,14 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     //@ one in the middle, and set the lengths appropriately such that they don't overlap. This is what `split_at_mut` does.
     //@ Since the two slices don't overlap, there is no aliasing and we can have them both mutably borrowed.
     let (part1, part2) = data.split_at_mut(lpos);
-    //@ The index operation can not only be used to address certain elements, it can also be used for "slicing": Giving a range
+    //@ The index operation can not only be used to address certain elements, it can also be used for *slicing*: Giving a range
     //@ of indices, and obtaining an appropriate part of the slice we started with. Here, we remove the last element from
     //@ `part1`, which is the pivot. This makes sure both recursive calls work on strictly smaller slices.
     sort(&mut part1[..lpos-1]);                                     /*@*/
     sort(part2);                                                    /*@*/
 }
 
-// **Exercise 13.2*: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
+// **Exercise 13.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
 // to call the sort function above. If you did exercise 12.1, you will have slightly more work. Make sure you sort by the matched line
 // only, not by filename or line number!
 
@@ -61,8 +63,8 @@ fn sort_nums(data: &mut Vec<i32>) {
 //@ numbers, all one right next to the other in memory. Arrays are sized, and hence can be used like any other type. But we can also
 //@ borrow them as slices, e.g., to sort them.
 fn sort_array() {
-    let mut data: [f64; 5] = [1.0, 3.4, 12.7, -9.12, 0.1];
-    sort(&mut data);
+    let mut array_of_data: [f64; 5] = [1.0, 3.4, 12.7, -9.12, 0.1];
+    sort(&mut array_of_data);
 }
 
 // ## External Dependencies
@@ -86,8 +88,8 @@ fn sort_array() {
 //@ path. All of this is explained in the [Cargo Guide](http://doc.crates.io/guide.html).
 
 // I disabled the following module (using a rather bad hack), because it only compiles if `docopt` is linked. However, before enabling it,
-// you still have get the external library into the global namespace. This is done with `extern crate docopt;`, and that statement *has* to be
-// in `main.rs`. So please go there, and enable this commented-out line. Then remove the attribute of the following module.
+// you still have get the external library into the global namespace. This is done with `extern crate docopt`, and that statement *has* to be
+// in `main.rs`. So please go there, and enable this commented-out line. Then remove the attribute of the `rgrep` module.
 #[cfg(feature = "disabled")]
 pub mod rgrep {
     // Now that `docopt` is linked and declared in `main.rs`, we can import it with `use`. We also import some other pieces that we will need.
@@ -95,7 +97,7 @@ pub mod rgrep {
     use part12::{run, Options, OutputMode};
     use std::process;
 
-    // The USAGE string documents how the program is to be called. It's written in a format that `docopt` can parse.
+    // The `USAGE` string documents how the program is to be called. It's written in a format that `docopt` can parse.
     static USAGE: &'static str = "
 Usage: rgrep [-c] [-s] <pattern> <file>...
 
@@ -106,7 +108,12 @@ Options:
 
     // This function extracts the rgrep options from the command-line arguments.
     fn get_options() -> Options {
-        // Parse argv and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
+        // Parse `argv` and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
+        //@ The function `and_then` takes a closure from `T` to `Result<U, E>`, and uses it to transform a `Result<T, E>` to a
+        //@ `Result<U, E>`. This way, we can chain computations that only happen if the previous one succeeded (and the error
+        //@ type has to stay the same). In case you know about monads, this style of programming will be familiar to you.
+        //@ There's a similar function for `Option`. `unwrap_or_else` is a bit like `unwrap`, but rather than panicking in
+        //@ case of an `Err`, it calls the closure. 
         let args = Docopt::new(USAGE).and_then(|d| d.parse()).unwrap_or_else(|e| e.exit());
         // Now we can get all the values out.
         let count = args.get_bool("-c");
@@ -119,15 +126,23 @@ Options:
         }
 
         // We need to make the strings owned to construct the `Options` instance.
-        //@ If you check all the type carefully, you will notice that `pattern` above if of type `&str`. `str` is the type of a UTF-8 encoded string, that is, a bunch of
-        //@ bytes in memory (`[u8]`) that are valid according of UTF-8. `str` is unsized. `&str` is a sliced string, and stores the address of the character data, and
-        //@ their length. String literals like "this one" are of type `&'static str`: They point right to the constant section of the binary, you you cannot claim you
-        //@ own them. However, the borrow is valid for as long as the program runs, hence it has lifetime `'static`. Calling `to_string` will copy the string data
-        //@ into an owned buffer on the heap, and thus convert it to `String`.
+        //@ If you check all the types carefully, you will notice that `pattern` above is of type `&str`. `str` is the type of a UTF-8
+        //@ encoded string, that is, a bunch of bytes in memory (`[u8]`) that are valid according of UTF-8. `str` is unsized. `&str`
+        //@ stores the address of the character data, and their length. String literals like "this one" are
+        //@ of type `&'static str`: They point right to the constant section of the binary, so 
+        //@ However, the borrow is valid for as long as the program runs, hence it has lifetime `'static`. Calling
+        //@ `to_string` will copy the string data into an owned buffer on the heap, and thus convert it to `String`.
+        let mode = if count {
+            OutputMode::Count
+        } else if sort {
+            OutputMode::SortAndPrint
+        } else {
+            OutputMode::Print
+        };
         Options {
             files: files.iter().map(|file| file.to_string()).collect(),
             pattern: pattern.to_string(),
-            output_mode: if count { OutputMode::Count } else if sort { OutputMode::SortAndPrint } else { OutputMode::Print },
+            output_mode: mode,
         }
     }
 
@@ -141,5 +156,6 @@ Options:
 // **Exercise 13.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
 // expression, it's called [regex](https://crates.io/crates/regex). Add this crate to the dependencies of your workspace, add an option ("-r") to switch
 // the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
+// (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)
 
 //@ [index](main.html) | [previous](part12.html) | [next](main.html)

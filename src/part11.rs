@@ -66,7 +66,10 @@ mod callbacks {
         //@ variable into the closure. Its environment will then contain a `usize` rather than a `&mut uszie`, and have
         //@ no effect on this local variable anymore.
         let mut count: usize = 0;
-        c.register(Box::new(move |val| { count = count+1; println!("Callback 2, {}. time: {}", count, val); } ));
+        c.register(Box::new(move |val| {
+            count = count+1;
+            println!("Callback 2, {}. time: {}", count, val);
+        } ));
         c.call(1); c.call(2);
     }
 }
@@ -109,9 +112,12 @@ mod callbacks_clone {
         //@ and do the creation of the `Rc` and the conversion to `Fn(i32)` itself.
         
         //@ For this to work, we need to demand that the type `F` does not contain any short-lived borrows. After all, we will store it
-        //@ in our list of callbacks indefinitely. `'static` is a lifetime, the lifetime of the entire program. We can use lifetimes
-        //@ as bounds on types, to demand that anything in (an element of) the type lives at least as long as this lifetime. That bound was implicit in the `Box`
-        //@ above, and it is the reason we could not have the borrowed `count` in the closure in `demo`.
+        //@ in our list of callbacks indefinitely. If the closure contained a pointer to our caller's stackframe, that pointer
+        //@ could be invalid by the time the closure is called. We can mitigate this by bounding `F` by a *lifetime*: `T: 'a` says
+        //@ that all data of type `T` will *outlive* (i.e., will be valid for at least as long as) lifetime `'a`.
+        //@ Here, we use the special lifetime `'static`, which is the lifetime of the entire program.
+        //@ The same bound has been implicitly added in the version of `register` above, and in the definition of
+        //@ `Callbacks`. This is the reason we could not have the borrowed `count` in the closure in `demo` previously.
         pub fn register<F: Fn(i32)+'static>(&mut self, callback: F) {
             self.callbacks.push(Rc::new(callback));             /*@*/
         }
@@ -147,4 +153,4 @@ mod callbacks_clone {
 //@ than one version per type it is instantiated with). This makes for smaller code, but you pay the overhead of the virtual function calls.
 //@ Isn't it beautiful how traits can handle both of these cases (and much more, as we saw, like closures and operator overloading) nicely?
 
-//@ [index](main.html) | [previous](part10.html) | [next](main.html)
+//@ [index](main.html) | [previous](part10.html) | [next](part12.html)

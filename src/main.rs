@@ -79,6 +79,8 @@
 // * [Part 09: Iterators](part09.html)
 // * [Part 10: Closures](part10.html)
 // * [Part 11: Trait Objects, Box, Rc, Lifetime bounds](part11.html)
+// * [Part 12: Concurrency, Send](part12.html)
+// * [Part 13: Slices, Arrays, External Dependencies](part13.html)
 // * (to be continued)
 #![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]
 /* extern crate docopt; */

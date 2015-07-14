@@ -134,7 +134,7 @@ fn get_options() -> Options {
 fn run(options: Options) {
     let options = Arc::new(options);
 
-    // Set up the chain of threads. Use `sync_channel` with buffer-size of 16 to avoid needlessly filling RAM.
+    // This sets up the chain of threads. Use `sync_channel` with buffer-size of 16 to avoid needlessly filling RAM.
     let (line_sender, line_receiver) = sync_channel(16);
     let (filtered_sender, filtered_receiver) = sync_channel(16);
 
