@@ -1,5 +1,5 @@
-// Rust-101, Part 12: Concurrency, Send
-// ====================================
+// Rust-101, Part 12: Concurrency, Arc, Send
+// =========================================
 
 use std::io::prelude::*;
 use std::{io, fs, thread};

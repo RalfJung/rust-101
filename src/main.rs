@@ -58,19 +58,18 @@
 // Course Content
 // --------------
 // 
-// The part 00-03 cover some basic of the language, to give you a feeling for Rust's syntax and pervasive
-// mechanisms like pattern matching and traits. Parts 04-06 introduce the heart of the language, the ideas
-// making it different from anything else out there: Ownership, borrowing, lifetimes. In part 07-??, we
-// continue our tour through Rust with another example. Finally, in parts ??-??, we implement our own
-// version of `grep`, exhibiting some more Rust features as we go.
-// 
-// Now, open `your-workspace/src/part00.rs` in your favorite editor, and follow the link below for
+// Open `your-workspace/src/part00.rs` in your favorite editor, and follow the link below for
 // the explanations and exercises. Have fun!
 // 
+// ### Introduction
+//
 // * [Part 00: Algebraic datatypes](part00.html)
 // * [Part 01: Expressions, Inherent methods](part01.html)
 // * [Part 02: Generic types, Traits](part02.html)
 // * [Part 03: Input](part03.html)
+// 
+// ### Basic Rust
+// 
 // * [Part 04: Ownership, Borrowing](part04.html)
 // * [Part 05: Clone](part05.html)
 // * [Part 06: Copy, Lifetimes](part06.html)
@@ -79,9 +78,17 @@
 // * [Part 09: Iterators](part09.html)
 // * [Part 10: Closures](part10.html)
 // * [Part 11: Trait Objects, Box, Rc, Lifetime bounds](part11.html)
-// * [Part 12: Concurrency, Send](part12.html)
+// 
+// ### Concurrency
+// 
+// * [Part 12: Concurrency, Arc, Send](part12.html)
 // * [Part 13: Slices, Arrays, External Dependencies](part13.html)
 // * (to be continued)
+// 
+// ### Advanced Rust
+// 
+// * (to be continued)
+// 
 #![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]
 /* extern crate docopt; */
 mod part00;
