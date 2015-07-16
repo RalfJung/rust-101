@@ -87,13 +87,13 @@ fn sort_array() {
 //@ Note that crates.io is only the default location for dependencies, you can also give it the URL of a git repository or some local
 //@ path. All of this is explained in the [Cargo Guide](http://doc.crates.io/guide.html).
 
-// I disabled the following module (using a rather bad hack), because it only compiles if `docopt` is linked. However, before enabling it,
-// you still have get the external library into the global namespace. This is done with `extern crate docopt`, and that statement *has* to be
-// in `main.rs`. So please go there, and enable this commented-out line. Then remove the attribute of the `rgrep` module.
+// I disabled the following module (using a rather bad hack), because it only compiles if `docopt` is linked.
+// Remove the attribute of the `rgrep` module to enable compilation.
 #[cfg(feature = "disabled")]
 pub mod rgrep {
-    // Now that `docopt` is linked and declared in `main.rs`, we can import it with `use`. We also import some other pieces that we will need.
-    use docopt::Docopt;
+    // Now that `docopt` is linked, we can first root it in the namespace and then import it with `use`. We also import some other pieces that we will need.
+    extern crate docopt;
+    use self::docopt::Docopt;
     use part12::{run, Options, OutputMode};
     use std::process;
 
