@@ -91,8 +91,8 @@ mod callbacks_clone {
     //@ this pointer is smart: It has a reference count. You can `clone` an `Rc` as often as you want, that doesn't affect the
     //@ data it contains at all. It only creates more references to the same data. Once all the references are gone, the data is deleted.
     //@ 
-    //@ Wait a moment, you may say here. Multiple references to the same data? That's aliasing! Indeed, we have to be careful.
-    //@ Once data is stored in an `Rc`, it is read-only: By dereferencing the smart `Rc`, you can only get a shared borrow of the data.
+    //@ Wait a moment, you may say here. Multiple references to the same data? That's aliasing! Indeed:
+    //@ Once data is stored in an `Rc`, it is read-only. By dereferencing the smart `Rc`, you can only get a shared borrow of the data.
     use std::rc::Rc;
 
     //@ Because of this read-only restriction, we cannot use `FnMut` here: We'd be unable to call the function with a mutable borrow

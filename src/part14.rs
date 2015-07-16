@@ -1,19 +1,19 @@
-// Rust-101, Part 14: Mutex, Sync (WIP)
-// ==============================
+// Rust-101, Part 14: Mutex, Interior Mutability, Sync
+// ===================================================
 
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-//@ We already saw that we can use `Arc` to share memory between threads. However, `Arc` can only provide everybody
-//@ with *read-only* to memory: Since there is aliasing, Rust cannot, in general, permit mutation. If however,
+//@ We already saw that we can use `Arc` to share memory between threads. However, `Arc` can only provide *read-only*
+//@ access to memory: Since there is aliasing, Rust cannot, in general, permit mutation. If however,
 //@ some care would be taken at run-time, then mutation would still be all right: We have to ensure that whenever
-//@ someone changes the data, nobody else is working on it.  In other words, we need a *critical section* or (as it
+//@ someone changes the data, nobody else is looking at it.  In other words, we need a *critical section* or (as it
 //@ is called in Rust) a [`Mutex`](http://doc.rust-lang.org/stable/std/sync/struct.Mutex.html). Some other languages also call this a *lock*.
 //@ 
-//@ As an example, let us write a concurrent counter. As usual, we first have to think about our data-structure in Rust.
+//@ As an example, let us write a concurrent counter. As usual in Rust, we first have to think about our data layout.
 //@ In case of the mutex, this means we have to declare the type of the data that we want to be protected. In Rust,
-//@ a `Mutex` protects data, not code. This is generally considered good style, but other languages typically lack
-//@ the ability to actually enforce this. As we will see, it is impossible to forget to acquire the mutex in Rust.
+//@ a `Mutex` protects data, not code - and it is impossible to access the data in any other way. This is generally considered
+//@ good style, but other languages typically lack the ability to actually enforce this.
 //@ Of course, we want multiple threads to have access to this `Mutex`, so we wrap it in an `Arc`.
 //@ 
 //@ Rather than giving every field a name, a struct can also be defined by just giving a sequence of types (similar
@@ -27,9 +27,9 @@ use std::thread;
 struct ConcurrentCounter(Arc<Mutex<usize>>);
 
 impl ConcurrentCounter {
-    // The constructor should not be surprising.
+    // The constructor just wraps the constructors of `Arc` and `Mutex`.
     pub fn new(val: usize) -> Self {
-        ConcurrentCounter(Arc::new(Mutex::new(val)))
+        ConcurrentCounter(Arc::new(Mutex::new(val)))                /*@*/
     }
 
     //@ The core operation is, of course, `increment`. The type may be surprising at first: A shared borrow?
@@ -38,7 +38,7 @@ impl ConcurrentCounter {
     //@ borrow is called *interior mutability*: We are changing the inner parts of the object, but seen from the outside,
     //@ this does not count as "mutation". This stands in contrast to *exterior mutability*, which is the kind of
     //@ mutability we saw so far, where one piece of data is replaced by something else of the same type. If you are familiar
-    //@ with languages like ML, you can compare this to how something of type `ref` permit mutation, even though it is
+    //@ with languages like ML, you can compare this to how something of type `ref` permits mutation, even though it is
     //@ itself a functional value (more precisely, a location) like all the others.
     //@ 
     //@ Interior mutability breaks the rules of Rust that I outlined earlier: There is aliasing (a shared borrow) and mutation.
@@ -50,6 +50,8 @@ impl ConcurrentCounter {
         // `lock` on a mutex returns a *guard*, giving access to the data contained in the mutex.
         //@  (We will discuss the `unwrap` soon.) `.0` is how we access the first component of a tuple or a struct.
         let mut counter = self.0.lock().unwrap();
+        //@ The guard is another example of a smart pointer, and it can be used as if it were a pointer to the data protected
+        //@ by the lock.
         *counter = *counter + by;
         //@ At the end of the function, `counter` is dropped and the mutex is available again.
         //@ This can only happen when full ownership of the guard is given up. In particular, it is impossible for us
@@ -58,14 +60,15 @@ impl ConcurrentCounter {
         //@ about data races *even though* we are mutating shared memory!
         //@ 
         //@ One of the subtle aspects of locking is *poisoning*. If a thread panics while it holds a lock, it could leave the
-        //@ data-structure in a bad state. The lock is hence considered *poisoned*. Future attempts to `lock` it will thus fail.
+        //@ data-structure in a bad state. The lock is hence considered *poisoned*. Future attempts to `lock` it will fail.
         //@ Above, we simply assert via `unwrap` that this will never happen. Alternatively, we could have a look at the poisoned
         //@ state and attempt to recover from it.
     }
 
+    // The function `get` returns the current value of the counter.
     pub fn get(&self) -> usize {
-        let counter = self.0.lock().unwrap();
-        *counter
+        let counter = self.0.lock().unwrap();                       /*@*/
+        *counter                                                    /*@*/
     }
 }
 
@@ -91,13 +94,13 @@ pub fn main() {
         }
     });
 
-    // Now we want to watch the threads working on the counter.
+    // Now we watch the threads working on the counter.
     for _ in 0..50 {
         thread::sleep_ms(5);
         println!("Current value: {}", counter.get());
     }
 
-    // Finally, wait for all the threads to finish to be sure we can catch the counter's final value.
+    // Finally, we wait for all the threads to finish to be sure we can catch the counter's final value.
     handle1.join().unwrap();
     handle2.join().unwrap();
     println!("Final value: {}", counter.get());
@@ -107,16 +110,19 @@ pub fn main() {
 // provides two ways of locking: One that grants only read-only access, to any number of concurrent readers, and another one
 // for exclusive write access. (Notice that this is the same pattern we already saw with shared vs. mutable borrows.) Change
 // the code above to use `RwLock`, such that multiple calls to `get` can be executed at the same time.
+// 
+// **Exercise 14.2**: Add an operation `compare_and_inc(&self, test: usize, by: usize)` that increments the counter by
+// `by` *only if* the current value is `test`.
 
 //@ ## Sync
 //@ In part 12, we talked about types that are marked `Send` and thus can be moved to another thread. However, we did *not*
 //@ talk about the question whether a borrow is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
 //@ `&mut` allows moving values back and forth, it is even possible to [`swap`](http://doc.rust-lang.org/beta/std/mem/fn.swap.html)
 //@ the contents of two mutably borrowed values. So in terms of concurrency, sending a mutable borrow is very much like
-//@ sending full ownership.
+//@ sending full ownership, in the sense that it can be used to move the object to another thread.
 //@ 
 //@ But what about `&T`, a shared borrow? Without interior mutability, it would always be all-right to send such values.
-//@ After one, no mutation can be performed, so there can be as many threads accessing the data as we like. In the
+//@ After all, no mutation can be performed, so there can be as many threads accessing the data as we like. In the
 //@ presence of interior mutability though, the story gets more complicated. Rust introduces another marker trait for
 //@ this purpose: `Sync`. A type `T` is `Sync` if `&T` is `Send`. Just like `Send`, `Sync` has a default implementation
 //@ and is thus automatically implemented for a data-structure *if* all its members implement it.
@@ -126,14 +132,7 @@ pub fn main() {
 //@ is to enforce synchronization, so it should not be entirely surprising that `Mutex<T>` is `Send` *and* `Sync` provided that
 //@ `T` is `Send`.
 //@ 
-//@ There's also an example of a type that's `Send`, but not `Sync`: [`RefCell`](http://doc.rust-lang.org/beta/std/cell/struct.RefCell.html).
-//@ This type is very much like `RwLock`, but it's not thread-safe: "Locking" is done without atomic operations.
-//@ One can also see it as a dynamically checked version of Rust's usual borrowing rules. You have to explicitly say
-//@ when you want to borrow the data in there shared, or mutably, and Rust will complain at run-time if you have
-//@ a mutable borrow while any other borrow is active. You can then write programs that Rust may otherwise not
-//@ accept. Sending a shared borrow to this to another thread is dangerous, as the checks are not performed in
-//@ a thread-safe manner. However, sending the *entire* `RefCell` is okay, because there's only ever one owner, and all
-//@ we need to ensure is that everybody attempting to borrow is in the same thread as the owner.
+//@ In the next part, we will learn about a type called `RefCell` that is `Send`, but not `Sync`.
 //@ 
 //@ You may be curious whether there is a type that's `Sync`, but not `Send`. There are indeed rather esoteric examples
 //@ of such types, but that's not a topic I want to go into. In case you are curious, there's a

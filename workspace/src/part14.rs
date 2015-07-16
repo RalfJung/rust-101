@@ -1,5 +1,5 @@
-// Rust-101, Part 14: Mutex, Sync (WIP)
-// ==============================
+// Rust-101, Part 14: Mutex, Interior Mutability, Sync
+// ===================================================
 
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -10,9 +10,9 @@ use std::thread;
 struct ConcurrentCounter(Arc<Mutex<usize>>);
 
 impl ConcurrentCounter {
-    // The constructor should not be surprising.
+    // The constructor just wraps the constructors of `Arc` and `Mutex`.
     pub fn new(val: usize) -> Self {
-        ConcurrentCounter(Arc::new(Mutex::new(val)))
+        unimplemented!()
     }
 
     pub fn increment(&self, by: usize) {
@@ -21,9 +21,9 @@ impl ConcurrentCounter {
         *counter = *counter + by;
     }
 
+    // The function `get` returns the current value of the counter.
     pub fn get(&self) -> usize {
-        let counter = self.0.lock().unwrap();
-        *counter
+        unimplemented!()
     }
 }
 
@@ -49,13 +49,13 @@ pub fn main() {
         }
     });
 
-    // Now we want to watch the threads working on the counter.
+    // Now we watch the threads working on the counter.
     for _ in 0..50 {
         thread::sleep_ms(5);
         println!("Current value: {}", counter.get());
     }
 
-    // Finally, wait for all the threads to finish to be sure we can catch the counter's final value.
+    // Finally, we wait for all the threads to finish to be sure we can catch the counter's final value.
     handle1.join().unwrap();
     handle2.join().unwrap();
     println!("Final value: {}", counter.get());
@@ -65,5 +65,8 @@ pub fn main() {
 // provides two ways of locking: One that grants only read-only access, to any number of concurrent readers, and another one
 // for exclusive write access. (Notice that this is the same pattern we already saw with shared vs. mutable borrows.) Change
 // the code above to use `RwLock`, such that multiple calls to `get` can be executed at the same time.
+// 
+// **Exercise 14.2**: Add an operation `compare_and_inc(&self, test: usize, by: usize)` that increments the counter by
+// `by` *only if* the current value is `test`.
 
 

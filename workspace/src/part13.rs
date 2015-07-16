@@ -96,7 +96,7 @@ Options:
     // Finally, we can call the `run` function from the previous part on the options extracted using `get_options`. Edit `main.rs` to call this function.
     // You can now use `cargo run -- <pattern> <files>` to call your program, and see the argument parser and the threads we wrote previously in action!
     pub fn main() {
-        run(get_options());
+        unimplemented!()
     }
 }
 

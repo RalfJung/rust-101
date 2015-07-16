@@ -78,15 +78,12 @@
 // * [Part 09: Iterators](part09.html)
 // * [Part 10: Closures](part10.html)
 // * [Part 11: Trait Objects, Box, Rc, Lifetime bounds](part11.html)
-// 
-// ### Concurrency
-// 
 // * [Part 12: Concurrency, Arc, Send](part12.html)
 // * [Part 13: Slices, Arrays, External Dependencies](part13.html)
-// * (to be continued)
 // 
 // ### Advanced Rust
 // 
+// * [Part 14: Mutex, Interior Mutability, Sync](part14.html)
 // * (to be continued)
 // 
 #![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]
@@ -106,6 +103,7 @@ mod part11;
 mod part12;
 mod part13;
 mod part14;
+mod part15;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
