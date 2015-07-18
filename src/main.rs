@@ -84,7 +84,7 @@
 // * [Part 12: Rc, Interior Mutability, Cell, RefCell](part12.html)
 // * [Part 13: Concurrency, Arc, Send](part13.html)
 // * [Part 14: Slices, Arrays, External Dependencies](part14.html)
-// * [Part 15: Mutex, Interior Mutability (cont.), Sync](part15.html)
+// * [Part 15: Mutex, Interior Mutability (cont.), RwLock, Sync](part15.html)
 // * (to be continued)
 // 
 #![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]

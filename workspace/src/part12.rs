@@ -13,7 +13,7 @@ struct Callbacks {
 
 impl Callbacks {
     pub fn new() -> Self {
-        unimplemented!()
+        Callbacks { callbacks: Vec::new() }
     }
 
     // Registration works just like last time, except that we are creating an `Rc` now.
@@ -69,11 +69,10 @@ struct CallbacksMut {
 
 impl CallbacksMut {
     pub fn new() -> Self {
-        unimplemented!()
+        CallbacksMut { callbacks: Vec::new() }
     }
 
     pub fn register<F: FnMut(i32)+'static>(&mut self, callback: F) {
-        let cell = Rc::new(RefCell::new(callback));
         unimplemented!()
     }
 

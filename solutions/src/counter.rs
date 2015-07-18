@@ -11,19 +11,19 @@ impl ConcurrentCounter {
     }
 
     pub fn increment(&self, by: usize) {
-        let mut counter = self.0.write().unwrap();
+        let mut counter = self.0.write().unwrap_or_else(|e| e.into_inner());
         *counter = *counter + by;
     }
 
     pub fn compare_and_inc(&self, test: usize, by: usize) {
-        let mut counter = self.0.write().unwrap();
+        let mut counter = self.0.write().unwrap_or_else(|e| e.into_inner());
         if *counter == test {
             *counter += by;
         }
     }
 
     pub fn get(&self) -> usize {
-        let counter = self.0.read().unwrap();
+        let counter = self.0.read().unwrap_or_else(|e| e.into_inner());
         *counter
     }
 }

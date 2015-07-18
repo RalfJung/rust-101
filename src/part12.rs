@@ -26,7 +26,7 @@ struct Callbacks {
 
 impl Callbacks {
     pub fn new() -> Self {
-        Callbacks { callbacks: Vec::new() }                         /*@*/
+        Callbacks { callbacks: Vec::new() }
     }
 
     // Registration works just like last time, except that we are creating an `Rc` now.
@@ -37,7 +37,7 @@ impl Callbacks {
     pub fn call(&self, val: i32) {
         // We only need a shared iterator here. Since `Rc` is a smart pointer, we can directly call the callback.
         for callback in self.callbacks.iter() {
-            callback(val);                                      /*@*/
+            callback(val);                                          /*@*/
         }
     }
 }
@@ -108,11 +108,11 @@ struct CallbacksMut {
 
 impl CallbacksMut {
     pub fn new() -> Self {
-        CallbacksMut { callbacks: Vec::new() }                      /*@*/
+        CallbacksMut { callbacks: Vec::new() }
     }
 
     pub fn register<F: FnMut(i32)+'static>(&mut self, callback: F) {
-        let cell = Rc::new(RefCell::new(callback));
+        let cell = Rc::new(RefCell::new(callback));                 /*@*/
         self.callbacks.push(cell);                                  /*@*/
     }
 

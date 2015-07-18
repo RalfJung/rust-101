@@ -1,5 +1,5 @@
-// Rust-101, Part 15: Mutex, Interior Mutability (cont.), Sync
-// ===========================================================
+// Rust-101, Part 15: Mutex, Interior Mutability (cont.), RwLock, Sync
+// ===================================================================
 
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -15,8 +15,9 @@ impl ConcurrentCounter {
         unimplemented!()
     }
 
+    // The core operation is, of course, `increment`.
     pub fn increment(&self, by: usize) {
-        // `lock` on a mutex returns a *guard*, giving access to the data contained in the mutex.
+        // `lock` on a mutex returns a guard, very much like `RefCell`. The guard gives access to the data contained in the mutex.
         let mut counter = self.0.lock().unwrap();
         *counter = *counter + by;
     }
@@ -61,16 +62,13 @@ pub fn main() {
     println!("Final value: {}", counter.get());
 }
 
-// **Exercise 14.1**: Besides `Mutex`, there's also [`RwLock`](http://doc.rust-lang.org/stable/std/sync/struct.RwLock.html), which
-// provides two ways of locking: One that grants only read-only access, to any number of concurrent readers, and another one
-// for exclusive write access. (Notice that this is the same pattern we already saw with shared vs. mutable borrows.) Change
-// the code above to use `RwLock`, such that multiple calls to `get` can be executed at the same time.
-// 
-// **Exercise 14.2**: Add an operation `compare_and_inc(&self, test: usize, by: usize)` that increments the counter by
+// **Exercise 15.1**: Add an operation `compare_and_inc(&self, test: usize, by: usize)` that increments the counter by
 // `by` *only if* the current value is `test`.
+// 
+// **Exercise 15.2**: Rather than panicking in case the lock is poisoned, we can use `into_innter` on the error to recover
+// the data inside the lock. Change the code above to do that. Try using `unwrap_or_else` for this job.
 
 
-// FIXME TODO some old outdated explanation FIXME TODO
-
+// **Exercise 15.3**:  Change the code above to use `RwLock`, such that multiple calls to `get` can be executed at the same time.
 
 

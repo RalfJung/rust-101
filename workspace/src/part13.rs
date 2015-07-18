@@ -120,7 +120,7 @@ pub fn main() {
     run(options);
 }
 
-// **Exercise 12.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
+// **Exercise 13.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
 // and the number of the line in the file. You will have to change the type of the channels from `String` to something
 // that records this extra information.
 

@@ -7,10 +7,10 @@ use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
 use std::sync::Arc;
 
 //@ Our next stop are the concurrency features of Rust. We are going to write our own small version of "grep",
-//@ called *rgrep*, and it is going to make use of concurrency: One thread reads the input files, one thread does
+//@ called *rgrep*, and it is going to perform three jobs concurrently: One thread reads the input files, one thread does
 //@ the actual matching, and one thread writes the output. I already mentioned in the beginning of the course that
 //@ Rust's type system (more precisely, the discipline of ownership and borrowing) will help us to avoid a common
-//@ pitfall of concurrent programming: data races.
+//@ pitfall of concurrent programming: data races. We will see how that works concretely.
 
 // Before we come to the actual code, we define a data-structure `Options` to store all the information we need
 // to complete the job: Which files to work on, which pattern to look for, and how to output. <br/>
@@ -145,7 +145,7 @@ pub fn main() {
     run(options);
 }
 
-// **Exercise 12.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
+// **Exercise 13.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
 // and the number of the line in the file. You will have to change the type of the channels from `String` to something
 // that records this extra information.
 
@@ -163,7 +163,7 @@ pub fn main() {
 //@ still be around. After it sent the string to the other side, `read_files` has no pointer into the string content
 //@ anymore, and hence no way to race on the data with someone else.
 //@ 
-//@ There is a little more to this. Remember the `'static` bound we had to add to `register` in the previous part, to make
+//@ There is a little more to this. Remember the `'static` bound we had to add to `register` in the previous parts, to make
 //@ sure that the callbacks do not reference any pointers that might become invalid? This is just as crucial for spawning
 //@ a thread: In general, that thread could last for much longer than the current stack frame. Thus, it must not use
 //@ any pointers to data in that stack frame. This is achieved by requiring the `FnOnce` closure passed to `thread::spawn`
@@ -179,9 +179,10 @@ pub fn main() {
 //@ 
 //@ The answer is already hinted at in the error: It will say something about `Send`. You may have noticed that the closure in
 //@ `thread::spawn` does not just have a `'static` bound, but also has to satisfy `Send`. `Send` is a trait, and just like `Copy`,
-//@ it's just a marker - there are no functions provided by `Send`. What the trait says is that types which are `Send`, can be
+//@ it's just a marker - there are no functions provided by `Send`. What the trait says is that types which are `Send` can be
 //@ safely sent to another thread without causing trouble. Of course, all the primitive data-types are `Send`. So is `Arc`,
-//@ which is why Rust accepted our code. But `Rc` is not `Send`, and for a good reason!
+//@ which is why Rust accepted our code. But `Rc` is not `Send`, and for a good reason! If had two `Rc` to the same data, and
+//@ sent one of them to another thread, things could go havoc due to the lack of synchronization.
 //@ 
 //@ Now, `Send` as a trait is fairly special. It has a so-called *default implementation*. This means that *every type* implements
 //@ `Send`, unless it opts out. Opting out is viral: If your type contains a type that opted out, then you don't have `Send`, either.

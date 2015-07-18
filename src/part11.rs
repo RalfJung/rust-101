@@ -42,7 +42,7 @@ impl Callbacks {
 
     // Registration simply stores the callback.
     pub fn register(&mut self, callback: Box<FnMut(i32)>) {
-        self.callbacks.push(callback);                              /*@*/
+        self.callbacks.push(callback);
     }
 
     // We can also write a generic version of `register`, such that it will be instantiated with some concrete closure type `F`

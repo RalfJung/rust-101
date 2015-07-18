@@ -27,7 +27,7 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot;
        [rpos,len) is >= pivot; lpos < rpos */
     loop {
-        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
+        // **Exercise 14.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
         // test function for `sort`.
         unimplemented!()
     }
@@ -47,8 +47,8 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     sort(part2);                                                    /*@*/
 }
 
-// **Exercise 13.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
-// to call the sort function above. If you did exercise 12.1, you will have slightly more work. Make sure you sort by the matched line
+// **Exercise 14.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
+// to call the sort function above. If you did exercise 13.1, you will have slightly more work. Make sure you sort by the matched line
 // only, not by filename or line number!
 
 // Now, we can sort, e.g., an vector of numbers.
@@ -82,7 +82,7 @@ fn sort_array() {
 //@ arguments based on the usage string. External dependencies are declared in the `Cargo.toml` file.
 
 //@ I already prepared that file, but the declaration of the dependency is still commented out. So please open `Cargo.toml` of your workspace
-//@ now, and enabled the two commented-out lines. Then do `cargo build`. Cargo will now download the crate from crates.io, compile it,
+//@ now, and enable the two commented-out lines. Then do `cargo build`. Cargo will now download the crate from crates.io, compile it,
 //@ and link it to your program. In the future, you can do `cargo update` to make it download new versions of crates you depend on.
 //@ Note that crates.io is only the default location for dependencies, you can also give it the URL of a git repository or some local
 //@ path. All of this is explained in the [Cargo Guide](http://doc.crates.io/guide.html).
@@ -91,7 +91,8 @@ fn sort_array() {
 // Remove the attribute of the `rgrep` module to enable compilation.
 #[cfg(feature = "disabled")]
 pub mod rgrep {
-    // Now that `docopt` is linked, we can first add it to the namespace and then import shorter names with `use`. We also import some other pieces that we will need.
+    // Now that `docopt` is linked, we can first add it to the namespace with `extern crate` and then import shorter names with `use`.
+    // We also import some other pieces that we will need.
     extern crate docopt;
     use self::docopt::Docopt;
     use part12::{run, Options, OutputMode};
@@ -108,7 +109,7 @@ Options:
 
     // This function extracts the rgrep options from the command-line arguments.
     fn get_options() -> Options {
-        // Parse `argv` and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
+        // This parses `argv` and exit the program with an error message if it fails. The code is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/). <br/>
         //@ The function `and_then` takes a closure from `T` to `Result<U, E>`, and uses it to transform a `Result<T, E>` to a
         //@ `Result<U, E>`. This way, we can chain computations that only happen if the previous one succeeded (and the error
         //@ type has to stay the same). In case you know about monads, this style of programming will be familiar to you.
@@ -153,7 +154,7 @@ Options:
     }
 }
 
-// **Exercise 13.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
+// **Exercise 14.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
 // expression, it's called [regex](https://crates.io/crates/regex). Add this crate to the dependencies of your workspace, add an option ("-r") to switch
 // the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
 // (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)

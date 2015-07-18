@@ -14,7 +14,7 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot;
        [rpos,len) is >= pivot; lpos < rpos */
     loop {
-        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
+        // **Exercise 14.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
         // test function for `sort`.
         unimplemented!()
     }
@@ -27,8 +27,8 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     unimplemented!()
 }
 
-// **Exercise 13.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
-// to call the sort function above. If you did exercise 12.1, you will have slightly more work. Make sure you sort by the matched line
+// **Exercise 14.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
+// to call the sort function above. If you did exercise 13.1, you will have slightly more work. Make sure you sort by the matched line
 // only, not by filename or line number!
 
 // Now, we can sort, e.g., an vector of numbers.
@@ -49,7 +49,8 @@ fn sort_array() {
 // Remove the attribute of the `rgrep` module to enable compilation.
 #[cfg(feature = "disabled")]
 pub mod rgrep {
-    // Now that `docopt` is linked, we can first add it to the namespace and then import shorter names with `use`. We also import some other pieces that we will need.
+    // Now that `docopt` is linked, we can first add it to the namespace with `extern crate` and then import shorter names with `use`.
+    // We also import some other pieces that we will need.
     extern crate docopt;
     use self::docopt::Docopt;
     use part12::{run, Options, OutputMode};
@@ -66,7 +67,7 @@ Options:
 
     // This function extracts the rgrep options from the command-line arguments.
     fn get_options() -> Options {
-        // Parse `argv` and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
+        // This parses `argv` and exit the program with an error message if it fails. The code is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/). <br/>
         let args = Docopt::new(USAGE).and_then(|d| d.parse()).unwrap_or_else(|e| e.exit());
         // Now we can get all the values out.
         let count = args.get_bool("-c");
@@ -100,7 +101,7 @@ Options:
     }
 }
 
-// **Exercise 13.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
+// **Exercise 14.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
 // expression, it's called [regex](https://crates.io/crates/regex). Add this crate to the dependencies of your workspace, add an option ("-r") to switch
 // the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
 // (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)
