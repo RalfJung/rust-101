@@ -10,6 +10,7 @@ use std::thread;
 //@ there are no data races. In Rust, shared-memory concurrency is obtained through *interior mutability*,
 //@ which we already discussed in a single-threaded context in part 12.
 //@ 
+//@ ## `Mutex`
 //@ The most basic type for interior mutability that supports concurrency is [`Mutex<T>`](http://doc.rust-lang.org/stable/std/sync/struct.Mutex.html).
 //@ This type implements *critical sections* (or *locks*), but in a data-driven way: One has to specify
 //@ the type of the data that's protected by the mutex, and Rust ensures that the data is *only* accessed
@@ -111,7 +112,7 @@ pub fn main() {
 
 // **Exercise 15.3**:  Change the code above to use `RwLock`, such that multiple calls to `get` can be executed at the same time.
 
-//@ ## Sync
+//@ ## `Sync`
 //@ Clearly, if we had used `RefCell` rather than `Mutex`, the code above could not work: `RefCell` is not prepared for
 //@ multiple threads trying to access the data at the same time. How does Rust make sure that we don't accidentally use
 //@ `RefCell` across multiple threads?

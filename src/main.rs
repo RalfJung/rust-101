@@ -104,6 +104,7 @@ mod part12;
 mod part13;
 mod part14;
 mod part15;
+mod part16;
 
 // To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
 // function.
