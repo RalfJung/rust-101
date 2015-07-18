@@ -1,161 +1,191 @@
-// Rust-101, Part 13: Slices, Arrays, External Dependencies
-// ========================================================
+// Rust-101, Part 13: Concurrency, Arc, Send
+// =========================================
 
-//@ To complete rgrep, there are two pieces we still need to implement: Sorting, and taking the job options
-//@ as argument to the program, rather than hard-coding them. Let's start with sorting.
+use std::io::prelude::*;
+use std::{io, fs, thread};
+use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
+use std::sync::Arc;
 
-// ## Slices
-//@ Again, we first have to think about the type we want to give to our sorting function. We may be inclined to
-//@ pass it a `Vec<T>`. Of course, sorting does not actually consume the argument, so we should make that a `&mut Vec<T>`.
-//@ But there's a problem with that: If we want to implement some divide-and-conquer sorting algorithm (say,
-//@ Quicksort), then we will have to *split* our argument at some point, and operate recursively on the two parts.
-//@ But we can't split a `Vec`! We could now extend the function signature to also take some indices, marking the
-//@ part of the vector we are supposed to sort, but that's all rather clumsy. Rust offers a nicer solution.
+//@ Our next stop are the concurrency features of Rust. We are going to write our own small version of "grep",
+//@ called *rgrep*, and it is going to make use of concurrency: One thread reads the input files, one thread does
+//@ the actual matching, and one thread writes the output. I already mentioned in the beginning of the course that
+//@ Rust's type system (more precisely, the discipline of ownership and borrowing) will help us to avoid a common
+//@ pitfall of concurrent programming: data races.
 
-//@ `[T]` is the type of an (unsized) *array*, with elements of type `T`. All this means is that there's a contiguous
-//@ region of memory, where a bunch of `T` are stored. How many? We can't tell! This is an unsized type. Just like for
-//@ trait objects, this means we can only operate on pointers to that type, and these pointers will carry the missing
-//@ information - namely, the length. Such a pointer is called a *slice*. As we will see, a slice can be split.
-//@ Our function can thus take a borrowed slice, and promise to sort all elements in there.
-pub fn sort<T: PartialOrd>(data: &mut [T]) {
-    if data.len() < 2 { return; }
+// Before we come to the actual code, we define a data-structure `Options` to store all the information we need
+// to complete the job: Which files to work on, which pattern to look for, and how to output. <br/>
+//@ Besides just printing all the matching lines, we will also offer to count them, or alternatively to sort them.
+#[derive(Clone,Copy)]
+pub enum OutputMode {
+    Print,
+    SortAndPrint,
+    Count,
+}
+use self::OutputMode::*;
 
-    // We decide that the element at 0 is our pivot, and then we move our cursors through the rest of the slice,
-    // making sure that everything on the left is no larger than the pivot, and everything on the right is no smaller.
-    let mut lpos = 1;
-    let mut rpos = data.len();
-    /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot;
-       [rpos,len) is >= pivot; lpos < rpos */
-    loop {
-        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
-        // test function for `sort`.
-        unimplemented!()
+pub struct Options {
+    pub files: Vec<String>,
+    pub pattern: String,
+    pub output_mode: OutputMode,
+}
+
+//@ Now we can write three functions to do the actual job of reading, matching, and printing, respectively.
+//@ To get the data from one thread to the next, we will use *message passing*: We will establish communication
+//@ channels between the threads, with one thread *sending* data, and the other one *receiving* it. `SyncSender<T>`
+//@ is the type of the sending end of a synchronous channel transmitting data of type `T`. *Synchronous* here
+//@ means that the `send` operation could block, waiting for the other side to make progress. We don't want to
+//@ end up with the entire file being stored in the buffer of the channels, and the output not being fast enough
+//@ to keep up with the speed of input.
+//@
+//@ We also need all the threads to have access to the options of the job they are supposed to do. Since it would
+//@ be rather unnecessary to actually copy these options around, we will use reference-counting to share them between
+//@ all threads. `Arc` is the thread-safe version of `Rc`, using atomic operations to keep the reference count up-to-date.
+
+// The first function reads the files, and sends every line over the `out_channel`.
+fn read_files(options: Arc<Options>, out_channel: SyncSender<String>) {
+    for file in options.files.iter() {
+        // First, we open the file, ignoring any errors.
+        let file = fs::File::open(file).unwrap();
+        // Then we obtain a `BufReader` for it, which provides the `lines` function.
+        let file = io::BufReader::new(file);
+        for line in file.lines() {
+            let line = line.unwrap();
+            // Now we send the line over the channel, ignoring the possibility of `send` failing.
+            out_channel.send(line).unwrap();
+        }
     }
-
-    // Once our cursors met, we need to put the pivot in the right place.
-    data.swap(0, lpos-1);
-
-    // Finally, we split our slice to sort the two halves. The nice part about slices is that splitting them is cheap:
-    //@ They are just a pointer to a start address, and a length. We can thus get two pointers, one at the beginning and
-    //@ one in the middle, and set the lengths appropriately such that they don't overlap. This is what `split_at_mut` does.
-    //@ Since the two slices don't overlap, there is no aliasing and we can have them both mutably borrowed.
-    let (part1, part2) = data.split_at_mut(lpos);
-    //@ The index operation can not only be used to address certain elements, it can also be used for *slicing*: Giving a range
-    //@ of indices, and obtaining an appropriate part of the slice we started with. Here, we remove the last element from
-    //@ `part1`, which is the pivot. This makes sure both recursive calls work on strictly smaller slices.
-    sort(&mut part1[..lpos-1]);                                     /*@*/
-    sort(part2);                                                    /*@*/
+    // When we drop the `out_channel`, it will be closed, which the other end can notice.
 }
 
-// **Exercise 13.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
-// to call the sort function above. If you did exercise 12.1, you will have slightly more work. Make sure you sort by the matched line
-// only, not by filename or line number!
-
-// Now, we can sort, e.g., an vector of numbers.
-fn sort_nums(data: &mut Vec<i32>) {
-    //@ Vectors support slicing, just like slices do. Here, `..` denotes the full range, which means we want to slice the entire vector.
-    //@ It is then passed to the `sort` function, which doesn't even know that it is working on data inside a vector.
-    sort(&mut data[..]);
+// The second function filters the lines it receives through `in_channel` with the pattern, and sends
+// matches via `out_channel`.
+fn filter_lines(options: Arc<Options>,
+                in_channel: Receiver<String>,
+                out_channel: SyncSender<String>) {
+    // We can simply iterate over the channel, which will stop when the channel is closed.
+    for line in in_channel.iter() {
+        // `contains` works on lots of types of patterns, but in particular, we can use it to test whether
+        // one string is contained in another. This is another example of Rust using traits as substitute for overloading.
+        if line.contains(&options.pattern) {
+            out_channel.send(line).unwrap();                        /*@*/
+        }
+    }
 }
 
-// ## Arrays
-//@ An *array* in Rust is given be the type `[T; n]`, where `n` is some *fixed* number. So, `[f64; 10]` is an array of 10 floating-point
-//@ numbers, all one right next to the other in memory. Arrays are sized, and hence can be used like any other type. But we can also
-//@ borrow them as slices, e.g., to sort them.
-fn sort_array() {
-    let mut array_of_data: [f64; 5] = [1.0, 3.4, 12.7, -9.12, 0.1];
-    sort(&mut array_of_data);
+// The third function performs the output operations, receiving the relevant lines on its `in_channel`.
+fn output_lines(options: Arc<Options>, in_channel: Receiver<String>) {
+    match options.output_mode {
+        Print => {
+            // Here, we just print every line we see.
+            for line in in_channel.iter() {
+                println!("{}", line);                               /*@*/
+            }
+        },
+        Count => {
+            // We are supposed to count the number of matching lines. There's a convenient iterator adapter that
+            // we can use for this job.
+            let count = in_channel.iter().count();                  /*@*/
+            println!("{} hits for {}.", count, options.pattern);    /*@*/
+        },
+        SortAndPrint => {
+            // We are asked to sort the matching lines before printing. So let's collect them all in a local vector...
+            let mut data: Vec<String> = in_channel.iter().collect();
+            // ...and implement the actual sorting later.
+            unimplemented!()
+        }
+    }
 }
 
-// ## External Dependencies
-//@ This leaves us with just one more piece to complete rgrep: Taking arguments from the command-line. We could now directly work on
-//@ [`std::env::args`](http://doc.rust-lang.org/stable/std/env/fn.args.html) to gain access to those arguments, and this would become
-//@ a pretty boring lesson in string manipulation. Instead, I want to use this opportunity to show how easy it is to benefit from
-//@ other people's work in your program.
+// With the operations of the three threads defined, we can now implement a function that performs grepping according
+// to some given options.
+pub fn run(options: Options) {
+    // We move the `options` into an `Arc`, as that's what the thread workers expect.
+    let options = Arc::new(options);
+
+    // This sets up the channels. We use a `sync_channel` with buffer-size of 16 to avoid needlessly filling RAM.
+    let (line_sender, line_receiver) = sync_channel(16);
+    let (filtered_sender, filtered_receiver) = sync_channel(16);
+
+    // Spawn the read thread: `thread::spawn` takes a closure that is run in a new thread.
+    //@ The `move` keyword again tells Rust that we want ownership of captured variables to be moved into the
+    //@ closure. This means we need to do the `clone` *first*, otherwise we would lose our `options` to the
+    //@ new thread!
+    let options1 = options.clone();
+    let handle1 = thread::spawn(move || read_files(options1, line_sender));
+
+    // Same with the filter thread.
+    let options2 = options.clone();
+    let handle2 = thread::spawn(move || {
+        filter_lines(options2, line_receiver, filtered_sender)
+    });
+
+    // And the output thread.
+    let options3 = options.clone();
+    let handle3 = thread::spawn(move || output_lines(options3, filtered_receiver));
+
+    // Finally, wait until all three threads did their job.
+    //@ Joining a thread waits for its termination. This can fail if that thread panicked: In this case, we could get
+    //@ access to the data that it provided to `panic!`. Here, we just assert that they did not panic - so we will panic ourselves
+    //@ if that happened.
+    handle1.join().unwrap();
+    handle2.join().unwrap();
+    handle3.join().unwrap();
+}
+
+// Now we have all the pieces together for testing our rgrep with some hard-coded options.
+//@ We need to call `to_string` on string literals to convert them to a fully-owned `String`.
+pub fn main() {
+    let options = Options {
+        files: vec!["src/part10.rs".to_string(),
+                    "src/part11.rs".to_string(),
+                    "src/part12.rs".to_string()],
+        pattern: "let".to_string(),
+        output_mode: Print
+    };
+    run(options);
+}
+
+// **Exercise 12.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
+// and the number of the line in the file. You will have to change the type of the channels from `String` to something
+// that records this extra information.
+
+//@ ## Ownership, Borrowing, and Concurrency
+//@ The little demo above showed that concurrency in Rust has a fairly simple API. Considering Rust has closures,
+//@ that should not be entirely surprising. However, as it turns out, Rust goes well beyond this and actually ensures
+//@ the absence of data races. <br/>
+//@ A data race is typically defined as having two concurrent, unsynchronized
+//@ accesses to the same memory location, at least one of which is a write. In other words, a data race is mutation in
+//@ the presence of aliasing, which Rust reliably rules out! It turns out that the same mechanism that makes our single-threaded
+//@ programs memory safe, and that prevents us from invalidating iterators, also helps secure our multi-threaded code against
+//@ data races. For example, notice how `read_files` sends a `String` to `filter_lines`. At run-time, only the pointer to
+//@ the character data will actually be moved around (just like when a `String` is passed to a function with full ownership). However,
+//@ `read_files` has to *give up* ownership of the string to perform `send`, to it is impossible for an outstanding borrow to
+//@ still be around. After it sent the string to the other side, `read_files` has no pointer into the string content
+//@ anymore, and hence no way to race on the data with someone else.
 //@ 
-//@ For sure, we are not the first to equip a Rust program with support for command-line arguments. Someone must have written a library
-//@ for the job, right? Indeed, someone has. Rust has a central repository of published libraries, called [crates.io](https://crates.io/).
-//@ It's a bit like [PyPI](https://pypi.python.org/pypi) or the [Ruby Gems](https://rubygems.org/): Everybody can upload their code,
-//@ and there's tooling for importing that code into your project. This tooling is provided by `cargo`, the tool we are already using to
-//@ build this tutorial. (`cargo` also has support for *publishing* your crate on crates.io, I refer you to [the documentation](http://doc.crates.io/crates-io.html) for more details.)
-//@ In this case, we are going to use the [`docopt` crate](https://crates.io/crates/docopt), which creates a parser for command-line
-//@ arguments based on the usage string. External dependencies are declared in the `Cargo.toml` file.
+//@ There is a little more to this. Remember the `'static` bound we had to add to `register` in the previous part, to make
+//@ sure that the callbacks do not reference any pointers that might become invalid? This is just as crucial for spawning
+//@ a thread: In general, that thread could last for much longer than the current stack frame. Thus, it must not use
+//@ any pointers to data in that stack frame. This is achieved by requiring the `FnOnce` closure passed to `thread::spawn`
+//@ to be valid for lifetime `'static`, as you can see in [its documentation](http://doc.rust-lang.org/stable/std/thread/fn.spawn.html).
+//@ This avoids another kind of data race, where the thread's access races with the callee deallocating its stack frame.
+//@ It is only thanks to the concept of lifetimes that this can be expressed as part of the type of `spawn`.
 
-//@ I already prepared that file, but the declaration of the dependency is still commented out. So please open `Cargo.toml` of your workspace
-//@ now, and enabled the two commented-out lines. Then do `cargo build`. Cargo will now download the crate from crates.io, compile it,
-//@ and link it to your program. In the future, you can do `cargo update` to make it download new versions of crates you depend on.
-//@ Note that crates.io is only the default location for dependencies, you can also give it the URL of a git repository or some local
-//@ path. All of this is explained in the [Cargo Guide](http://doc.crates.io/guide.html).
-
-// I disabled the following module (using a rather bad hack), because it only compiles if `docopt` is linked.
-// Remove the attribute of the `rgrep` module to enable compilation.
-#[cfg(feature = "disabled")]
-pub mod rgrep {
-    // Now that `docopt` is linked, we can first root it in the namespace and then import it with `use`. We also import some other pieces that we will need.
-    extern crate docopt;
-    use self::docopt::Docopt;
-    use part12::{run, Options, OutputMode};
-    use std::process;
-
-    // The `USAGE` string documents how the program is to be called. It's written in a format that `docopt` can parse.
-    static USAGE: &'static str = "
-Usage: rgrep [-c] [-s] <pattern> <file>...
-
-Options:
-    -c, --count  Count number of matching lines (rather than printing them).
-    -s, --sort   Sort the lines before printing.
-";
-
-    // This function extracts the rgrep options from the command-line arguments.
-    fn get_options() -> Options {
-        // Parse `argv` and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
-        //@ The function `and_then` takes a closure from `T` to `Result<U, E>`, and uses it to transform a `Result<T, E>` to a
-        //@ `Result<U, E>`. This way, we can chain computations that only happen if the previous one succeeded (and the error
-        //@ type has to stay the same). In case you know about monads, this style of programming will be familiar to you.
-        //@ There's a similar function for `Option`. `unwrap_or_else` is a bit like `unwrap`, but rather than panicking in
-        //@ case of an `Err`, it calls the closure. 
-        let args = Docopt::new(USAGE).and_then(|d| d.parse()).unwrap_or_else(|e| e.exit());
-        // Now we can get all the values out.
-        let count = args.get_bool("-c");
-        let sort = args.get_bool("-s");
-        let pattern = args.get_str("<pattern>");
-        let files = args.get_vec("<file>");
-        if count && sort {
-            println!("Setting both '-c' and '-s' at the same time does not make any sense.");
-            process::exit(1);
-        }
-
-        // We need to make the strings owned to construct the `Options` instance.
-        //@ If you check all the types carefully, you will notice that `pattern` above is of type `&str`. `str` is the type of a UTF-8
-        //@ encoded string, that is, a bunch of bytes in memory (`[u8]`) that are valid according of UTF-8. `str` is unsized. `&str`
-        //@ stores the address of the character data, and their length. String literals like "this one" are
-        //@ of type `&'static str`: They point right to the constant section of the binary, so 
-        //@ However, the borrow is valid for as long as the program runs, hence it has lifetime `'static`. Calling
-        //@ `to_string` will copy the string data into an owned buffer on the heap, and thus convert it to `String`.
-        let mode = if count {
-            OutputMode::Count
-        } else if sort {
-            OutputMode::SortAndPrint
-        } else {
-            OutputMode::Print
-        };
-        Options {
-            files: files.iter().map(|file| file.to_string()).collect(),
-            pattern: pattern.to_string(),
-            output_mode: mode,
-        }
-    }
-
-    // Finally, we can call the `run` function from the previous part on the options extracted using `get_options`. Edit `main.rs` to call this function.
-    // You can now use `cargo run -- <pattern> <files>` to call your program, and see the argument parser and the threads we wrote previously in action!
-    pub fn main() {
-        run(get_options());                                         /*@*/
-    }
-}
-
-// **Exercise 13.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
-// expression, it's called [regex](https://crates.io/crates/regex). Add this crate to the dependencies of your workspace, add an option ("-r") to switch
-// the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
-// (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)
+//@ ## Send
+//@ However, the story goes even further. I said above that `Arc` is a thread-safe version of `Rc`, which uses atomic operations
+//@ to manipulate the reference count. It is thus crucial that we don't use `Rc` across multiple threads, or the reference count may
+//@ become invalid. And indeed, if you replace `Arc` by `Rc` (and add the appropriate imports), Rust will tell you that something
+//@ is wrong. That's great, of course, but how did it do that?
+//@ 
+//@ The answer is already hinted at in the error: It will say something about `Send`. You may have noticed that the closure in
+//@ `thread::spawn` does not just have a `'static` bound, but also has to satisfy `Send`. `Send` is a trait, and just like `Copy`,
+//@ it's just a marker - there are no functions provided by `Send`. What the trait says is that types which are `Send`, can be
+//@ safely sent to another thread without causing trouble. Of course, all the primitive data-types are `Send`. So is `Arc`,
+//@ which is why Rust accepted our code. But `Rc` is not `Send`, and for a good reason!
+//@ 
+//@ Now, `Send` as a trait is fairly special. It has a so-called *default implementation*. This means that *every type* implements
+//@ `Send`, unless it opts out. Opting out is viral: If your type contains a type that opted out, then you don't have `Send`, either.
+//@ So if the environment of your closure contains an `Rc`, it won't be `Send`, preventing it from causing trouble. If however every
+//@ captured variable *is* `Send`, then so is the entire environment, and you are good.
 
 //@ [index](main.html) | [previous](part12.html) | [next](part14.html)

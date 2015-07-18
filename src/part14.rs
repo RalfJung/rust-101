@@ -1,142 +1,161 @@
-// Rust-101, Part 14: Mutex, Interior Mutability, Sync
-// ===================================================
+// Rust-101, Part 14: Slices, Arrays, External Dependencies
+// ========================================================
 
-use std::sync::{Arc, Mutex};
-use std::thread;
+//@ To complete rgrep, there are two pieces we still need to implement: Sorting, and taking the job options
+//@ as argument to the program, rather than hard-coding them. Let's start with sorting.
 
-//@ We already saw that we can use `Arc` to share memory between threads. However, `Arc` can only provide *read-only*
-//@ access to memory: Since there is aliasing, Rust cannot, in general, permit mutation. If however,
-//@ some care would be taken at run-time, then mutation would still be all right: We have to ensure that whenever
-//@ someone changes the data, nobody else is looking at it.  In other words, we need a *critical section* or (as it
-//@ is called in Rust) a [`Mutex`](http://doc.rust-lang.org/stable/std/sync/struct.Mutex.html). Some other languages also call this a *lock*.
-//@ 
-//@ As an example, let us write a concurrent counter. As usual in Rust, we first have to think about our data layout.
-//@ In case of the mutex, this means we have to declare the type of the data that we want to be protected. In Rust,
-//@ a `Mutex` protects data, not code - and it is impossible to access the data in any other way. This is generally considered
-//@ good style, but other languages typically lack the ability to actually enforce this.
-//@ Of course, we want multiple threads to have access to this `Mutex`, so we wrap it in an `Arc`.
-//@ 
-//@ Rather than giving every field a name, a struct can also be defined by just giving a sequence of types (similar
-//@ to how a variant of an `enum` is defined). This is called a *tuple struct*. It is often used when constructing
-//@ a *newtype*, as we do here: `ConcurrentCounter` is essentially just a new name for `Arc<Mutex<usize>>`. However,
-//@ is is a locally declared types, so we can give it an inherent implementation and implement traits for it. Since the
-//@ field is private, nobody outside this module can even know the type we are wrapping.
+// ## Slices
+//@ Again, we first have to think about the type we want to give to our sorting function. We may be inclined to
+//@ pass it a `Vec<T>`. Of course, sorting does not actually consume the argument, so we should make that a `&mut Vec<T>`.
+//@ But there's a problem with that: If we want to implement some divide-and-conquer sorting algorithm (say,
+//@ Quicksort), then we will have to *split* our argument at some point, and operate recursively on the two parts.
+//@ But we can't split a `Vec`! We could now extend the function signature to also take some indices, marking the
+//@ part of the vector we are supposed to sort, but that's all rather clumsy. Rust offers a nicer solution.
 
-// The derived `Clone` implementation will clone the `Arc`, so all clones will actually talk about the same counter.
-#[derive(Clone)]
-struct ConcurrentCounter(Arc<Mutex<usize>>);
+//@ `[T]` is the type of an (unsized) *array*, with elements of type `T`. All this means is that there's a contiguous
+//@ region of memory, where a bunch of `T` are stored. How many? We can't tell! This is an unsized type. Just like for
+//@ trait objects, this means we can only operate on pointers to that type, and these pointers will carry the missing
+//@ information - namely, the length. Such a pointer is called a *slice*. As we will see, a slice can be split.
+//@ Our function can thus take a borrowed slice, and promise to sort all elements in there.
+pub fn sort<T: PartialOrd>(data: &mut [T]) {
+    if data.len() < 2 { return; }
 
-impl ConcurrentCounter {
-    // The constructor just wraps the constructors of `Arc` and `Mutex`.
-    pub fn new(val: usize) -> Self {
-        ConcurrentCounter(Arc::new(Mutex::new(val)))                /*@*/
+    // We decide that the element at 0 is our pivot, and then we move our cursors through the rest of the slice,
+    // making sure that everything on the left is no larger than the pivot, and everything on the right is no smaller.
+    let mut lpos = 1;
+    let mut rpos = data.len();
+    /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot;
+       [rpos,len) is >= pivot; lpos < rpos */
+    loop {
+        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
+        // test function for `sort`.
+        unimplemented!()
     }
 
-    //@ The core operation is, of course, `increment`. The type may be surprising at first: A shared borrow?
-    //@ How can this be, since `increment` definitely modifies the counter? We already discussed above that `Mutex` is
-    //@ a way to get around this restriction in Rust. This phenomenon of data that can be mutated through a shared
-    //@ borrow is called *interior mutability*: We are changing the inner parts of the object, but seen from the outside,
-    //@ this does not count as "mutation". This stands in contrast to *exterior mutability*, which is the kind of
-    //@ mutability we saw so far, where one piece of data is replaced by something else of the same type. If you are familiar
-    //@ with languages like ML, you can compare this to how something of type `ref` permits mutation, even though it is
-    //@ itself a functional value (more precisely, a location) like all the others.
-    //@ 
-    //@ Interior mutability breaks the rules of Rust that I outlined earlier: There is aliasing (a shared borrow) and mutation.
-    //@ The reason that this still works is careful programming of the primitives for interior mutability - in this case, that's
-    //@ `Mutex`. It has to ensure with dynamic checks, at run-time, that things don't fall apart. In particular, it has to ensure
-    //@ that the data covered by the mutex can only ever be accessed from inside a critical section. This is where Rust's type
-    //@ system comes into play: With its discipline of ownership and borrowing, it can enforce such rules. Let's see how this goes.
-    pub fn increment(&self, by: usize) {
-        // `lock` on a mutex returns a *guard*, giving access to the data contained in the mutex.
-        //@  (We will discuss the `unwrap` soon.) `.0` is how we access the first component of a tuple or a struct.
-        let mut counter = self.0.lock().unwrap();
-        //@ The guard is another example of a smart pointer, and it can be used as if it were a pointer to the data protected
-        //@ by the lock.
-        *counter = *counter + by;
-        //@ At the end of the function, `counter` is dropped and the mutex is available again.
-        //@ This can only happen when full ownership of the guard is given up. In particular, it is impossible for us
-        //@ to borrow some of its content, release the lock of the mutex, and subsequently access the protected data without holding
-        //@ the lock. Enforcing the locking discipline is expressible in the Rust type system, so we don't have to worry
-        //@ about data races *even though* we are mutating shared memory!
-        //@ 
-        //@ One of the subtle aspects of locking is *poisoning*. If a thread panics while it holds a lock, it could leave the
-        //@ data-structure in a bad state. The lock is hence considered *poisoned*. Future attempts to `lock` it will fail.
-        //@ Above, we simply assert via `unwrap` that this will never happen. Alternatively, we could have a look at the poisoned
-        //@ state and attempt to recover from it.
+    // Once our cursors met, we need to put the pivot in the right place.
+    data.swap(0, lpos-1);
+
+    // Finally, we split our slice to sort the two halves. The nice part about slices is that splitting them is cheap:
+    //@ They are just a pointer to a start address, and a length. We can thus get two pointers, one at the beginning and
+    //@ one in the middle, and set the lengths appropriately such that they don't overlap. This is what `split_at_mut` does.
+    //@ Since the two slices don't overlap, there is no aliasing and we can have them both mutably borrowed.
+    let (part1, part2) = data.split_at_mut(lpos);
+    //@ The index operation can not only be used to address certain elements, it can also be used for *slicing*: Giving a range
+    //@ of indices, and obtaining an appropriate part of the slice we started with. Here, we remove the last element from
+    //@ `part1`, which is the pivot. This makes sure both recursive calls work on strictly smaller slices.
+    sort(&mut part1[..lpos-1]);                                     /*@*/
+    sort(part2);                                                    /*@*/
+}
+
+// **Exercise 13.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
+// to call the sort function above. If you did exercise 12.1, you will have slightly more work. Make sure you sort by the matched line
+// only, not by filename or line number!
+
+// Now, we can sort, e.g., an vector of numbers.
+fn sort_nums(data: &mut Vec<i32>) {
+    //@ Vectors support slicing, just like slices do. Here, `..` denotes the full range, which means we want to slice the entire vector.
+    //@ It is then passed to the `sort` function, which doesn't even know that it is working on data inside a vector.
+    sort(&mut data[..]);
+}
+
+// ## Arrays
+//@ An *array* in Rust is given be the type `[T; n]`, where `n` is some *fixed* number. So, `[f64; 10]` is an array of 10 floating-point
+//@ numbers, all one right next to the other in memory. Arrays are sized, and hence can be used like any other type. But we can also
+//@ borrow them as slices, e.g., to sort them.
+fn sort_array() {
+    let mut array_of_data: [f64; 5] = [1.0, 3.4, 12.7, -9.12, 0.1];
+    sort(&mut array_of_data);
+}
+
+// ## External Dependencies
+//@ This leaves us with just one more piece to complete rgrep: Taking arguments from the command-line. We could now directly work on
+//@ [`std::env::args`](http://doc.rust-lang.org/stable/std/env/fn.args.html) to gain access to those arguments, and this would become
+//@ a pretty boring lesson in string manipulation. Instead, I want to use this opportunity to show how easy it is to benefit from
+//@ other people's work in your program.
+//@ 
+//@ For sure, we are not the first to equip a Rust program with support for command-line arguments. Someone must have written a library
+//@ for the job, right? Indeed, someone has. Rust has a central repository of published libraries, called [crates.io](https://crates.io/).
+//@ It's a bit like [PyPI](https://pypi.python.org/pypi) or the [Ruby Gems](https://rubygems.org/): Everybody can upload their code,
+//@ and there's tooling for importing that code into your project. This tooling is provided by `cargo`, the tool we are already using to
+//@ build this tutorial. (`cargo` also has support for *publishing* your crate on crates.io, I refer you to [the documentation](http://doc.crates.io/crates-io.html) for more details.)
+//@ In this case, we are going to use the [`docopt` crate](https://crates.io/crates/docopt), which creates a parser for command-line
+//@ arguments based on the usage string. External dependencies are declared in the `Cargo.toml` file.
+
+//@ I already prepared that file, but the declaration of the dependency is still commented out. So please open `Cargo.toml` of your workspace
+//@ now, and enabled the two commented-out lines. Then do `cargo build`. Cargo will now download the crate from crates.io, compile it,
+//@ and link it to your program. In the future, you can do `cargo update` to make it download new versions of crates you depend on.
+//@ Note that crates.io is only the default location for dependencies, you can also give it the URL of a git repository or some local
+//@ path. All of this is explained in the [Cargo Guide](http://doc.crates.io/guide.html).
+
+// I disabled the following module (using a rather bad hack), because it only compiles if `docopt` is linked.
+// Remove the attribute of the `rgrep` module to enable compilation.
+#[cfg(feature = "disabled")]
+pub mod rgrep {
+    // Now that `docopt` is linked, we can first add it to the namespace and then import shorter names with `use`. We also import some other pieces that we will need.
+    extern crate docopt;
+    use self::docopt::Docopt;
+    use part12::{run, Options, OutputMode};
+    use std::process;
+
+    // The `USAGE` string documents how the program is to be called. It's written in a format that `docopt` can parse.
+    static USAGE: &'static str = "
+Usage: rgrep [-c] [-s] <pattern> <file>...
+
+Options:
+    -c, --count  Count number of matching lines (rather than printing them).
+    -s, --sort   Sort the lines before printing.
+";
+
+    // This function extracts the rgrep options from the command-line arguments.
+    fn get_options() -> Options {
+        // Parse `argv` and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
+        //@ The function `and_then` takes a closure from `T` to `Result<U, E>`, and uses it to transform a `Result<T, E>` to a
+        //@ `Result<U, E>`. This way, we can chain computations that only happen if the previous one succeeded (and the error
+        //@ type has to stay the same). In case you know about monads, this style of programming will be familiar to you.
+        //@ There's a similar function for `Option`. `unwrap_or_else` is a bit like `unwrap`, but rather than panicking in
+        //@ case of an `Err`, it calls the closure. 
+        let args = Docopt::new(USAGE).and_then(|d| d.parse()).unwrap_or_else(|e| e.exit());
+        // Now we can get all the values out.
+        let count = args.get_bool("-c");
+        let sort = args.get_bool("-s");
+        let pattern = args.get_str("<pattern>");
+        let files = args.get_vec("<file>");
+        if count && sort {
+            println!("Setting both '-c' and '-s' at the same time does not make any sense.");
+            process::exit(1);
+        }
+
+        // We need to make the strings owned to construct the `Options` instance.
+        //@ If you check all the types carefully, you will notice that `pattern` above is of type `&str`. `str` is the type of a UTF-8
+        //@ encoded string, that is, a bunch of bytes in memory (`[u8]`) that are valid according of UTF-8. `str` is unsized. `&str`
+        //@ stores the address of the character data, and their length. String literals like "this one" are
+        //@ of type `&'static str`: They point right to the constant section of the binary, so 
+        //@ However, the borrow is valid for as long as the program runs, hence it has lifetime `'static`. Calling
+        //@ `to_string` will copy the string data into an owned buffer on the heap, and thus convert it to `String`.
+        let mode = if count {
+            OutputMode::Count
+        } else if sort {
+            OutputMode::SortAndPrint
+        } else {
+            OutputMode::Print
+        };
+        Options {
+            files: files.iter().map(|file| file.to_string()).collect(),
+            pattern: pattern.to_string(),
+            output_mode: mode,
+        }
     }
 
-    // The function `get` returns the current value of the counter.
-    pub fn get(&self) -> usize {
-        let counter = self.0.lock().unwrap();                       /*@*/
-        *counter                                                    /*@*/
+    // Finally, we can call the `run` function from the previous part on the options extracted using `get_options`. Edit `main.rs` to call this function.
+    // You can now use `cargo run -- <pattern> <files>` to call your program, and see the argument parser and the threads we wrote previously in action!
+    pub fn main() {
+        run(get_options());                                         /*@*/
     }
 }
 
-// Now our counter is ready for action.
-pub fn main() {
-    let counter = ConcurrentCounter::new(0);
+// **Exercise 13.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
+// expression, it's called [regex](https://crates.io/crates/regex). Add this crate to the dependencies of your workspace, add an option ("-r") to switch
+// the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
+// (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)
 
-    // We clone the counter for the first thread, which increments it by 2 every 15ms.
-    let counter1 = counter.clone();
-    let handle1 = thread::spawn(move || {
-        for _ in 0..10 {
-            thread::sleep_ms(15);
-            counter1.increment(2);
-        }
-    });
-
-    // The second thread increments the counter by 3 every 20ms.
-    let counter2 = counter.clone();
-    let handle2 = thread::spawn(move || {
-        for _ in 0..10 {
-            thread::sleep_ms(20);
-            counter2.increment(3);
-        }
-    });
-
-    // Now we watch the threads working on the counter.
-    for _ in 0..50 {
-        thread::sleep_ms(5);
-        println!("Current value: {}", counter.get());
-    }
-
-    // Finally, we wait for all the threads to finish to be sure we can catch the counter's final value.
-    handle1.join().unwrap();
-    handle2.join().unwrap();
-    println!("Final value: {}", counter.get());
-}
-
-// **Exercise 14.1**: Besides `Mutex`, there's also [`RwLock`](http://doc.rust-lang.org/stable/std/sync/struct.RwLock.html), which
-// provides two ways of locking: One that grants only read-only access, to any number of concurrent readers, and another one
-// for exclusive write access. (Notice that this is the same pattern we already saw with shared vs. mutable borrows.) Change
-// the code above to use `RwLock`, such that multiple calls to `get` can be executed at the same time.
-// 
-// **Exercise 14.2**: Add an operation `compare_and_inc(&self, test: usize, by: usize)` that increments the counter by
-// `by` *only if* the current value is `test`.
-
-//@ ## Sync
-//@ In part 12, we talked about types that are marked `Send` and thus can be moved to another thread. However, we did *not*
-//@ talk about the question whether a borrow is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
-//@ `&mut` allows moving values back and forth, it is even possible to [`swap`](http://doc.rust-lang.org/beta/std/mem/fn.swap.html)
-//@ the contents of two mutably borrowed values. So in terms of concurrency, sending a mutable borrow is very much like
-//@ sending full ownership, in the sense that it can be used to move the object to another thread.
-//@ 
-//@ But what about `&T`, a shared borrow? Without interior mutability, it would always be all-right to send such values.
-//@ After all, no mutation can be performed, so there can be as many threads accessing the data as we like. In the
-//@ presence of interior mutability though, the story gets more complicated. Rust introduces another marker trait for
-//@ this purpose: `Sync`. A type `T` is `Sync` if `&T` is `Send`. Just like `Send`, `Sync` has a default implementation
-//@ and is thus automatically implemented for a data-structure *if* all its members implement it.
-//@ 
-//@ Almost all the types we saw so far are `Sync`, with the exception of `Rc`. Remember that a shared borrow is good enough
-//@ for cloning, and we don't want other threads to clone our local `Rc`, so it must not be `Sync`. The rule of `Mutex`
-//@ is to enforce synchronization, so it should not be entirely surprising that `Mutex<T>` is `Send` *and* `Sync` provided that
-//@ `T` is `Send`.
-//@ 
-//@ In the next part, we will learn about a type called `RefCell` that is `Send`, but not `Sync`.
-//@ 
-//@ You may be curious whether there is a type that's `Sync`, but not `Send`. There are indeed rather esoteric examples
-//@ of such types, but that's not a topic I want to go into. In case you are curious, there's a
-//@ [Rust RFC](https://github.com/rust-lang/rfcs/blob/master/text/0458-send-improvements.md), which contains a type `RcMut` that would be `Sync` and not `Send`.
-//@ You may also be interested in [this blog post](https://huonw.github.io/blog/2015/02/some-notes-on-send-and-sync/) on the topic.
-
-//@ [index](main.html) | [previous](part13.html) | [next](main.html)
+//@ [index](main.html) | [previous](part13.html) | [next](part15.html)

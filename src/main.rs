@@ -36,9 +36,9 @@
 // ---------------
 // 
 // You will need to have Rust installed, of course. It is available for download on
-// [the Rust website](http://www.rust-lang.org/). You should go for either the "stable"
-// or the "beta" channel. More detailed installation instructions are provided in
-// [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
+// [the Rust website](http://www.rust-lang.org/). Make sure you get at least version 1.2
+// (at the time of writing, that's the current beta release). More detailed installation
+// instructions are provided in [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 // This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
 
 // Next, fetch the Rust-101 source code from the [git repository](http://www.ralfj.de/git/rust-101.git)
@@ -77,13 +77,14 @@
 // * [Part 08: Associated Types, Modules](part08.html)
 // * [Part 09: Iterators](part09.html)
 // * [Part 10: Closures](part10.html)
-// * [Part 11: Trait Objects, Box, Rc, Lifetime bounds](part11.html)
-// * [Part 12: Concurrency, Arc, Send](part12.html)
-// * [Part 13: Slices, Arrays, External Dependencies](part13.html)
 // 
 // ### Advanced Rust
 // 
-// * [Part 14: Mutex, Interior Mutability, Sync](part14.html)
+// * [Part 11: Trait Objects, Box, Lifetime bounds](part11.html)
+// * [Part 12: Rc, Interior Mutability, Cell, RefCell](part12.html)
+// * [Part 13: Concurrency, Arc, Send](part13.html)
+// * [Part 14: Slices, Arrays, External Dependencies](part14.html)
+// * [Part 15: Mutex, Interior Mutability (cont.), Sync](part15.html)
 // * (to be continued)
 // 
 #![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]

@@ -2,7 +2,7 @@ use std::sync::{Arc, RwLock};
 use std::thread;
 
 #[derive(Clone)]
-struct ConcurrentCounter(Arc<RwLock<usize>>);
+pub struct ConcurrentCounter(Arc<RwLock<usize>>);
 
 impl ConcurrentCounter {
     // The constructor should not be surprising.
@@ -13,6 +13,13 @@ impl ConcurrentCounter {
     pub fn increment(&self, by: usize) {
         let mut counter = self.0.write().unwrap();
         *counter = *counter + by;
+    }
+
+    pub fn compare_and_inc(&self, test: usize, by: usize) {
+        let mut counter = self.0.write().unwrap();
+        if *counter == test {
+            *counter += by;
+        }
     }
 
     pub fn get(&self) -> usize {

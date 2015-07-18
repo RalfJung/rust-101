@@ -1,128 +1,110 @@
-// Rust-101, Part 12: Concurrency, Arc, Send
-// =========================================
+// Rust-101, Part 12: Rc, Interior Mutability, Cell, RefCell
+// =========================================================
 
-use std::io::prelude::*;
-use std::{io, fs, thread};
-use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
-use std::sync::Arc;
+use std::rc::Rc;
+use std::cell::{Cell, RefCell};
 
 
-// Before we come to the actual code, we define a data-structure `Options` to store all the information we need
-// to complete the job: Which files to work on, which pattern to look for, and how to output. <br/>
-#[derive(Clone,Copy)]
-pub enum OutputMode {
-    Print,
-    SortAndPrint,
-    Count,
-}
-use self::OutputMode::*;
 
-pub struct Options {
-    pub files: Vec<String>,
-    pub pattern: String,
-    pub output_mode: OutputMode,
+#[derive(Clone)]
+struct Callbacks {
+    callbacks: Vec<Rc<Fn(i32)>>,
 }
 
-
-// The first function reads the files, and sends every line over the `out_channel`.
-fn read_files(options: Arc<Options>, out_channel: SyncSender<String>) {
-    for file in options.files.iter() {
-        // First, we open the file, ignoring any errors.
-        let file = fs::File::open(file).unwrap();
-        // Then we obtain a `BufReader` for it, which provides the `lines` function.
-        let file = io::BufReader::new(file);
-        for line in file.lines() {
-            let line = line.unwrap();
-            // Now we send the line over the channel, ignoring the possibility of `send` failing.
-            out_channel.send(line).unwrap();
-        }
+impl Callbacks {
+    pub fn new() -> Self {
+        unimplemented!()
     }
-    // When we drop the `out_channel`, it will be closed, which the other end can notice.
-}
 
-// The second function filters the lines it receives through `in_channel` with the pattern, and sends
-// matches via `out_channel`.
-fn filter_lines(options: Arc<Options>,
-                in_channel: Receiver<String>,
-                out_channel: SyncSender<String>) {
-    // We can simply iterate over the channel, which will stop when the channel is closed.
-    for line in in_channel.iter() {
-        // `contains` works on lots of types of patterns, but in particular, we can use it to test whether
-        // one string is contained in another. This is another example of Rust using traits as substitute for overloading.
-        if line.contains(&options.pattern) {
+    // Registration works just like last time, except that we are creating an `Rc` now.
+    pub fn register<F: Fn(i32)+'static>(&mut self, callback: F) {
+        unimplemented!()
+    }
+
+    pub fn call(&self, val: i32) {
+        // We only need a shared iterator here. Since `Rc` is a smart pointer, we can directly call the callback.
+        for callback in self.callbacks.iter() {
             unimplemented!()
         }
     }
 }
 
-// The third function performs the output operations, receiving the relevant lines on its `in_channel`.
-fn output_lines(options: Arc<Options>, in_channel: Receiver<String>) {
-    match options.output_mode {
-        Print => {
-            // Here, we just print every line we see.
-            for line in in_channel.iter() {
-                unimplemented!()
-            }
-        },
-        Count => {
-            // We are supposed to count the number of matching lines. There's a convenient iterator adapter that
-            // we can use for this job.
-            unimplemented!()
-        },
-        SortAndPrint => {
-            // We are asked to sort the matching lines before printing. So let's collect them all in a local vector...
-            let mut data: Vec<String> = in_channel.iter().collect();
-            // ...and implement the actual sorting later.
-            unimplemented!()
-        }
-    }
+// Time for a demo!
+fn demo(c: &mut Callbacks) {
+    c.register(|val| println!("Callback 1: {}", val));
+    c.call(0); c.clone().call(1);
 }
 
-// With the operations of the three threads defined, we can now implement a function that performs grepping according
-// to some given options.
-pub fn run(options: Options) {
-    // We move the `options` into an `Arc`, as that's what the thread workers expect.
-    let options = Arc::new(options);
-
-    // This sets up the channels. We use a `sync_channel` with buffer-size of 16 to avoid needlessly filling RAM.
-    let (line_sender, line_receiver) = sync_channel(16);
-    let (filtered_sender, filtered_receiver) = sync_channel(16);
-
-    // Spawn the read thread: `thread::spawn` takes a closure that is run in a new thread.
-    let options1 = options.clone();
-    let handle1 = thread::spawn(move || read_files(options1, line_sender));
-
-    // Same with the filter thread.
-    let options2 = options.clone();
-    let handle2 = thread::spawn(move || {
-        filter_lines(options2, line_receiver, filtered_sender)
-    });
-
-    // And the output thread.
-    let options3 = options.clone();
-    let handle3 = thread::spawn(move || output_lines(options3, filtered_receiver));
-
-    // Finally, wait until all three threads did their job.
-    handle1.join().unwrap();
-    handle2.join().unwrap();
-    handle3.join().unwrap();
-}
-
-// Now we have all the pieces together for testing our rgrep with some hard-coded options.
 pub fn main() {
-    let options = Options {
-        files: vec!["src/part10.rs".to_string(),
-                    "src/part11.rs".to_string(),
-                    "src/part12.rs".to_string()],
-        pattern: "let".to_string(),
-        output_mode: Print
-    };
-    run(options);
+    let mut c = Callbacks::new();
+    demo(&mut c);
 }
 
-// **Exercise 12.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
-// and the number of the line in the file. You will have to change the type of the channels from `String` to something
-// that records this extra information.
+// ## Interior Mutability
+
+// So, let us put our counter in a `Cell`, and replicate the example from the previous part.
+fn demo_cell(c: &mut Callbacks) {
+    {
+        let count = Cell::new(0);
+        // Again, we have to move ownership if the `count` into the environment closure.
+        c.register(move |val| {
+            // In here, all we have is a shared borrow of our environment. But that's good enough for the `get` and `set` of the cell!
+            let new_count = count.get()+1;
+            count.set(new_count);
+            println!("Callback 2: {} ({}. time)", val, new_count);
+        } );
+    }
+
+    c.call(2); c.clone().call(3);
+}
 
 
+// ## `RefCell`
+
+// Our final version of `Callbacks` puts the closure environment into a `RefCell`.
+#[derive(Clone)]
+struct CallbacksMut {
+    callbacks: Vec<Rc<RefCell<FnMut(i32)>>>,
+}
+
+impl CallbacksMut {
+    pub fn new() -> Self {
+        unimplemented!()
+    }
+
+    pub fn register<F: FnMut(i32)+'static>(&mut self, callback: F) {
+        let cell = Rc::new(RefCell::new(callback));
+        unimplemented!()
+    }
+
+    pub fn call(&mut self, val: i32) {
+        for callback in self.callbacks.iter() {
+            // We have to *explicitly* borrow the contents of a `RefCell` by calling `borrow` or `borrow_mut`.
+            let mut closure = callback.borrow_mut();
+            // Unfortunately, Rust's auto-dereference of pointers is not clever enough here. We thus have to explicitly
+            // dereference the smart pointer and obtain a mutable borrow of the content.
+            (&mut *closure)(val);
+        }
+    }
+}
+
+// Now we can repeat the demo from the previous part - but this time, our `CallbacksMut` type
+// can be cloned.
+fn demo_mut(c: &mut CallbacksMut) {
+    c.register(|val| println!("Callback 1: {}", val));
+    c.call(0);
+
+    {
+        let mut count: usize = 0;
+        c.register(move |val| {
+            count = count+1;
+            println!("Callback 2: {} ({}. time)", val, count);
+        } );
+    }
+    c.call(1); c.clone().call(2);
+}
+
+// **Exercise 12.1**: Change the type of `call` to ask only for a shared borrow. Then write some piece of code using only the available, public
+// interface of `CallbacksMut` such that a reentrant call to `call` is happening, and the program aborts because the `RefCell` refuses to hand
+// out a second mutable borrow to its content.
 

@@ -1,107 +1,128 @@
-// Rust-101, Part 13: Slices, Arrays, External Dependencies
-// ========================================================
+// Rust-101, Part 13: Concurrency, Arc, Send
+// =========================================
+
+use std::io::prelude::*;
+use std::{io, fs, thread};
+use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
+use std::sync::Arc;
 
 
-// ## Slices
+// Before we come to the actual code, we define a data-structure `Options` to store all the information we need
+// to complete the job: Which files to work on, which pattern to look for, and how to output. <br/>
+#[derive(Clone,Copy)]
+pub enum OutputMode {
+    Print,
+    SortAndPrint,
+    Count,
+}
+use self::OutputMode::*;
 
-pub fn sort<T: PartialOrd>(data: &mut [T]) {
-    if data.len() < 2 { return; }
-
-    // We decide that the element at 0 is our pivot, and then we move our cursors through the rest of the slice,
-    // making sure that everything on the left is no larger than the pivot, and everything on the right is no smaller.
-    let mut lpos = 1;
-    let mut rpos = data.len();
-    /* Invariant: pivot is data[0]; everything with index (0,lpos) is <= pivot;
-       [rpos,len) is >= pivot; lpos < rpos */
-    loop {
-        // **Exercise 13.1**: Complete this Quicksort loop. You can use `swap` on slices to swap two elements. Write a
-        // test function for `sort`.
-        unimplemented!()
-    }
-
-    // Once our cursors met, we need to put the pivot in the right place.
-    data.swap(0, lpos-1);
-
-    // Finally, we split our slice to sort the two halves. The nice part about slices is that splitting them is cheap:
-    let (part1, part2) = data.split_at_mut(lpos);
-    unimplemented!()
+pub struct Options {
+    pub files: Vec<String>,
+    pub pattern: String,
+    pub output_mode: OutputMode,
 }
 
-// **Exercise 13.2**: Since `String` implements `PartialEq`, you can now change the function `output_lines` in the previous part
-// to call the sort function above. If you did exercise 12.1, you will have slightly more work. Make sure you sort by the matched line
-// only, not by filename or line number!
 
-// Now, we can sort, e.g., an vector of numbers.
-fn sort_nums(data: &mut Vec<i32>) {
-    sort(&mut data[..]);
-}
-
-// ## Arrays
-fn sort_array() {
-    let mut array_of_data: [f64; 5] = [1.0, 3.4, 12.7, -9.12, 0.1];
-    sort(&mut array_of_data);
-}
-
-// ## External Dependencies
-
-
-// I disabled the following module (using a rather bad hack), because it only compiles if `docopt` is linked.
-// Remove the attribute of the `rgrep` module to enable compilation.
-#[cfg(feature = "disabled")]
-pub mod rgrep {
-    // Now that `docopt` is linked, we can first root it in the namespace and then import it with `use`. We also import some other pieces that we will need.
-    extern crate docopt;
-    use self::docopt::Docopt;
-    use part12::{run, Options, OutputMode};
-    use std::process;
-
-    // The `USAGE` string documents how the program is to be called. It's written in a format that `docopt` can parse.
-    static USAGE: &'static str = "
-Usage: rgrep [-c] [-s] <pattern> <file>...
-
-Options:
-    -c, --count  Count number of matching lines (rather than printing them).
-    -s, --sort   Sort the lines before printing.
-";
-
-    // This function extracts the rgrep options from the command-line arguments.
-    fn get_options() -> Options {
-        // Parse `argv` and exit the program with an error message if it fails. This is taken from the [`docopt` documentation](http://burntsushi.net/rustdoc/docopt/).
-        let args = Docopt::new(USAGE).and_then(|d| d.parse()).unwrap_or_else(|e| e.exit());
-        // Now we can get all the values out.
-        let count = args.get_bool("-c");
-        let sort = args.get_bool("-s");
-        let pattern = args.get_str("<pattern>");
-        let files = args.get_vec("<file>");
-        if count && sort {
-            println!("Setting both '-c' and '-s' at the same time does not make any sense.");
-            process::exit(1);
-        }
-
-        // We need to make the strings owned to construct the `Options` instance.
-        let mode = if count {
-            OutputMode::Count
-        } else if sort {
-            OutputMode::SortAndPrint
-        } else {
-            OutputMode::Print
-        };
-        Options {
-            files: files.iter().map(|file| file.to_string()).collect(),
-            pattern: pattern.to_string(),
-            output_mode: mode,
+// The first function reads the files, and sends every line over the `out_channel`.
+fn read_files(options: Arc<Options>, out_channel: SyncSender<String>) {
+    for file in options.files.iter() {
+        // First, we open the file, ignoring any errors.
+        let file = fs::File::open(file).unwrap();
+        // Then we obtain a `BufReader` for it, which provides the `lines` function.
+        let file = io::BufReader::new(file);
+        for line in file.lines() {
+            let line = line.unwrap();
+            // Now we send the line over the channel, ignoring the possibility of `send` failing.
+            out_channel.send(line).unwrap();
         }
     }
+    // When we drop the `out_channel`, it will be closed, which the other end can notice.
+}
 
-    // Finally, we can call the `run` function from the previous part on the options extracted using `get_options`. Edit `main.rs` to call this function.
-    // You can now use `cargo run -- <pattern> <files>` to call your program, and see the argument parser and the threads we wrote previously in action!
-    pub fn main() {
-        unimplemented!()
+// The second function filters the lines it receives through `in_channel` with the pattern, and sends
+// matches via `out_channel`.
+fn filter_lines(options: Arc<Options>,
+                in_channel: Receiver<String>,
+                out_channel: SyncSender<String>) {
+    // We can simply iterate over the channel, which will stop when the channel is closed.
+    for line in in_channel.iter() {
+        // `contains` works on lots of types of patterns, but in particular, we can use it to test whether
+        // one string is contained in another. This is another example of Rust using traits as substitute for overloading.
+        if line.contains(&options.pattern) {
+            unimplemented!()
+        }
     }
 }
 
-// **Exercise 13.3**: Wouldn't it be nice if rgrep supported regular expressions? There's already a crate that does all the parsing and matching on regular
-// expression, it's called [regex](https://crates.io/crates/regex). Add this crate to the dependencies of your workspace, add an option ("-r") to switch
-// the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
-// (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)
+// The third function performs the output operations, receiving the relevant lines on its `in_channel`.
+fn output_lines(options: Arc<Options>, in_channel: Receiver<String>) {
+    match options.output_mode {
+        Print => {
+            // Here, we just print every line we see.
+            for line in in_channel.iter() {
+                unimplemented!()
+            }
+        },
+        Count => {
+            // We are supposed to count the number of matching lines. There's a convenient iterator adapter that
+            // we can use for this job.
+            unimplemented!()
+        },
+        SortAndPrint => {
+            // We are asked to sort the matching lines before printing. So let's collect them all in a local vector...
+            let mut data: Vec<String> = in_channel.iter().collect();
+            // ...and implement the actual sorting later.
+            unimplemented!()
+        }
+    }
+}
+
+// With the operations of the three threads defined, we can now implement a function that performs grepping according
+// to some given options.
+pub fn run(options: Options) {
+    // We move the `options` into an `Arc`, as that's what the thread workers expect.
+    let options = Arc::new(options);
+
+    // This sets up the channels. We use a `sync_channel` with buffer-size of 16 to avoid needlessly filling RAM.
+    let (line_sender, line_receiver) = sync_channel(16);
+    let (filtered_sender, filtered_receiver) = sync_channel(16);
+
+    // Spawn the read thread: `thread::spawn` takes a closure that is run in a new thread.
+    let options1 = options.clone();
+    let handle1 = thread::spawn(move || read_files(options1, line_sender));
+
+    // Same with the filter thread.
+    let options2 = options.clone();
+    let handle2 = thread::spawn(move || {
+        filter_lines(options2, line_receiver, filtered_sender)
+    });
+
+    // And the output thread.
+    let options3 = options.clone();
+    let handle3 = thread::spawn(move || output_lines(options3, filtered_receiver));
+
+    // Finally, wait until all three threads did their job.
+    handle1.join().unwrap();
+    handle2.join().unwrap();
+    handle3.join().unwrap();
+}
+
+// Now we have all the pieces together for testing our rgrep with some hard-coded options.
+pub fn main() {
+    let options = Options {
+        files: vec!["src/part10.rs".to_string(),
+                    "src/part11.rs".to_string(),
+                    "src/part12.rs".to_string()],
+        pattern: "let".to_string(),
+        output_mode: Print
+    };
+    run(options);
+}
+
+// **Exercise 12.1**: Change rgrep such that it prints not only the matching lines, but also the name of the file
+// and the number of the line in the file. You will have to change the type of the channels from `String` to something
+// that records this extra information.
+
+
 

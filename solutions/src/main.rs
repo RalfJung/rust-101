@@ -9,6 +9,7 @@ pub mod bigint;
 pub mod vec;
 pub mod rgrep;
 pub mod counter;
+pub mod callbacks;
 
 pub fn main() {
     rgrep::main();
