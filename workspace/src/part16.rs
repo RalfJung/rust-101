@@ -94,6 +94,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 // Add testcases for both kinds of iterators.
 
 // ## `Drop`
+
 impl<T> Drop for LinkedList<T> {
     // The destructor itself is a method which takes `self` in mutably borrowed form. It cannot own `self`, because then
     // the destructor of `self` would be called at the end pf the function, resulting in endless recursion...

@@ -166,7 +166,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 //@ The linked list we wrote is already working quite nicely, but there is one problem: When the list is dropped,
 //@ nobody bothers to deallocate the remaining nodes. Even worse, if `T` itself has a destructor that needs to
 //@ clean up, it is not called for the element remaining in the list. We need to take care of that ourselves.
-//@ 
+
 //@ In Rust, adding a destructor for a type is done by implementing the `Drop` trait. This is a very special trait.
 //@ It can only be implemented for *nominal types*, i.e., you cannot implement `Drop` for `&mut T`. You also cannot
 //@ restrict the type and lifetime parameters further than the type does - the `Drop` implementation has to apply to *all* instances
