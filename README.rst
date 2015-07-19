@@ -28,3 +28,10 @@ details.
 .. _git repository: http://www.ralfj.de/git/rust-101.git
 .. _on GitHub: https://github.com/RalfJung/rust-101
 .. _CC-BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+
+Contact
+-------
+
+If you found a bug, or want to leave a comment, please
+`send me a mail <mailto:post-AT-ralfj-DOT-de>`_. I'm also happy about pull
+requests :)

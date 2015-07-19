@@ -119,7 +119,7 @@ pub fn main() {
 //@ 
 //@ In part 13, we talked about types that are marked `Send` and thus can be moved to another thread. However, we did *not*
 //@ talk about the question whether a borrow is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
-//@ `&mut` allows moving values back and forth, it is even possible to [`swap`](http://doc.rust-lang.org/beta/std/mem/fn.swap.html)
+//@ `&mut` allows moving values back and forth, it is even possible to [`swap`](http://doc.rust-lang.org/stable/std/mem/fn.swap.html)
 //@ the contents of two mutably borrowed values. So in terms of concurrency, sending a mutable borrow is very much like
 //@ sending full ownership, in the sense that it can be used to move the object to another thread.
 //@ 
@@ -144,4 +144,4 @@ pub fn main() {
 //@ [Rust RFC](https://github.com/rust-lang/rfcs/blob/master/text/0458-send-improvements.md), which contains a type `RcMut` that would be `Sync` and not `Send`.
 //@ You may also be interested in [this blog post](https://huonw.github.io/blog/2015/02/some-notes-on-send-and-sync/) on the topic.
 
-//@ [index](main.html) | [previous](part14.html) | [next](main.html)
+//@ [index](main.html) | [previous](part14.html) | [next](part16.html)

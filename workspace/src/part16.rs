@@ -1,5 +1,5 @@
-// Rust-101, Part 16: Unsafe, Drop (WIP)
-// ===============================
+// Rust-101, Part 16: Unsafe Rust, Drop
+// ====================================
 
 use std::ptr;
 use std::mem;
@@ -12,7 +12,7 @@ struct Node<T> {
     prev: NodePtr<T>,
     data: T,
 }
-// A node pointer is a *mutable raw point* to a node.
+// A node pointer is a *mutable raw pointer* to a node.
 type NodePtr<T> = *mut Node<T>;
 
 // The linked list itself stores pointers to the first and the last node. In addition, we tell Rust that this type
@@ -37,7 +37,7 @@ impl<T> LinkedList<T> {
         LinkedList { first: ptr::null_mut(), last: ptr::null_mut(), _marker: PhantomData }
     }
 
-    // Add a new node to the end of the list.
+    // This function adds a new node to the end of the list.
     pub fn push_back(&mut self, t: T) {
         // Create the new node, and make it a raw pointer.
         let new = Box::new( Node { data: t, next: ptr::null_mut(), prev: self.last } );
@@ -60,11 +60,12 @@ impl<T> LinkedList<T> {
     // Add testcases for `push_back` and all of your functions. The `pop` functions should take `&mut self`
     // and return `Option<T>`.
 
-    // Of course, we will also want to provide an iterator.
+    // Next, we are going to provide an iterator.
     pub fn iter_mut(&self) -> IterMut<T> {
         IterMut { next: self.first, _marker: PhantomData  }
     }
 }
+
 
 pub struct IterMut<'a, T> where T: 'a {
     next: NodePtr<T>,
@@ -77,14 +78,13 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     fn next(&mut self) -> Option<Self::Item> {
         // The actual iteration is straight-forward: Once we reached a null pointer, we are done.
         if self.next.is_null() {
-           None
+            None
         } else {
             // Otherwise, we can convert the next pointer to a borrow, get a borrow to the data
             // and update the iterator.
             let next = unsafe { &mut *self.next };
             let ret = &mut next.data;
-            self.next = next.next;
-            Some(ret)
+            unimplemented!()
         }
     }
 }
@@ -110,4 +110,5 @@ impl<T> Drop for LinkedList<T> {
     }
 }
 
+// ## The End
 

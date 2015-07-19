@@ -85,7 +85,7 @@
 // * [Part 13: Concurrency, Arc, Send](part13.html)
 // * [Part 14: Slices, Arrays, External Dependencies](part14.html)
 // * [Part 15: Mutex, Interior Mutability (cont.), RwLock, Sync](part15.html)
-// * (to be continued)
+// * [Part 16: Unsafe Rust, Drop](part16.html)
 // 
 #![allow(dead_code, unused_imports, unused_variables, unused_mut, unreachable_code)]
 mod part00;

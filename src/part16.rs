@@ -1,11 +1,11 @@
-// Rust-101, Part 16: Unsafe, Drop (WIP)
-// ===============================
+// Rust-101, Part 16: Unsafe Rust, Drop
+// ====================================
 
 use std::ptr;
 use std::mem;
 use std::marker::PhantomData;
 
-//@ As we saw, the rules Rust imposes can get us pretty far: A surprising amount of programming patterns
+//@ As we saw, the rules Rust imposes to ensure memory safety can get us pretty far. A surprising amount of programming patterns
 //@ can be written within safe Rust, and, more importantly, library code like iterators or threads can make
 //@ use of the type system to ensure some level of correctness beyond basic memory safety.
 //@ 
@@ -14,16 +14,18 @@ use std::marker::PhantomData;
 //@ as we saw with `RefCell` - overhead which may not be acceptable. In such a situation, it is possible to
 //@ use *unsafe* Rust: That's a part of the language that is *known* to open the gate to invalid pointer access
 //@ and all other sorts of memory safety. It is typically disabled, guarded by the keyword `unsafe`. Of course,
-//@ `unsafe` also means "Here Be Dragons": You are on your own now. Types like `Rc` and `Vec` are implemented
-//@ `using unsafe Rust.
+//@ `unsafe` also means "Here Be Dragons": You are on your own now.
+//@ 
+//@ The goal in these cases is to confine unsafety to the local module. Types like `Rc` and `Vec` are implemented
+//@ using unsafe Rust, but *using* them as we did is (believed to be) perfectly safe.
 //@ 
 //@ ## Unsafe Code
 //@ As an example, let us write a doubly-linked list. Clearly, such a data-structure involves aliasing and mutation:
 //@ Every node in the list is pointed to by its left and right neighbor, but still we will want to modify the nodes
-//@ (either to change the value at that place, or to insert new nodes). We could now try some clever combination of
+//@ (either to change the value at that place, or to insert/delete nodes). We could now try some clever combination of
 //@ `Rc` and `RefCell`, but this would end up being quite annoying - and it would incur some over-head. For a low-level
 //@ data-structure like a doubly-linked list, it makes sense to implement an efficient version *once*, that is unsafe
-//@ internally, but taht can be used without any risk by safe client code.
+//@ internally, but that can be used without any risk by safe client code.
 
 //@ As usually, we start by defining the types. Everything is parameterized by the type `T` of the data stored in the list.
 // A node of the list consists of the data, and two node pointers for the predecessor and successor.
@@ -32,9 +34,9 @@ struct Node<T> {
     prev: NodePtr<T>,
     data: T,
 }
-// A node pointer is a *mutable raw point* to a node.
+// A node pointer is a *mutable raw pointer* to a node.
 //@ Raw pointers (`*mut T` and `*const T`) are the Rust equivalent of pointers in C. Unlike borrows, they do not come with
-//@ any guarantees: Raw pointers can be null, or they can point to garbage. They don't have a lifetime.
+//@ any guarantees: Raw pointers can be null, or they can point to garbage. They don't have a lifetime, either.
 type NodePtr<T> = *mut Node<T>;
 
 // The linked list itself stores pointers to the first and the last node. In addition, we tell Rust that this type
@@ -53,7 +55,9 @@ pub struct LinkedList<T> {
 //@ Before we get to the actual linked-list methods, we write two short helper functions converting between
 //@ mutable raw pointers, and owned pointers (aka `Box`). Both employ `mem::transmute`, which is Rust's
 //@ `reinterpret_cast`: It can convert anything to anything, by just re-interpreting the bytes. Clearly,
-//@ that's an unsafe operation.
+//@ that's an unsafe operation and must only be used with great care. If at all possible, its use should be avoided. <br/>
+//@ We are making the assumption here that a `Box` and a raw pointer have the same representation in memory. In the future,
+//@ Rust will [provide](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.from_raw) such [operations](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.into_raw) in the standard library, but the exact API is still being fleshed out.
 
 //@ We declare `raw_into_box` to be an `unsafe` function, telling Rust that calling this function is not generally safe.
 //@ The caller will have to ensure that `r` is a valid pointer, and that nobody else has a pointer to this data.
@@ -62,8 +66,7 @@ unsafe fn raw_into_box<T>(r: *mut T) -> Box<T> {
 }
 //@ The case is slightly different for `box_into_raw`: Converting a `Box` to a raw pointer is always safe. I just drops some
 //@ information. Hence we keep the function itself safe, and use an *unsafe block* within the function. This is an (unchecked)
-//@ promise to the Rust compiler, saying that even though the code inside that block *could* go wrong, we actually know that
-//@ it will not.
+//@ promise to the Rust compiler, saying that a safe invocation of `box_into_raw` cannot go wrong.
 fn box_into_raw<T>(b: Box<T>) -> *mut T {
     unsafe { mem::transmute(b) }
 }
@@ -74,7 +77,7 @@ impl<T> LinkedList<T> {
         LinkedList { first: ptr::null_mut(), last: ptr::null_mut(), _marker: PhantomData }
     }
 
-    // Add a new node to the end of the list.
+    // This function adds a new node to the end of the list.
     pub fn push_back(&mut self, t: T) {
         // Create the new node, and make it a raw pointer.
         //@ Calling `box_into_raw` gives up ownership of the box, which is crucial: We don't want the
@@ -89,7 +92,7 @@ impl<T> LinkedList<T> {
         } else {
             debug_assert!(!self.first.is_null());
             // We have to update the `next` pointer of the tail node.
-            //@ Since Rust does not know that a raw pointer actually to anything, dereferencing such a pointer is
+            //@ Since Rust does not know that a raw pointer actually points to anything, dereferencing such a pointer is
             //@ an unsafe operation. So this unsafe block promises that the pointer will actually be valid.
             unsafe { (*self.last).next = new; }                     /*@*/
         }
@@ -101,7 +104,7 @@ impl<T> LinkedList<T> {
     // Add testcases for `push_back` and all of your functions. The `pop` functions should take `&mut self`
     // and return `Option<T>`.
 
-    // Of course, we will also want to provide an iterator.
+    // Next, we are going to provide an iterator.
     //@ This function just creates an instance of `IterMut`, the iterator type which does the actual work.
     pub fn iter_mut(&self) -> IterMut<T> {
         IterMut { next: self.first, _marker: PhantomData  }
@@ -115,7 +118,7 @@ impl<T> LinkedList<T> {
 //@ borrow used for `iter_mut`. We will thus give `IterMut` two parameters: A type parameter specifying
 //@ the type of the data, and a lifetime parameter specifying for how long the list was borrowed to the
 //@ iterator.
-//@ 
+
 //@ For Rust to accept the type, we have to add two more annotations. First of all, we have to ensure that
 //@ the data in the list lives at least as long as the iterator: If you drop the `T: 'a`, Rust will tell
 //@ you to add it back. And secondly, Rust will complain if `'a` is not actually used in the struct.
@@ -136,14 +139,14 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     fn next(&mut self) -> Option<Self::Item> {
         // The actual iteration is straight-forward: Once we reached a null pointer, we are done.
         if self.next.is_null() {
-           None
+            None
         } else {
             // Otherwise, we can convert the next pointer to a borrow, get a borrow to the data
             // and update the iterator.
             let next = unsafe { &mut *self.next };
             let ret = &mut next.data;
-            self.next = next.next;
-            Some(ret)
+            self.next = next.next;                                  /*@*/
+            Some(ret)                                               /*@*/
         }
     }
 }
@@ -160,13 +163,13 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 // Add testcases for both kinds of iterators.
 
 // ## `Drop`
-//@ The linked list we wrote is already working quite nicely, but there is one problem: When the list is removed,
+//@ The linked list we wrote is already working quite nicely, but there is one problem: When the list is dropped,
 //@ nobody bothers to deallocate the remaining nodes. Even worse, if `T` itself has a destructor that needs to
 //@ clean up, it is not called for the element remaining in the list. We need to take care of that ourselves.
 //@ 
 //@ In Rust, adding a destructor for a type is done by implementing the `Drop` trait. This is a very special trait.
 //@ It can only be implemented for *nominal types*, i.e., you cannot implement `Drop` for `&mut T`. You also cannot
-//@ restrict the type and lifetime parameters further - the `Drop` implementation has to apply to *all* instances
+//@ restrict the type and lifetime parameters further than the type does - the `Drop` implementation has to apply to *all* instances
 //@ of `LinkedList`.
 impl<T> Drop for LinkedList<T> {
     // The destructor itself is a method which takes `self` in mutably borrowed form. It cannot own `self`, because then
@@ -185,12 +188,13 @@ impl<T> Drop for LinkedList<T> {
     }
 }
 
-//@ ## The End
-//@ Congratulations! You complete Rust-101. This was the last example of the last part. I hope you enjoyed it.
-//@ If you have feedback, please head to the [Rust-101](https://www.ralfj.de/projects/rust-101/) website
-//@ and let me know how you liked it. The entire course is open-source (under CC-BY-SA 4.0), and contributions are welcome!
+// ## The End
+//@ Congratulations! You completed Rust-101. This was the last part of the course. I hope you enjoyed it.
+//@ If you have feedback or want to contribute yourself, please head to the [Rust-101](https://www.ralfj.de/projects/rust-101/) website
+//@ fur further information. The entire course is open-source (under [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)).
 //@ 
-//@ The [index](main.html) contains some more links to additional resources you may find useful. With that, there's
-//@ only one thing left to say: Happy Rust Hacking!
+//@ If you want to do more, the examples you saw in this course provide lots of playground for coming up with your own little
+//@ extensions here and there. The [index](main.html) contains some more links to additional resources you may find useful. 
+//@ With that, there's only one thing left to say: Happy Rust Hacking!
 
-//@ [index](main.html) | [previous](part15.html)
+//@ [index](main.html) | [previous](part15.html) | next
