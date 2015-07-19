@@ -1,11 +1,10 @@
 // Welcome to Rust-101
 // ===================
 // 
-// This is [Rust-101](https://www.ralfj.de/projects/rust-101/), a small *work-in-progress*
-// tutorial for the [Rust language](http://www.rust-lang.org/).
-// It is intended to be an interactive, hands-on course: I believe the only way to
-// *really* learn a language is to write code in it, so you should be coding during
-// the course.
+// This is [Rust-101](https://www.ralfj.de/projects/rust-101/), a small tutorial for
+// the [Rust language](http://www.rust-lang.org/). It is intended to be an interactive,
+// hands-on course: I believe the only way to *really* learn a language is to write code
+// in it, so you should be coding during the course.
 // 
 // If you have any questions that are not answered here, check out the "Additional Resources"
 // below. In particular, the IRC channel is filled with awesome people willing to help you! I spent
@@ -18,7 +17,7 @@
 // ---------
 // 
 // When you got here, I am kind of assuming that you already decided to give Rust at
-// least a look, so that I don't have to do much convincing here ;-) . But just in
+// least a look, so that I don't have to do much convincing here. But just in
 // case, here's why I think Rust is worth learning:<br/>
 // At this time, Rust is a language with a pretty unique set of goals. Rust aims to
 // achieve C++-style control over memory and execution behavior (like, static vs. dynamic
@@ -59,7 +58,7 @@
 // --------------
 // 
 // Open `your-workspace/src/part00.rs` in your favorite editor, and follow the link below for
-// the explanations and exercises. Have fun!
+// the explanations and exercises. You are ready to start. Have fun!
 // 
 // ### Introduction
 //
