@@ -43,9 +43,9 @@ type NodePtr<T> = *mut Node<T>;
 // will own data of type `T`.
 //@ The type `PhantomData<T>` does not actually store anything in memory - it has size zero. However, logically,
 //@ Rust will consider a `T` to be present. In this case, Rust knows that data of type `T` may be dropped
-//@ whenever a `LinkedList<T>` is dropped. The checks involving destructors are pretty subtle, so it's always
-//@ a good idea to provide such extra information. In safe Rust, this can all be done automatically, but here,
-//@ we just have a `*mut Node<T>`, which Rust does not consider as actually owning the data it points to.
+//@ whenever a `LinkedList<T>` is dropped. Dropping has a lot of subtle checks to it, making sure that things can't go
+//@ wrong. For this to work, Rust needs to know which types could potentially be dropped. In safe Rust, this can all be inferred
+//@ automatically, but here, we just have a `*mut Node<T>`, and we need to tell Rust that we actually own such data.
 pub struct LinkedList<T> {
     first: NodePtr<T>,
     last:  NodePtr<T>,
