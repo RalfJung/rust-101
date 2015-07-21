@@ -120,5 +120,6 @@ fn main() {
 // 
 // * [The Rust Book](https://doc.rust-lang.org/stable/book/)
 // * [Rust by Example](http://rustbyexample.com/)
+// * [The Advanced Rust Programming Guide](http://cglab.ca/~abeinges/blah/turpl/_book/README.html)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
 // * For the IRC channel and other forums, see the "Community" section of the [Rust Documentation index](http://doc.rust-lang.org/index.html)
