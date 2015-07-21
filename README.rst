@@ -1,7 +1,8 @@
 Rust-101
 ========
 
-This is Rust-101, a tutorial for the `Rust language`_.
+This documents Rust-101, a tutorial for the `Rust language`_. You are probably 
+looking for the `actual tutorial <https://www.ralfj.de/projects/rust-101/main.html>`_.
 
 .. _Rust language: http://www.rust-lang.org/
 
