@@ -45,17 +45,17 @@ type NodePtr<T> = *mut Node<T>;
 //@ Rust will consider a `T` to be present. In this case, Rust knows that data of type `T` may be dropped
 //@ whenever a `LinkedList<T>` is dropped. Dropping has a lot of subtle checks to it, making sure that things can't go
 //@ wrong. For this to work, Rust needs to know which types could potentially be dropped. In safe Rust, this can all be inferred
-//@ automatically, but here, we just have a `*mut Node<T>`, and we need to tell Rust that we actually own such data.
+//@ automatically, but here, we just have a `*mut Node<T>`, and we need to tell Rust that we actually own such data and will drop it.
+//@ (For more of the glory details, see [this RFC](https://github.com/rust-lang/rfcs/blob/master/text/0769-sound-generic-drop.md).)
 pub struct LinkedList<T> {
     first: NodePtr<T>,
     last:  NodePtr<T>,
     _marker: PhantomData<T>,
 }
 
-//@ Before we get to the actual linked-list methods, we write two short helper functions converting between
-//@ mutable raw pointers, and owned pointers (aka `Box`). Both employ `mem::transmute`, which is Rust's
-//@ `reinterpret_cast`: It can convert anything to anything, by just re-interpreting the bytes. Clearly,
-//@ that's an unsafe operation and must only be used with great care. If at all possible, its use should be avoided. <br/>
+//@ Before we get to the actual linked-list methods, we write two short helper functions converting between mutable raw pointers,
+//@ and boxed data. Both employ `mem::transmute`, which can convert anything to anything, by just re-interpreting the bytes.
+//@ Clearly, that's an unsafe operation and must only be used with great care - or even better, not at all. <br/>
 //@ We are making the assumption here that a `Box` and a raw pointer have the same representation in memory. In the future,
 //@ Rust will [provide](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.from_raw) such [operations](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.into_raw) in the standard library, but the exact API is still being fleshed out.
 
