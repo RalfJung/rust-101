@@ -122,4 +122,5 @@ fn main() {
 // * [Rust by Example](http://rustbyexample.com/)
 // * [The Advanced Rust Programming Guide](http://cglab.ca/~abeinges/blah/turpl/_book/README.html)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
+// * A [collection of links](https://github.com/ctjhoa/rust-learning) to blog posts, articles, videos, etc. for learning Rust.
 // * For the IRC channel and other forums, see the "Community" section of the [Rust Documentation index](http://doc.rust-lang.org/index.html)

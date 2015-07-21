@@ -64,7 +64,7 @@ pub fn main() {
 //@ `set`, which overrides the content, only needs a *shared borrow* of the cell. The phenomenon of a type that permits mutation through
 //@ shared borrows (i.e., mutation despite the possibility of aliasing) is called *interior mutability*. You can think
 //@ of `set` changing only the *contents* of the cell, not its *identity*. In contrast, the kind of mutation we saw so far was
-//@ about replacing one piece of data by something else of the same type. This is called *exterior mutability*. <br/>
+//@ about replacing one piece of data by something else of the same type. This is called *inherited mutability*. <br/>
 //@ Notice that it is impossible to *borrow* the contents of the cell, and that is actually the key to why this is safe.
 
 // So, let us put our counter in a `Cell`, and replicate the example from the previous part.

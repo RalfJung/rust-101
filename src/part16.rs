@@ -55,7 +55,8 @@ pub struct LinkedList<T> {
 
 //@ Before we get to the actual linked-list methods, we write two short helper functions converting between mutable raw pointers,
 //@ and boxed data. Both employ `mem::transmute`, which can convert anything to anything, by just re-interpreting the bytes.
-//@ Clearly, that's an unsafe operation and must only be used with great care - or even better, not at all. <br/>
+//@ Clearly, that's an unsafe operation and must only be used with great care - or even better, not at all. Seriously.
+//@ If at all possible, you should never use `transmute`. <br/>
 //@ We are making the assumption here that a `Box` and a raw pointer have the same representation in memory. In the future,
 //@ Rust will [provide](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.from_raw) such [operations](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.into_raw) in the standard library, but the exact API is still being fleshed out.
 
@@ -80,8 +81,7 @@ impl<T> LinkedList<T> {
     // This function adds a new node to the end of the list.
     pub fn push_back(&mut self, t: T) {
         // Create the new node, and make it a raw pointer.
-        //@ Calling `box_into_raw` gives up ownership of the box, which is crucial: We don't want the
-        //@ memory that it points to to be deallocated!
+        //@ Calling `box_into_raw` gives up ownership of the box, which is crucial: We don't want the memory that it points to to be deallocated!
         let new = Box::new( Node { data: t, next: ptr::null_mut(), prev: self.last } );
         let new = box_into_raw(new);
         // Update other points to this node.
