@@ -103,7 +103,6 @@ fn demo_mut(c: &mut CallbacksMut) {
     c.call(1); c.clone().call(2);
 }
 
-// **Exercise 12.1**: Change the type of `call` to ask only for a shared borrow. Then write some piece of code using only the available, public
-// interface of `CallbacksMut` such that a reentrant call to `call` is happening, and the program aborts because the `RefCell` refuses to hand
-// out a second mutable borrow to its content.
+// **Exercise 12.1**: Write some piece of code using only the available, public interface of `CallbacksMut` such that a reentrant call to a closure
+// is happening, and the program aborts because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
 

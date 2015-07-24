@@ -30,7 +30,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
     // If `v` is a shared borrowed vector, then the default for iterating over it is to call `iter`, the iterator that borrows the elements.
     for e in v {
-        let e = e.clone();                                          /*@*/
+        let e = e.clone();
         min = Some(match min {                                      /*@*/
             None => e,                                              /*@*/
             Some(n) => e.min_try1(n)                                /*@*/
@@ -50,7 +50,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ underlying data is transferred from where `e` borrows from to `min`. But that's not allowed, since
 //@ we just borrowed `e`, so we cannot empty it! We can, however, call `clone` on it. Then we own
 //@ the copy that was created, and hence we can store it in `min`. <br/>
-//@ Of course, making such a full copy is expensive, so we'd like to avoid it. We'll some to that in the next part.
+//@ Of course, making such a full copy is expensive, so we'd like to avoid it. We'll come to that in the next part.
 
 // ## `Copy` types
 //@ But before we go there, I should answer the second question I brought up above: Why did our old `vec_min` work?

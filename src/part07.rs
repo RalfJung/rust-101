@@ -17,10 +17,10 @@ pub trait Minimum {
 pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
     let mut min: Option<&T> = None;
     for e in v {
-        min = Some(match min {                                      /*@*/
-            None => e,                                              /*@*/
-            Some(n) => n.min(e)                                     /*@*/
-        });                                                         /*@*/
+        min = Some(match min {
+            None => e,
+            Some(n) => n.min(e)
+        });
     }
     min
 }

@@ -127,12 +127,13 @@ impl CallbacksMut {
             //@ appropriately updates the number of active borrows.
             //@ 
             //@ Since `call` is the only place that borrows the environments of the closures, we should expect that
-            //@ the check will always succeed. However, this function would still typecheck with an immutable borrow of `self` (since we are
-            //@ relying on the interior mutability of `RefCell`). Under this condition, it could happen that a callback
-            //@ will in turn trigger another round of callbacks, so that `call` would indirectly call itself.
-            //@ This is called reentrancy. It would imply that we borrow the closure a second time, and
-            //@ panic at run-time. I hope this also makes it clear that there's absolutely no hope of Rust
-            //@ performing these checks statically, at compile-time: It would have to detect reentrancy!
+            //@ the check will always succeed. However, this is not actually true. Several different `CallbacksMut` could share
+            //@ a callback (as they were created with `clone`), and calling one callback here could trigger calling
+            //@ all callbacks of the other `CallbacksMut`, which would end up calling the initial callback again. This issue is called *reentrancy*,
+            //@ and it can lead to subtle bugs. Here, it would mean that the closure runs twice, each time thinking it has the only
+            //@ mutable borrow of its environment - so it may end up dereferencing a dangling pointer. Ouch! Lucky enough,
+            //@ Rust detects this at run-time and panics once we try to borrow the same environment again. I hope this also makes it
+            //@ clear that there's absolutely no hope of Rust performing these checks statically, at compile-time: It would have to detect reentrancy!
             let mut closure = callback.borrow_mut();
             // Unfortunately, Rust's auto-dereference of pointers is not clever enough here. We thus have to explicitly
             // dereference the smart pointer and obtain a mutable borrow of the content.
@@ -157,8 +158,7 @@ fn demo_mut(c: &mut CallbacksMut) {
     c.call(1); c.clone().call(2);
 }
 
-// **Exercise 12.1**: Change the type of `call` to ask only for a shared borrow. Then write some piece of code using only the available, public
-// interface of `CallbacksMut` such that a reentrant call to `call` is happening, and the program aborts because the `RefCell` refuses to hand
-// out a second mutable borrow to its content.
+// **Exercise 12.1**: Write some piece of code using only the available, public interface of `CallbacksMut` such that a reentrant call to a closure
+// is happening, and the program aborts because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
 
 //@ [index](main.html) | [previous](part11.html) | [next](part13.html)

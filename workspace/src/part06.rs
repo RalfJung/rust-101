@@ -27,6 +27,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
     // If `v` is a shared borrowed vector, then the default for iterating over it is to call `iter`, the iterator that borrows the elements.
     for e in v {
+        let e = e.clone();
         unimplemented!()
     }
     min

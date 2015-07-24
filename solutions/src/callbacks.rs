@@ -16,7 +16,7 @@ impl Callbacks {
         self.callbacks.push(cell);                                  /*@*/
     }
 
-    pub fn call(&self, val: i32) {
+    pub fn call(&mut self, val: i32) {
         for callback in self.callbacks.iter() {
             // We have to *explicitly* borrow the contents of a `RefCell`.
             //@ At run-time, the cell will keep track of the number of outstanding shared and mutable borrows,
@@ -53,14 +53,18 @@ mod tests {
         let c = Rc::new(RefCell::new(Callbacks::new()));
         c.borrow_mut().register(|val| println!("Callback called: {}", val) );
 
-        // If we change the two "borrow" below to "borrow_mut", you can get a panic even with a "call" that requires a
-        // mutable borrow. However, that panic is then triggered by our own, external `RefCell` (so it's kind of our fault),
-        // rather than being triggered by the `RefCell` in the `Callbacks`.
         {
             let c2 = c.clone();
-            c.borrow_mut().register(move |val| c2.borrow().call(val+val) );
+            c.borrow_mut().register(move |val| {
+                let mut guard = c2.borrow_mut();
+                println!("Callback called with {}, ready to go for nested call.", val);
+                guard.call(val+val)
+            } );
         }
 
-        c.borrow().call(42);
+        // We do a clone, and call `call` on that one. This makes sure that it's not our `RefCell` that complains about two mutable borrows,
+        // but rather the `RefCell` inside the `CallbacksMut`.
+        let mut c2: Callbacks = c.borrow().clone();
+        c2.call(42);
     }
 }
