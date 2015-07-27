@@ -5,7 +5,7 @@ use std::ptr;
 use std::mem;
 use std::marker::PhantomData;
 
-//@ As we saw, the rules Rust imposes to ensure memory safety can get us pretty far. A surprising amount of programming patterns
+//@ As we saw, the rules Rust imposes to ensure memory safety can get us pretty far. A large amount of programming patterns
 //@ can be written within safe Rust, and, more importantly, library code like iterators or threads can make
 //@ use of the type system to ensure some level of correctness beyond basic memory safety.
 //@ 
@@ -13,19 +13,16 @@ use std::marker::PhantomData;
 //@ will be cases where it may be possible to satisfy the compiler, but only at the cost of some run-time overhead,
 //@ as we saw with `RefCell` - overhead which may not be acceptable. In such a situation, it is possible to
 //@ use *unsafe* Rust: That's a part of the language that is *known* to open the gate to invalid pointer access
-//@ and all other sorts of memory safety. It is typically disabled, guarded by the keyword `unsafe`. Of course,
-//@ `unsafe` also means "Here Be Dragons": You are on your own now.
-//@ 
+//@ and all other sorts of memory safety. Of course, `unsafe` also means "Here Be Dragons": You are on your own now. <br/>
 //@ The goal in these cases is to confine unsafety to the local module. Types like `Rc` and `Vec` are implemented
 //@ using unsafe Rust, but *using* them as we did is (believed to be) perfectly safe.
 //@ 
 //@ ## Unsafe Code
 //@ As an example, let us write a doubly-linked list. Clearly, such a data-structure involves aliasing and mutation:
-//@ Every node in the list is pointed to by its left and right neighbor, but still we will want to modify the nodes
-//@ (either to change the value at that place, or to insert/delete nodes). We could now try some clever combination of
-//@ `Rc` and `RefCell`, but this would end up being quite annoying - and it would incur some over-head. For a low-level
-//@ data-structure like a doubly-linked list, it makes sense to implement an efficient version *once*, that is unsafe
-//@ internally, but that can be used without any risk by safe client code.
+//@ Every node in the list is pointed to by its left and right neighbor, but still we will want to modify the nodes. We
+//@ could now try some clever combination of `Rc` and `RefCell`, but this would end up being quite annoying - and it would
+//@ incur some overhead. For a low-level data-structure like a doubly-linked list, it makes sense to implement an efficient
+//@ version once, that is unsafe internally, but that can be used without any risk by safe client code.
 
 //@ As usually, we start by defining the types. Everything is parameterized by the type `T` of the data stored in the list.
 // A node of the list consists of the data, and two node pointers for the predecessor and successor.
@@ -61,13 +58,16 @@ pub struct LinkedList<T> {
 //@ Rust will [provide](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.from_raw) such [operations](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.into_raw) in the standard library, but the exact API is still being fleshed out.
 
 //@ We declare `raw_into_box` to be an `unsafe` function, telling Rust that calling this function is not generally safe.
-//@ The caller will have to ensure that `r` is a valid pointer, and that nobody else has a pointer to this data.
+//@ This grants us the unsafe powers for the body of the function: We can dereference raw pointers, and - most importantly - we
+//@ can call unsafe functions. (There's a third power, related to mutable static variables, but we didn't talk about static variables
+//@ in the course, so that won't be relevant here.) <br/>
+//@ Here, the caller will have to ensure that `r` is a valid pointer, and that nobody else has a pointer to this data.
 unsafe fn raw_into_box<T>(r: *mut T) -> Box<T> {
     mem::transmute(r)
 }
-//@ The case is slightly different for `box_into_raw`: Converting a `Box` to a raw pointer is always safe. I just drops some
-//@ information. Hence we keep the function itself safe, and use an *unsafe block* within the function. This is an (unchecked)
-//@ promise to the Rust compiler, saying that a safe invocation of `box_into_raw` cannot go wrong.
+//@ The case is slightly different for `box_into_raw`: Converting a `Box` to a raw pointer is always safe. It just drops some information.
+//@ Hence we keep the function itself safe, and use an *unsafe block* within the function. This is an (unchecked) promise to the Rust
+//@ compiler, saying that a safe invocation of `box_into_raw` cannot go wrong. We also have the unsafe powers in the unsafe block.
 fn box_into_raw<T>(b: Box<T>) -> *mut T {
     unsafe { mem::transmute(b) }
 }
