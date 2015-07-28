@@ -36,7 +36,7 @@ struct PrintWithString {
 }
 
 impl Action for PrintWithString {
-    // Here we perform performs the actual printing of the prefix and the digit. We're not making use of our ability to
+    // Here we perform the actual printing of the prefix and the digit. We're not making use of our ability to
     // change `self` here, but we could replace the prefix if we wanted.
     fn do_action(&mut self, digit: u64) {
         println!("{}{}", self.prefix, digit);                       /*@*/
