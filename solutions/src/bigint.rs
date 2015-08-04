@@ -154,15 +154,13 @@ impl Minimum for BigInt {
             other
         } else {
             // compare back-to-front, i.e., most significant digit first
-            let mut idx = self.data.len()-1;
+            let mut idx = self.data.len();
             while idx > 0 {
+                idx = idx-1;
                 if self.data[idx] < other.data[idx] {
                     return self;
                 } else if self.data[idx] > other.data[idx] {
                     return other;
-                }
-                else {
-                    idx = idx-1;
                 }
             }
             // the two are equal
@@ -285,7 +283,9 @@ mod tests {
         let b3 = BigInt::from_vec(vec![0, 1]);
 
         assert_eq!(b1.min(&b2), &b1);
+        assert_eq!(b2.min(&b1), &b1);
         assert_eq!(b3.min(&b2), &b2);
+        assert_eq!(b2.min(&b3), &b2);
     }
 
     #[test]
