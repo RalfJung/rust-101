@@ -276,7 +276,29 @@ impl ops::Sub<BigInt> for BigInt {
 #[cfg(test)]
 mod tests {
     use std::u64;
-    use super::{overflowing_add,overflowing_sub,BigInt};
+    use super::{overflowing_add,overflowing_sub,BigInt,Minimum,vec_min};
+
+    #[test]
+    fn test_min() {
+        let b1 = BigInt::new(1);
+        let b2 = BigInt::new(42);
+        let b3 = BigInt::from_vec(vec![0, 1]);
+
+        assert_eq!(b1.min(&b2), &b1);
+        assert_eq!(b3.min(&b2), &b2);
+    }
+
+    #[test]
+    fn test_vec_min() {
+    let b1 = BigInt::new(1);
+        let b2 = BigInt::new(42);
+        let b3 = BigInt::from_vec(vec![0, 1]);
+
+        assert_eq!(vec_min(&vec![b2.clone(), b1.clone(), b3.clone()]), Some(&b1));
+        assert_eq!(vec_min(&vec![b2.clone(), b3.clone()]), Some(&b2));
+        assert_eq!(vec_min(&vec![b3.clone()]), Some(&b3));
+        assert_eq!(vec_min::<BigInt>(&vec![]), None);
+    }
 
     #[test]
     fn test_overflowing_add() {
