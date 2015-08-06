@@ -59,8 +59,8 @@ pub struct LinkedList<T> {
 
 //@ We declare `raw_into_box` to be an `unsafe` function, telling Rust that calling this function is not generally safe.
 //@ This grants us the unsafe powers for the body of the function: We can dereference raw pointers, and - most importantly - we
-//@ can call unsafe functions. (There's a third power, related to mutable static variables, but we didn't talk about static variables
-//@ in the course, so that won't be relevant here.) <br/>
+//@ can call unsafe functions. (The other unsafe powers won't be relevant here. Go read [The Rustonomicon](https://doc.rust-lang.org/nightly/nomicon/)
+//@ if you want to learn all about this, but be warned - That Way Lies Madness.) <br/>
 //@ Here, the caller will have to ensure that `r` is a valid pointer, and that nobody else has a pointer to this data.
 unsafe fn raw_into_box<T>(r: *mut T) -> Box<T> {
     mem::transmute(r)
