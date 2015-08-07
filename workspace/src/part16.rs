@@ -42,7 +42,7 @@ impl<T> LinkedList<T> {
         // Create the new node, and make it a raw pointer.
         let new = Box::new( Node { data: t, next: ptr::null_mut(), prev: self.last } );
         let new = box_into_raw(new);
-        // Update other points to this node.
+        // Update other pointers to this node.
         if self.last.is_null() {
             debug_assert!(self.first.is_null());
             // The list is currently empty, so we have to update the head pointer.
@@ -61,7 +61,7 @@ impl<T> LinkedList<T> {
     // and return `Option<T>`.
 
     // Next, we are going to provide an iterator.
-    pub fn iter_mut(&self) -> IterMut<T> {
+    pub fn iter_mut(&mut self) -> IterMut<T> {
         IterMut { next: self.first, _marker: PhantomData  }
     }
 }
@@ -97,7 +97,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 impl<T> Drop for LinkedList<T> {
     // The destructor itself is a method which takes `self` in mutably borrowed form. It cannot own `self`, because then
-    // the destructor of `self` would be called at the end pf the function, resulting in endless recursion...
+    // the destructor of `self` would be called at the end of the function, resulting in endless recursion...
     fn drop(&mut self) {
         let mut cur_ptr = self.first;
         while !cur_ptr.is_null() {

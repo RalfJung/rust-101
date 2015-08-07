@@ -23,12 +23,12 @@
 // achieve C++-style control over memory and execution behavior (like, static vs. dynamic
 // dispatch), which makes it possible to construct abstractions that carry no run-time
 // cost. This is combined with the comfort of high-level functional languages and guaranteed
-// safety (as in, the program will not crash). The vast majority of existing
-// languages sacrifices one of these goals for the other. In particular, the
-// first requirement rules out a garbage collector: Rust can run "bare metal".
-// In fact, Rust rules out more classes of bugs than languages that achieve safety
-// with a GC: Besides dangling pointers and double-free, Rust also prevents issues
-// such as iterator invalidation and data races.
+// safety (as in, the program will not crash in uncontrolled ways). The vast majority of existing
+// languages sacrifices control for safety (for example, by enforcing the usage of
+// a garbage collector) or vice versa. Rust can run without dynamic allocation (i.e., without
+// a heap), and even without an operating system. In fact, Rust rules out more classes of bugs
+// than languages that achieve safety with a garbage collector: Besides dangling pointers and
+// double-free, Rust also prevents issues such as iterator invalidation and data races.
 // 
 // 
 // Getting started
@@ -39,20 +39,14 @@
 // (at the time of writing, that's the current beta release). More detailed installation
 // instructions are provided in [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 // This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
-
+// 
 // Next, fetch the Rust-101 source code from the [git repository](http://www.ralfj.de/git/rust-101.git)
 // (also available [on GitHub](https://github.com/RalfJung/rust-101), and as a
 // [zip archive](https://github.com/RalfJung/rust-101/archive/master.zip) in case you don't have git installed).
 // 
 // There is a workspace prepared for you in the `workspace` folder. I suggest you copy this
-// folder somewhere else - that will make it much easier to later update the course without
-// overwriting your changes. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
+// folder somewhere else. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
 // (You can also execute it with `cargo run`, but you'll need to do some work before this will succeed.)
-// 
-// If you later want to update the course, do `git pull` (or re-download the zip archive).
-// Then copy the files from `workspace/src/` to your workspace that you did not yet work on. Definitely
-// copy `main.rs` to make sure all the new files are actually compiled. (Of course you can also
-// copy the rest, but that would replace all your hard work by the original files with all the holes!)
 
 // Course Content
 // --------------

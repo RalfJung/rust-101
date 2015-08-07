@@ -101,7 +101,7 @@ impl<T> LinkedList<T> {
         }
     }
 
-    pub fn iter_mut(&self) -> IterMut<T> {
+    pub fn iter_mut(&mut self) -> IterMut<T> {
         IterMut { next: self.first, _marker: PhantomData  }
     }
 }
