@@ -19,9 +19,14 @@ for ext, l in pycco.main.languages.items():
     l["lexer"] = lexers.get_lexer_by_name(l["name"])
 # and monkey-patch for a custom CSS file
 html_src = pycco_resources.html
-marker = '<link rel="stylesheet" href="{{ stylesheet }}">'
+
+css_marker = '<link rel="stylesheet" href="{{ stylesheet }}">'
 custom_css = '<link rel="stylesheet" href="pycco_custom.css">'
-patched_html = html_src.replace(marker, marker+custom_css, 1)
+patched_html = html_src.replace(css_marker, css_marker+custom_css, 1)
+
+title_marker = '<title>'
+patched_html = html_src.replace(title_marker, title_marker + 'Rust-101: ', 1)
+
 pycco.main.pycco_template = pycco.main.template(patched_html)
 
 pycco.main.main()
