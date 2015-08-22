@@ -59,7 +59,7 @@ fn sort_nums(data: &mut Vec<i32>) {
 }
 
 // ## Arrays
-//@ An *array* in Rust is given be the type `[T; n]`, where `n` is some *fixed* number. So, `[f64; 10]` is an array of 10 floating-point
+//@ An *array* in Rust is given by the type `[T; n]`, where `n` is some *fixed* number. So, `[f64; 10]` is an array of 10 floating-point
 //@ numbers, all one right next to the other in memory. Arrays are sized, and hence can be used like any other type. But we can also
 //@ borrow them as slices, e.g., to sort them.
 fn sort_array() {

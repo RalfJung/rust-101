@@ -65,6 +65,7 @@ mod tests {
         // We do a clone, and call `call` on that one. This makes sure that it's not our `RefCell` that complains about two mutable borrows,
         // but rather the `RefCell` inside the `CallbacksMut`.
         let mut c2: Callbacks = c.borrow().clone();
+        drop(c);
         c2.call(42);
     }
 }
