@@ -22,11 +22,11 @@ html_src = pycco_resources.html
 
 css_marker = '<link rel="stylesheet" href="{{ stylesheet }}">'
 custom_css = '<link rel="stylesheet" href="pycco_custom.css">'
-patched_html = html_src.replace(css_marker, css_marker+custom_css, 1)
+html_src = html_src.replace(css_marker, css_marker+custom_css, 1)
 
 title_marker = '<title>'
-patched_html = html_src.replace(title_marker, title_marker + 'Rust-101: ', 1)
+html_src = html_src.replace(title_marker, title_marker + 'Rust-101: ', 1)
 
-pycco.main.pycco_template = pycco.main.template(patched_html)
+pycco.main.pycco_template = pycco.main.template(html_src)
 
 pycco.main.main()
