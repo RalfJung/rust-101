@@ -62,8 +62,8 @@ impl PartialEq for BigInt {
 
 //@ Since implementing `PartialEq` is a fairly mechanical business, you can let Rust automate this
 //@ by adding the attribute `derive(PartialEq)` to the type definition. In case you wonder about
-//@ the "partial", I suggest you check out the documentation of [`PartialEq`](http://doc.rust-lang.org/std/cmp/trait.PartialEq.html)
-//@ and [`Eq`](http://doc.rust-lang.org/std/cmp/trait.Eq.html). `Eq` can be automatically derived as well.
+//@ the "partial", I suggest you check out the documentation of [`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html)
+//@ and [`Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html). `Eq` can be automatically derived as well.
 
 // Now we can compare `BigInt`s. Rust treats `PratialEq` special in that it is wired to the operator `==`:
 //@ That operator can not be used on our numbers! Speaking in C++ terms, we just overloaded the `==` operator
@@ -71,7 +71,7 @@ impl PartialEq for BigInt {
 //@ functions depending on the type of the argument). Instead, one typically finds (or defines) a
 //@ trait that catches the core characteristic common to all the overloads, and writes a single
 //@ function that's generic in the trait. For example, instead of overloading a function for all
-//@ the ways a string can be represented, one writes a generic functions over [ToString](http://doc.rust-lang.org/std/string/trait.ToString.html).
+//@ the ways a string can be represented, one writes a generic functions over [ToString](https://doc.rust-lang.org/std/string/trait.ToString.html).
 //@ Usually, there is a trait like this that fits the purpose - and if there is, this has the great
 //@ advantage that any type *you* write, that can convert to a string, just has to implement
 //@ that trait to be immediately usable with all the functions out there that generalize over `ToString`.
@@ -113,7 +113,7 @@ fn test_min() {
 //@ that users can understand, while `Debug` is meant to show the internal state of data and targeted at
 //@ the programmer. The latter is what we want for `assert_eq!`, so let's get started.
 
-// All formating is handled by [`std::fmt`](http://doc.rust-lang.org/std/fmt/index.html). I won't explain
+// All formating is handled by [`std::fmt`](https://doc.rust-lang.org/std/fmt/index.html). I won't explain
 // all the details, and refer you to the documentation instead.
 use std::fmt;
 

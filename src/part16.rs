@@ -55,7 +55,7 @@ pub struct LinkedList<T> {
 //@ Clearly, that's an unsafe operation and must only be used with great care - or even better, not at all. Seriously.
 //@ If at all possible, you should never use `transmute`. <br/>
 //@ We are making the assumption here that a `Box` and a raw pointer have the same representation in memory. In the future,
-//@ Rust will [provide](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.from_raw) such [operations](http://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.into_raw) in the standard library, but the exact API is still being fleshed out.
+//@ Rust will [provide](https://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.from_raw) such [operations](https://doc.rust-lang.org/beta/alloc/boxed/struct.Box.html#method.into_raw) in the standard library, but the exact API is still being fleshed out.
 
 //@ We declare `raw_into_box` to be an `unsafe` function, telling Rust that calling this function is not generally safe.
 //@ This grants us the unsafe powers for the body of the function: We can dereference raw pointers, and - most importantly - we

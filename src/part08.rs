@@ -17,7 +17,7 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     //@ The reason for this is that many serious security vulnerabilities have been caused by integer overflows, so just assuming
     //@ "per default" that they are intended is dangerous. <br/>
     //@ If you explicitly *do* want an overflow to happen, you can call the `wrapping_add`
-    //@ function (see [the documentation](http://doc.rust-lang.org/stable/std/primitive.u64.html#method.wrapping_add),
+    //@ function (see [the documentation](https://doc.rust-lang.org/stable/std/primitive.u64.html#method.wrapping_add),
     //@ there are similar functions for other arithmetic operations). There are also similar functions
     //@ `checked_add` etc. to enforce the overflow check.
     let sum = a.wrapping_add(b);
@@ -57,7 +57,7 @@ fn test_overflowing_add() {
 impl ops::Add<BigInt> for BigInt {
     //@ Besides static functions and methods, traits can contain *associated types*: This is a type chosen by every particular implementation
     //@ of the trait. The methods of the trait can then refer to that type. In the case of addition, it is used to give the type of the result.
-    //@ (Also see the [documentation of `Add`](http://doc.rust-lang.org/stable/std/ops/trait.Add.html).)
+    //@ (Also see the [documentation of `Add`](https://doc.rust-lang.org/stable/std/ops/trait.Add.html).)
     //@ 
     //@ In general, you can consider the two `BigInt` given above (in the `impl` line) *input* types of trait search: When
     //@ `a + b` is invoked with `a` having type `T` and `b` having type `U`, Rust tries to find an implementation of `Add` for

@@ -2,7 +2,7 @@
 // ===================
 // 
 // This is [Rust-101](https://www.ralfj.de/projects/rust-101/), a small tutorial for
-// the [Rust language](http://www.rust-lang.org/). It is intended to be an interactive,
+// the [Rust language](https://www.rust-lang.org/). It is intended to be an interactive,
 // hands-on course: I believe the only way to *really* learn a language is to write code
 // in it, so you should be coding during the course.
 // 
@@ -35,12 +35,12 @@
 // ---------------
 // 
 // You will need to have Rust installed, of course. It is available for download on
-// [the Rust website](http://www.rust-lang.org/). Make sure you get at least version 1.2.
+// [the Rust website](https://www.rust-lang.org/). Make sure you get at least version 1.2.
 // More detailed installation instructions are provided in
 // [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 // This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
 // 
-// Next, fetch the Rust-101 source code from the [git repository](http://www.ralfj.de/git/rust-101.git)
+// Next, fetch the Rust-101 source code from the [git repository](https://www.ralfj.de/git/rust-101.git)
 // (also available [on GitHub](https://github.com/RalfJung/rust-101), and as a
 // [zip archive](https://github.com/RalfJung/rust-101/archive/master.zip) in case you don't have git installed).
 // 
@@ -117,4 +117,4 @@ fn main() {
 // * [Rust by Example](http://rustbyexample.com/)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
 // * A [collection of links](https://github.com/ctjhoa/rust-learning) to blog posts, articles, videos, etc. for learning Rust.
-// * For the IRC channel and other forums, see the "Community" section of the [Rust Documentation index](http://doc.rust-lang.org/index.html)
+// * For the IRC channel and other forums, see the "Community" section of the [Rust Documentation index](https://doc.rust-lang.org/index.html)

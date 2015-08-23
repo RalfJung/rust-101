@@ -22,7 +22,7 @@ pub use self::SomethingOrNothing::*;
 type NumberOrNothing = SomethingOrNothing<i32>;
 //@ However, we can also write `SomethingOrNothing<bool>` or even `SomethingOrNothing<SomethingOrNothing<i32>>`.
 //@ In fact, such a type is so useful that it is already present in the standard library: It's called an
-//@ *option type*, written `Option<T>`. Go check out its [documentation](http://doc.rust-lang.org/stable/std/option/index.html)!
+//@ *option type*, written `Option<T>`. Go check out its [documentation](https://doc.rust-lang.org/stable/std/option/index.html)!
 //@ (And don't worry, there's indeed lots of material mentioned there that we did not cover yet.)
 
 // ## Generic `impl`, Static functions

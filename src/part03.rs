@@ -29,14 +29,14 @@ fn read_vec() -> Vec<i32> {
     //@ for that, but there is a catch: What happens if there is some other piece of code running
     //@ concurrently, that also reads from standard input? The result would be a mess. Hence
     //@ Rust requires us to `lock` standard input if we want to perform large operations on
-    //@ it. (See [the documentation](http://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for more
+    //@ it. (See [the documentation](https://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for more
     //@ details.) 
     for line in stdin.lock().lines() {
         // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
         // here is not yet of that type: It has type `io::Result<String>`.
         //@ The problem with I/O is that it can always go wrong. The type of `line` is a lot like `Option<String>` ("a `String` or
         //@ nothing"), but in the case of "nothing", there is additional information about the error.
-        //@ Again, I recommend to check [the documentation](http://doc.rust-lang.org/stable/std/io/type.Result.html).
+        //@ Again, I recommend to check [the documentation](https://doc.rust-lang.org/stable/std/io/type.Result.html).
         //@ You will see that `io::Result` is actually just an alias for `Result`, so click on that to obtain
         //@ the list of all constructors and methods of the type.
 

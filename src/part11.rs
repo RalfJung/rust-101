@@ -102,7 +102,7 @@ pub fn main() {
 //@ a *pointer* to such a type (be it a `Box` or a borrow) will need to complete this information. We say that pointers to
 //@ trait objects are *fat*. They store not only the address of the object, but (in the case of trait objects) also a *vtable*: A
 //@ table of function pointers, determining the code that's run when a trait method is called. There are some restrictions for traits to be usable
-//@ as trait objects. This is called *object safety* and described in [the documentation](http://doc.rust-lang.org/stable/book/trait-objects.html) and [the reference](http://doc.rust-lang.org/reference.html#trait-objects).
+//@ as trait objects. This is called *object safety* and described in [the documentation](https://doc.rust-lang.org/stable/book/trait-objects.html) and [the reference](https://doc.rust-lang.org/reference.html#trait-objects).
 //@ In case of the `FnMut` trait, there's only a single action to be performed: Calling the closure. You can thus think of a pointer to `FnMut` as
 //@ a pointer to the code, and a pointer to the environment. This is how Rust recovers the typical encoding of closures as a special case of a more
 //@ general concept.

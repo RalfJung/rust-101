@@ -145,6 +145,6 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
 //@ are used correctly, *while looking only at the function type*. At no point in our analysis of `rust_foo` did
 //@ we have to look *into* `head`. That's, of course, crucial if we want to separate library code from application code.
 //@ Most of the time, we don't have to explicitly add lifetimes to function types. This is thanks to *lifetimes elision*,
-//@ where Rust will automatically insert lifetimes we did not specify, following some [simple, well-documented rules](http://doc.rust-lang.org/stable/book/lifetimes.html#lifetime-elision).
+//@ where Rust will automatically insert lifetimes we did not specify, following some [simple, well-documented rules](https://doc.rust-lang.org/stable/book/lifetimes.html#lifetime-elision).
 
 //@ [index](main.html) | [previous](part05.html) | [next](part07.html)

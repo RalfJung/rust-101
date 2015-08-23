@@ -69,7 +69,7 @@ fn sort_array() {
 
 // ## External Dependencies
 //@ This leaves us with just one more piece to complete rgrep: Taking arguments from the command-line. We could now directly work on
-//@ [`std::env::args`](http://doc.rust-lang.org/stable/std/env/fn.args.html) to gain access to those arguments, and this would become
+//@ [`std::env::args`](https://doc.rust-lang.org/stable/std/env/fn.args.html) to gain access to those arguments, and this would become
 //@ a pretty boring lesson in string manipulation. Instead, I want to use this opportunity to show how easy it is to benefit from
 //@ other people's work in your program.
 //@ 

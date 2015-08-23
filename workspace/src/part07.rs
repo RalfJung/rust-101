@@ -61,7 +61,7 @@ fn test_min() {
 
 // ## Formatting
 
-// All formating is handled by [`std::fmt`](http://doc.rust-lang.org/std/fmt/index.html). I won't explain
+// All formating is handled by [`std::fmt`](https://doc.rust-lang.org/std/fmt/index.html). I won't explain
 // all the details, and refer you to the documentation instead.
 use std::fmt;
 

@@ -167,7 +167,7 @@ pub fn main() {
 //@ sure that the callbacks do not reference any pointers that might become invalid? This is just as crucial for spawning
 //@ a thread: In general, that thread could last for much longer than the current stack frame. Thus, it must not use
 //@ any pointers to data in that stack frame. This is achieved by requiring the `FnOnce` closure passed to `thread::spawn`
-//@ to be valid for lifetime `'static`, as you can see in [its documentation](http://doc.rust-lang.org/stable/std/thread/fn.spawn.html).
+//@ to be valid for lifetime `'static`, as you can see in [its documentation](https://doc.rust-lang.org/stable/std/thread/fn.spawn.html).
 //@ This avoids another kind of data race, where the thread's access races with the callee deallocating its stack frame.
 //@ It is only thanks to the concept of lifetimes that this can be expressed as part of the type of `spawn`.
 

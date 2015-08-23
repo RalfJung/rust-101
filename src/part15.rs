@@ -11,7 +11,7 @@ use std::thread;
 //@ which we already discussed in a single-threaded context in part 12.
 //@ 
 //@ ## `Mutex`
-//@ The most basic type for interior mutability that supports concurrency is [`Mutex<T>`](http://doc.rust-lang.org/stable/std/sync/struct.Mutex.html).
+//@ The most basic type for interior mutability that supports concurrency is [`Mutex<T>`](https://doc.rust-lang.org/stable/std/sync/struct.Mutex.html).
 //@ This type implements *critical sections* (or *locks*), but in a data-driven way: One has to specify
 //@ the type of the data that's protected by the mutex, and Rust ensures that the data is *only* accessed
 //@ through the mutex. In other words, "lock data, not code" is actually enforced by the type system, which
@@ -103,7 +103,7 @@ pub fn main() {
 // the data inside the lock. Change the code above to do that. Try using `unwrap_or_else` for this job.
 
 //@ ## `RwLock`
-//@ Besides `Mutex`, there's also [`RwLock`](http://doc.rust-lang.org/stable/std/sync/struct.RwLock.html), which
+//@ Besides `Mutex`, there's also [`RwLock`](https://doc.rust-lang.org/stable/std/sync/struct.RwLock.html), which
 //@ provides two ways of locking: One that grants only read-only access, to any number of concurrent readers, and another one
 //@ for exclusive write access. Notice that this is the same pattern we already saw with shared vs. mutable borrows. Hence
 //@ another way of explaining `RwLock` is to say that it is like `RefCell`, but works even for concurrent access. Rather than
@@ -119,7 +119,7 @@ pub fn main() {
 //@ 
 //@ In part 13, we talked about types that are marked `Send` and thus can be moved to another thread. However, we did *not*
 //@ talk about the question whether a borrow is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
-//@ `&mut` allows moving values back and forth, it is even possible to [`swap`](http://doc.rust-lang.org/stable/std/mem/fn.swap.html)
+//@ `&mut` allows moving values back and forth, it is even possible to [`swap`](https://doc.rust-lang.org/stable/std/mem/fn.swap.html)
 //@ the contents of two mutably borrowed values. So in terms of concurrency, sending a mutable borrow is very much like
 //@ sending full ownership, in the sense that it can be used to move the object to another thread.
 //@ 

@@ -5,7 +5,7 @@ use part05::BigInt;
 
 //@ In the following, we will look into the iterator mechanism of Rust and make our `BigInt` compatible
 //@ with the `for` loops. Of course, this is all about implementing certain traits again. In particular,
-//@ an iterator is something that implements the `Iterator` trait. As you can see in [the documentation](http://doc.rust-lang.org/stable/std/iter/trait.Iterator.html),
+//@ an iterator is something that implements the `Iterator` trait. As you can see in [the documentation](https://doc.rust-lang.org/stable/std/iter/trait.Iterator.html),
 //@ this trait mandates a single function `next` returning an `Option<Self::Item>`, where `Item` is an
 //@ associated type chosen by the implementation. (There are many more methods provided for `Iterator`,
 //@ but they all have default implementations, so we don't have to worry about them right now.)
@@ -121,7 +121,7 @@ fn iter_invalidation_demo() {
 // ## Iterator conversion trait
 //@ If you closely compare the `for` loop in `main` above, with the one in `part06::vec_min`, you will notice that we were able to write
 //@ `for e in v` earlier, but now we have to call `iter`. Why is that? Well, the `for` sugar is not actually tied to `Iterator`.
-//@ Instead, it demands an implementation of [`IntoIterator`](http://doc.rust-lang.org/stable/std/iter/trait.IntoIterator.html).
+//@ Instead, it demands an implementation of [`IntoIterator`](https://doc.rust-lang.org/stable/std/iter/trait.IntoIterator.html).
 //@ That's a trait of types that provide a *conversion* function into some kind of iterator. These conversion traits are a frequent
 //@ pattern in Rust: Rather than demanding that something is an iterator, or a string, or whatever; one demands that something
 //@ can be converted to an iterator/string/whatever. This provides convenience similar to overloading of functions: The function
