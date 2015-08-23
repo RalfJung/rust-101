@@ -8,14 +8,14 @@ all: docs workspace crates
 ## Documentation
 docs: $(DOCFILES)
 
-.tmp/docs/%.rs: src/%.rs Makefile dup-unimpl.sed
+.tmp/docs/%.rs: src/%.rs Makefile pycco-rs dup-unimpl.sed
 	@mkdir -p .tmp/docs
 	@echo "$< -> $@"
 	@# sed-fu: remove the "@" from "//@", and remove trailing "/*@*/", replace lines ending in  "/*@@*/" by "unimplemented!()".
 	@# Also coalesce multiple adjacent such lines to one.
 	@sed 's|^\(\s*//\)@|\1|;s|\s*/\*@\*/$$||;s|\(\s*\)\S.*/\*@@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
 
-docs/%.html: pycco-rs .tmp/docs/%.rs
+docs/%.html: .tmp/docs/%.rs
 	@./pycco-rs $<
 
 ## Workspace
