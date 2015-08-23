@@ -15,7 +15,7 @@ docs: $(DOCFILES)
 	@# Also coalesce multiple adjacent such lines to one.
 	@sed 's|^\(\s*//\)@|\1|;s|\s*/\*@\*/$$||;s|\(\s*\)\S.*/\*@@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
 
-docs/%.html: .tmp/docs/%.rs
+docs/%.html: pycco-rs .tmp/docs/%.rs
 	@./pycco-rs $<
 
 ## Workspace
