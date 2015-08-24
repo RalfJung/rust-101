@@ -21,7 +21,7 @@ for ext, l in pycco.main.languages.items():
 html_src = pycco_resources.html
 
 css_marker = '<link rel="stylesheet" href="{{ stylesheet }}">'
-custom_css = '<link rel="stylesheet" href="pycco_custom.css">'
+custom_css = '<link rel="stylesheet" href="pycco_custom.css"><meta name="viewport" content="width=device-width">'
 html_src = html_src.replace(css_marker, css_marker+custom_css, 1)
 
 title_marker = '<title>'
