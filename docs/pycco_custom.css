@@ -63,7 +63,7 @@ div.code {
     }
 }
 
-@media screen and (max-width:1300px) {
+@media screen and (max-width:1200px) {
     #background {
         background: none;
         border: none;
