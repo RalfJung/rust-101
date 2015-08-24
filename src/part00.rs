@@ -111,4 +111,4 @@ pub fn main() {
 //@ computed that ourselves, but that's besides the point. More importantly:
 //@ You completed the first part of the course.
 
-//@ [index](main.html) | previous | [next](part01.html)
+//@ [index](main.html) | previous | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part00.rs) | [next](part01.html)

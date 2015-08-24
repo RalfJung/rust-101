@@ -147,4 +147,4 @@ fn work_on_variant(mut var: Variant, text: String) {
 //@ I hope this example clarifies why Rust has to rule out mutation in the presence of aliasing *in general*,
 //@ not just for the specific case of a buffer being reallocated, and old pointers becoming hence invalid.
 
-//@ [index](main.html) | [previous](part04.html) | [next](part06.html)
+//@ [index](main.html) | [previous](part04.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part05.rs) | [next](part06.html)

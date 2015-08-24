@@ -106,4 +106,4 @@ pub fn main() {
 
 // **Exercise 01.2**: Write a function `vec_print` that takes a vector and prints all its elements.
 
-//@ [index](main.html) | [previous](part00.html) | [next](part02.html)
+//@ [index](main.html) | [previous](part00.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part01.rs) | [next](part02.html)

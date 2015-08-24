@@ -197,4 +197,4 @@ impl<T> Drop for LinkedList<T> {
 //@ extensions here and there. The [index](main.html) contains some more links to additional resources you may find useful. 
 //@ With that, there's only one thing left to say: Happy Rust Hacking!
 
-//@ [index](main.html) | [previous](part15.html) | next
+//@ [index](main.html) | [previous](part15.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part16.rs) | next

@@ -146,4 +146,4 @@ impl<'a> IntoIterator for &'a BigInt {
 //@ then you will obtain ownership of the elements during the iteration - and destroy the vector in the process. We actually did that in
 //@ `part01::vec_min`, but we did not care. You can write `for e in &v` or `for e in v.iter()` to avoid this.
 
-//@ [index](main.html) | [previous](part08.html) | [next](part10.html)
+//@ [index](main.html) | [previous](part08.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part09.rs) | [next](part10.html)

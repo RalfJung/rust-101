@@ -143,4 +143,4 @@ fn mutable_borrow_demo() {
 // As it turns out, combined with the abstraction facilities of Rust, this is a very powerful mechanism
 // to tackle many problems beyond basic memory safety. You will see some examples for this soon.
 
-//@ [index](main.html) | [previous](part03.html) | [next](part05.html)
+//@ [index](main.html) | [previous](part03.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part04.rs) | [next](part05.html)

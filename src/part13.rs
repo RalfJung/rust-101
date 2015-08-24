@@ -189,4 +189,4 @@ pub fn main() {
 //@ So if the environment of your closure contains an `Rc`, it won't be `Send`, preventing it from causing trouble. If however every
 //@ captured variable *is* `Send`, then so is the entire environment, and you are good.
 
-//@ [index](main.html) | [previous](part12.html) | [next](part14.html)
+//@ [index](main.html) | [previous](part12.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part13.rs) | [next](part14.html)

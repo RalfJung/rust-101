@@ -161,4 +161,4 @@ fn demo_mut(c: &mut CallbacksMut) {
 // **Exercise 12.1**: Write some piece of code using only the available, public interface of `CallbacksMut` such that a reentrant call to a closure
 // is happening, and the program aborts because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
 
-//@ [index](main.html) | [previous](part11.html) | [next](part13.html)
+//@ [index](main.html) | [previous](part11.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part12.rs) | [next](part13.html)
