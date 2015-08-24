@@ -35,26 +35,44 @@ div.code {
     margin-left: 640px;
 }
 
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 20px;
+}
+div.docs p {
+    margin-bottom: 5px;
+}
+div.code {
+    padding-top: 5px;
+    padding-bottom: 3px;
+}
+
 @media print {
     #background {
         background: none;
         border: none;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        margin-top: 20px;
     }
     div.docs {
         max-width: 99%;
         padding-left: 0px;
         padding-right: 0px;
     }
-    div.docs p {
-        margin-bottom: 5px;
+    div.code {
+        margin: 0px;
+        clear: both;
+    }
+}
+
+@media screen and (max-width:1000px) {
+    #background {
+        background: none;
+        border: none;
+    }
+    div.docs {
+        max-width: 99%;
     }
     div.code {
         margin: 0px;
-        padding-top: 2px;
-        padding-bottom: 5px;
         clear: both;
     }
 }
