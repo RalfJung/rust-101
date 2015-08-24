@@ -13,6 +13,9 @@
 /*--------------------- Layout ----------------------------*/
 body {
     font-family: 'aller-light', sans-serif;
+    position: relative;
+    display: inline-block;
+    min-height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -24,6 +27,8 @@ div.docs {
     padding-left: 35px;
 }
 #background {
+    position: absolute;
+    height: 100%;
     left: 640px;
 }
 div.code {
