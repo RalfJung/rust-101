@@ -53,7 +53,7 @@ pub mod rgrep {
     // We also import some other pieces that we will need.
     extern crate docopt;
     use self::docopt::Docopt;
-    use part12::{run, Options, OutputMode};
+    use part13::{run, Options, OutputMode};
     use std::process;
 
     // The `USAGE` string documents how the program is to be called. It's written in a format that `docopt` can parse.
