@@ -95,7 +95,7 @@ pub mod rgrep {
     // We also import some other pieces that we will need.
     extern crate docopt;
     use self::docopt::Docopt;
-    use part12::{run, Options, OutputMode};
+    use part13::{run, Options, OutputMode};
     use std::process;
 
     // The `USAGE` string documents how the program is to be called. It's written in a format that `docopt` can parse.
@@ -131,8 +131,8 @@ Options:
         //@ encoded string, that is, a bunch of bytes in memory (`[u8]`) that are valid according of UTF-8. `str` is unsized. `&str`
         //@ stores the address of the character data, and their length. String literals like "this one" are
         //@ of type `&'static str`: They point right to the constant section of the binary, so 
-        //@ However, the borrow is valid for as long as the program runs, hence it has lifetime `'static`. Calling
-        //@ `to_string` will copy the string data into an owned buffer on the heap, and thus convert it to `String`.
+        //@ the borrow is valid for the entire program. The bytes pointed to by `pattern`, on the other hand, are owned by someone else, 
+        //@ so we call `to_string` on it to copy the string data into a buffer on the heap owned by a String we own.
         let mode = if count {
             OutputMode::Count
         } else if sort {
