@@ -8,7 +8,7 @@
 // ## Expression-based programming
 fn sqr(i: i32) -> i32 { i * i }
 
-// Conditionals are also just expressions. You can compare this to the ternary `? :` operator
+// Conditionals are also just expressions. This is comparable to the ternary `? :` operator
 // from languages like C.
 fn abs(i: i32) -> i32 { if i >= 0 { i } else { -i } }
 
@@ -68,7 +68,7 @@ pub fn main() {
 // You will have to replace `part00` by `part01` in the `main` function in
 // `main.rs` to run this code.
 
-// **Exercise 01.1**: Write a funtion `vec_sum` that computes the sum of all values of a `Vec<i32>`.
+// **Exercise 01.1**: Write a function `vec_sum` that computes the sum of all values of a `Vec<i32>`.
 
 // **Exercise 01.2**: Write a function `vec_print` that takes a vector and prints all its elements.
 

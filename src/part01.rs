@@ -16,7 +16,7 @@ fn sqr(i: i32) -> i32 { i * i }
 //@ So we can just write `i * i`, the expression that returns the square if `i`!
 //@ This is very close to how mathematicians write down functions (but with more types).
 
-// Conditionals are also just expressions. You can compare this to the ternary `? :` operator
+// Conditionals are also just expressions. This is comparable to the ternary `? :` operator
 // from languages like C.
 fn abs(i: i32) -> i32 { if i >= 0 { i } else { -i } }
 
@@ -45,7 +45,7 @@ fn compute_stuff(x: i32) -> i32 {
 fn vec_min(v: Vec<i32>) -> NumberOrNothing {
     //@ Remember that helper function `min_i32`? Rust allows us to define such helper functions *inside* other
     //@ functions. This is just a matter of namespacing, the inner function has no access to the data of the outer
-    //@ one. Still, being able to nicely group functions can be very useful.
+    //@ one. Still, being able to nicely group functions can significantly increase readability.
     fn min_i32(a: i32, b: i32) -> i32 {
         if a < b { a } else { b }                                   /*@*/
     }
@@ -102,7 +102,7 @@ pub fn main() {
 // You will have to replace `part00` by `part01` in the `main` function in
 // `main.rs` to run this code.
 
-// **Exercise 01.1**: Write a funtion `vec_sum` that computes the sum of all values of a `Vec<i32>`.
+// **Exercise 01.1**: Write a function `vec_sum` that computes the sum of all values of a `Vec<i32>`.
 
 // **Exercise 01.2**: Write a function `vec_print` that takes a vector and prints all its elements.
 

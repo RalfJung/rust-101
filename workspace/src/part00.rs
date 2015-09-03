@@ -17,7 +17,7 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
 
     // Now we want to *iterate* over the list. Rust has some nice syntax for iterators:
     for el in vec {
-        // So `el` is al element of the list. We need to update `min` accordingly, but how do we get the current
+        // So `el` is an element of the list. We need to update `min` accordingly, but how do we get the current
         // number in there? This is what pattern matching can do:
         match min {
             // In this case (*arm*) of the `match`, `min` is currently nothing, so let's just make it the number `el`.
@@ -48,7 +48,7 @@ fn min_i32(a: i32, b: i32) -> i32 {
 
 // Indeed, we can: The following line tells Rust to take
 // the constructors of `NumberOrNothing` into the local namespace.
-// Try moving that above the function, and removing all the occurrences `NumberOrNothing::`.
+// Try moving that above the function, and removing all the occurrences of `NumberOrNothing::`.
 use self::NumberOrNothing::{Number,Nothing};
 
 // To call this function, we now just need a list. Of course, ultimately we want to ask the user for

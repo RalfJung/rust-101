@@ -28,7 +28,9 @@
 // a garbage collector) or vice versa. Rust can run without dynamic allocation (i.e., without
 // a heap), and even without an operating system. In fact, Rust rules out more classes of bugs
 // than languages that achieve safety with a garbage collector: Besides dangling pointers and
-// double-free, Rust also prevents issues such as iterator invalidation and data races.
+// double-free, Rust also prevents issues such as iterator invalidation and data races. Finally,
+// it cleans up behind you, and deallocates resources (memory, but also file descriptors and really
+// anything) when you don't need them anymore.
 // 
 // 
 // Getting started

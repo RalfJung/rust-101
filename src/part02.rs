@@ -21,9 +21,9 @@ pub use self::SomethingOrNothing::*;
 //@ `SomethingOrNothing<i32>` to get back our `NumberOrNothing`.
 type NumberOrNothing = SomethingOrNothing<i32>;
 //@ However, we can also write `SomethingOrNothing<bool>` or even `SomethingOrNothing<SomethingOrNothing<i32>>`.
-//@ In fact, such a type is so useful that it is already present in the standard library: It's called an
+//@ In fact, a type like `SomethingOrNothing` is so useful that it is already present in the standard library: It's called an
 //@ *option type*, written `Option<T>`. Go check out its [documentation](https://doc.rust-lang.org/stable/std/option/index.html)!
-//@ (And don't worry, there's indeed lots of material mentioned there that we did not cover yet.)
+//@ (And don't worry, there's indeed lots of material mentioned there that we have not covered yet.)
 
 // ## Generic `impl`, Static functions
 //@ The types are so similar, that we can provide a generic function to construct a `SomethingOrNothing<T>`
@@ -55,7 +55,7 @@ fn call_constructor(x: i32) -> SomethingOrNothing<i32> {
 }
 
 // ## Traits
-//@ Now that we have a generic `SomethingOrNothing`, wouldn't it be nice to also gave a generic
+//@ Now that we have a generic `SomethingOrNothing`, wouldn't it be nice to also have a generic
 //@ `vec_min`? Of course, we can't take the minimum of a vector of *any* type. It has to be a type
 //@ supporting a `min` operation. Rust calls such properties that we may demand of types *traits*.
 
@@ -63,10 +63,10 @@ fn call_constructor(x: i32) -> SomethingOrNothing<i32> {
 //@ For now, just ignore the `Copy`, we will come back to this point later.
 //@ A `trait` is a lot like interfaces in Java: You define a bunch of functions
 //@ you want to have implemented, and their argument and return types. <br/>
-//@ The function `min` takes to arguments of the same type, but I made the
+//@ The function `min` takes two arguments of the same type, but I made the
 //@ first argument the special `self` argument. I could, alternatively, have
 //@ made `min` a static function as follows: `fn min(a: Self, b: Self) -> Self`.
-//@ However, in Rust one typically prefers methods over static function wherever possible.
+//@ However, in Rust one typically prefers methods over static functions wherever possible.
 pub trait Minimum : Copy {
     fn min(self, b: Self) -> Self;
 }
@@ -98,7 +98,7 @@ pub fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
 //@ Before going on, take a moment to ponder the flexibility of Rust's take on abstraction:
 //@ We just defined our own, custom trait (interface), and then implemented that trait
 //@ *for an existing type*. With the hierarchical approach of, e.g., C++ or Java,
-//@ that's not possible: We cannot make an existing type suddenly also inherit from our abstract base class.
+//@ that's not possible: We cannot make an existing type also inherit from our abstract base class after the fact.
 //@ 
 //@ In case you are worried about performance, note that Rust performs *monomorphisation*
 //@ of generic functions: When you call `vec_min` with `T` being `i32`, Rust essentially goes

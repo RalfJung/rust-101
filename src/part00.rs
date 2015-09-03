@@ -37,7 +37,7 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
 
     // Now we want to *iterate* over the list. Rust has some nice syntax for iterators:
     for el in vec {
-        // So `el` is al element of the list. We need to update `min` accordingly, but how do we get the current
+        // So `el` is an element of the list. We need to update `min` accordingly, but how do we get the current
         // number in there? This is what pattern matching can do:
         match min {
             // In this case (*arm*) of the `match`, `min` is currently nothing, so let's just make it the number `el`.
@@ -51,6 +51,8 @@ fn vec_min(vec: Vec<i32>) -> NumberOrNothing {
                 min = NumberOrNothing::Number(new_min);             /*@*/
             }
         }
+        //@ Notice that Rust makes sure you did not forget to handle any case in your `match`. We say
+        //@ that the pattern matching has to be *exhaustive*.
     }
     // Finally, we return the result of the computation.
     return min;
@@ -70,13 +72,13 @@ fn min_i32(a: i32, b: i32) -> i32 {
 
 // Indeed, we can: The following line tells Rust to take
 // the constructors of `NumberOrNothing` into the local namespace.
-// Try moving that above the function, and removing all the occurrences `NumberOrNothing::`.
+// Try moving that above the function, and removing all the occurrences of `NumberOrNothing::`.
 use self::NumberOrNothing::{Number,Nothing};
 
 // To call this function, we now just need a list. Of course, ultimately we want to ask the user for
 // a list of numbers, but for now, let's just hard-code something.
 
-//@ `vec!` is a *macro* (as you can tell from the `!`) that constructs a constant `Vec<_>` with the given
+//@ `vec!` is a *macro* (as indicated by `!`) that constructs a constant `Vec<_>` with the given
 //@ elements.
 fn read_vec() -> Vec<i32> {
     vec![18,5,7,1,9,27]                                             /*@*/
@@ -108,7 +110,7 @@ pub fn main() {
 // Finally, try `cargo run` on the console to run it.
 
 //@ Yay, it said "1"! That's actually the right answer. Okay, we could have
-//@ computed that ourselves, but that's besides the point. More importantly:
+//@ computed that ourselves, but that's beside the point. More importantly:
 //@ You completed the first part of the course.
 
 //@ [index](main.html) | previous | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part00.rs) | [next](part01.html)
