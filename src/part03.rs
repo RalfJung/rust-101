@@ -24,7 +24,7 @@ fn read_vec() -> Vec<i32> {
     let mut vec: Vec<i32> = Vec::<i32>::new();
     // The central handle to the standard input is made available by the function `io::stdin`.
     let stdin = io::stdin();
-    println!("Enter a list of numbers, one per line. End with Ctrl-D.");
+    println!("Enter a list of numbers, one per line. End with Ctrl-D (Linux) or Ctrl-Z (Windows).");
     //@ We would now like to iterate over standard input line-by-line. We can use a `for` loop
     //@ for that, but there is a catch: What happens if there is some other piece of code running
     //@ concurrently, that also reads from standard input? The result would be a mess. Hence

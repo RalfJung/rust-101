@@ -12,7 +12,7 @@ fn read_vec() -> Vec<i32> {
     let mut vec: Vec<i32> = Vec::<i32>::new();
     // The central handle to the standard input is made available by the function `io::stdin`.
     let stdin = io::stdin();
-    println!("Enter a list of numbers, one per line. End with Ctrl-D.");
+    println!("Enter a list of numbers, one per line. End with Ctrl-D (Linux) or Ctrl-Z (Windows).");
     for line in stdin.lock().lines() {
         // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
         // here is not yet of that type: It has type `io::Result<String>`.
