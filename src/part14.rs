@@ -132,7 +132,7 @@ Options:
         //@ stores the address of the character data, and their length. String literals like "this one" are
         //@ of type `&'static str`: They point right to the constant section of the binary, so 
         //@ the borrow is valid for the entire program. The bytes pointed to by `pattern`, on the other hand, are owned by someone else, 
-        //@ so we call `to_string` on it to copy the string data into a buffer on the heap owned by a String we own.
+        //@ and we call `to_string` on it to copy the string data into a buffer on the heap that we own.
         let mode = if count {
             OutputMode::Count
         } else if sort {
