@@ -87,7 +87,7 @@ pub fn main() {
         //@ that doesn't work out this time. Remember the `'static` bound above? Borrowing `count` in the environment would
         //@ violate that bound, as the borrow is only valid for this block. If the callbacks are triggered later, we'd be in trouble.
         //@ We have to explicitly tell Rust to `move` ownership of the variable into the closure. Its environment will then contain a
-        //@ `usize` rather than a `&mut uszie`, and the closure has no effect on this local variable anymore.
+        //@ `usize` rather than a `&mut usize`, and the closure has no effect on this local variable anymore.
         let mut count: usize = 0;
         c.register_generic(move |val| {
             count = count+1;
