@@ -39,7 +39,7 @@ impl PartialEq for BigInt {
 }
 
 
-// Now we can compare `BigInt`s. Rust treats `PratialEq` special in that it is wired to the operator `==`:
+// Now we can compare `BigInt`s. Rust treats `PartialEq` special in that it is wired to the operator `==`:
 fn compare_big_ints() {
     let b1 = BigInt::new(13);
     let b2 = BigInt::new(37);
