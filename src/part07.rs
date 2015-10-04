@@ -65,7 +65,7 @@ impl PartialEq for BigInt {
 //@ the "partial", I suggest you check out the documentation of [`PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html)
 //@ and [`Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html). `Eq` can be automatically derived as well.
 
-// Now we can compare `BigInt`s. Rust treats `PratialEq` special in that it is wired to the operator `==`:
+// Now we can compare `BigInt`s. Rust treats `PartialEq` special in that it is wired to the operator `==`:
 //@ That operator can not be used on our numbers! Speaking in C++ terms, we just overloaded the `==` operator
 //@ for `BigInt`. Rust does not have function overloading (i.e., it will not dispatch to different
 //@ functions depending on the type of the argument). Instead, one typically finds (or defines) a
