@@ -17,7 +17,7 @@ pub enum SomethingOrNothing<T>  {
 }
 // Instead of writing out all the variants, we can also just import them all at once.
 pub use self::SomethingOrNothing::*;
-//@ What this does is to define an entire family of types: We can now write
+//@ What this does is define an entire family of types: We can now write
 //@ `SomethingOrNothing<i32>` to get back our `NumberOrNothing`.
 type NumberOrNothing = SomethingOrNothing<i32>;
 //@ However, we can also write `SomethingOrNothing<bool>` or even `SomethingOrNothing<SomethingOrNothing<i32>>`.
@@ -141,7 +141,7 @@ pub fn main() {
     min.print();
 }
 
-//@ If this printed `3`, then you generic `vec_min` is working! So get ready for the next part.
+//@ If this printed `3`, then your generic `vec_min` is working! So get ready for the next part.
 
 // **Exercise 02.1**: Change your program such that it computes the minimum of a `Vec<f32>` (where `f32` is the type
 // of 32-bit floating-point numbers). You should not change `vec_min` in any way, obviously!

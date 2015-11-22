@@ -62,8 +62,8 @@ impl BigInt {
 }
 
 // ## Cloning
-//@ If you have a close look at the type of `BigInt::from_vec`, you will notice that it
-//@ consumes the vector `v`. The caller hence loses access to its vector. There is however something
+//@ If you take a close look at the type of `BigInt::from_vec`, you will notice that it
+//@ consumes the vector `v`. The caller hence loses access to its vector. However, there is something
 //@ we can do if we don't want that to happen: We can explicitly `clone` the vector,
 //@ which means that a full (or *deep*) copy will be performed. Technically,
 //@ `clone` takes a borrowed vector, and returns a fully owned one.
@@ -99,7 +99,7 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
         match *self {                                               /*@*/
             Nothing => Nothing,                                     /*@*/
             //@ In the second arm of the match, we need to talk about the value `v`
-            //@ that's stored in `self`. However, if we would write the pattern as
+            //@ that's stored in `self`. However, if we were to write the pattern as
             //@ `Something(v)`, that would indicate that we *own* `v` in the code
             //@ after the arrow. That can't work though, we have to leave `v` owned by
             //@ whoever called us - after all, we don't even own `self`, we just borrowed it.

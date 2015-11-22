@@ -137,7 +137,7 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
 //@ When analyzing the code of `rust_foo`, Rust has to assign a lifetime to `first`. It will choose the scope
 //@ where `first` is valid, which is the entire rest of the function. Because `head` ties the lifetime of its
 //@ argument and return value together, this means that `&v` also has to borrow `v` for the entire duration of
-//@ the function. So when we try to borrow `v` mutable for `push`, Rust complains that the two borrows (the one
+//@ the function `rust_foo`. So when we try to borrow `v` as mutable for `push`, Rust complains that the two borrows (the one
 //@ for `head`, and the one for `push`) overlap. Lucky us! Rust caught our mistake and made sure we don't crash the program.
 //@ 
 //@ So, to sum this up: Lifetimes enable Rust to reason about *how long* a pointer has been borrowed. We can thus
