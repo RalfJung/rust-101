@@ -14,9 +14,9 @@ use part05::BigInt;
 //@ digit comes first. So, we have to write down some type, and implement `Iterator` for it such that `next` returns the digits
 //@ one-by-one. Clearly, the iterator must somehow be able to access the number it iterates over, and it must store its current
 //@ location. However, it cannot *own* the `BigInt`, because then the number would be gone after iteration! That'd certainly be bad.
-//@ The only alternative is for the iterator to *borrow* the number.
+//@ The only alternative is for the iterator to *borrow* the number, so it takes a reference.
 
-//@ In writing this down, we again have to be explicit about the lifetime of the borrow: We can't just have an
+//@ In writing this down, we again have to be explicit about the lifetime of the reference: We can't just have an
 //@ `Iter`, we must have an `Iter<'a>` that borrows the number for lifetime `'a`. This is our first example of
 //@ a data-type that's polymorphic in a lifetime, as opposed to a type. <br/>
 //@ `usize` here is the type of unsigned, pointer-sized numbers. It is typically the type of "lengths of things",
@@ -47,7 +47,7 @@ impl<'a> Iterator for Iter<'a> {
 // All we need now is a function that creates such an iterator for a given `BigInt`.
 impl BigInt {
     //@ Notice that when we write the type of `iter`, we don't actually have to give the lifetime parameter of `Iter`. Just as it is
-    //@ the case with functions returning borrowed data, you can elide the lifetime. The rules for adding the lifetimes are exactly the
+    //@ the case with functions returning references, you can elide the lifetime. The rules for adding the lifetimes are exactly the
     //@ same. (See the last section of [part 06](part06.html).)
     fn iter(&self) -> Iter {
         Iter { num: self, idx: self.data.len() }                    /*@*/
@@ -94,7 +94,7 @@ fn print_digits_v2(b: &BigInt) {
 
 // ## Iterator invalidation and lifetimes
 //@ You may have been surprised that we had to explicitly annotate a lifetime when we wrote `Iter`. Of
-//@ course, with lifetimes being present at every borrow in Rust, this is only consistent. But do we at
+//@ course, with lifetimes being present at every reference in Rust, this is only consistent. But do we at
 //@ least gain something from this extra annotation burden? (Thankfully, this burden only occurs when we
 //@ define *types*, and not when we define functions - which is typically much more common.)
 
@@ -130,7 +130,7 @@ fn iter_invalidation_demo() {
 //@ of the right type, the conversion function will not do anything and trivially be optimized away.
 
 //@ If you have a look at the documentation of `IntoIterator`, you will notice that the function `into_iter` it provides actually
-//@ consumes its argument. So we implement the trait for *borrowed* numbers, such that the number is not lost after the iteration.
+//@ consumes its argument. So we implement the trait for *references to* numbers, such that the number is not lost after the iteration.
 impl<'a> IntoIterator for &'a BigInt {
     type Item = u64;
     type IntoIter = Iter<'a>;
@@ -140,7 +140,7 @@ impl<'a> IntoIterator for &'a BigInt {
 }
 // With this in place, you can now replace `b.iter()` in `main` by `&b`. Go ahead and try it! <br/>
 //@ Wait, `&b`? Why that? Well, we implemented `IntoIterator` for `&BigInt`. If we are in a place where `b` is already borrowed, we can
-//@ just do `for digit in b`. If however, we own `b`, we have to borrow it. Alternatively, we could implement `IntoIterator`
+//@ just do `for digit in b`. If however, we own `b`, we have to create a reference to it. Alternatively, we could implement `IntoIterator`
 //@ for `BigInt` - which, as already mentioned, would mean that `b` is actually consumed by the iteration, and gone. This can easily happen,
 //@ for example, with a `Vec`: Both `Vec` and `&Vec` (and `&mut Vec`) implement `IntoIterator`, so if you do `for e in v`, and `v` has type `Vec`,
 //@ then you will obtain ownership of the elements during the iteration - and destroy the vector in the process. We actually did that in

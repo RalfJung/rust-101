@@ -16,10 +16,10 @@ use std::cell::{Cell, RefCell};
 //@ references are gone, the data is deleted.
 //@ 
 //@ Wait a moment, you may say here. Multiple references to the same data? That's aliasing! Indeed:
-//@ Once data is stored in an `Rc`, it is read-only and you can only ever get a shared borrow of the data again.
+//@ Once data is stored in an `Rc`, it is read-only and you can only ever get a shared reference to the data again.
 
-//@ Because of this read-only restriction, we cannot use `FnMut` here: We'd be unable to call the function with a mutable borrow
-//@ of it's environment! So we have to go with `Fn`. We wrap that in an `Rc`, and then Rust happily derives `Clone` for us.
+//@ Because of this read-only restriction, we cannot use `FnMut` here: We'd be unable to call the function with a mutable reference
+//@ to it's environment! So we have to go with `Fn`. We wrap that in an `Rc`, and then Rust happily derives `Clone` for us.
 #[derive(Clone)]
 struct Callbacks {
     callbacks: Vec<Rc<Fn(i32)>>,
@@ -61,8 +61,8 @@ pub fn main() {
 //@ So it would be rather sad if we were not able to write this program. Lucky enough, Rust's standard library provides a
 //@ solution in the form of `Cell<T>`. This type represents a memory cell of some type `T`, providing the two basic operations
 //@ `get` and `set`. `get` returns a *copy* of the content of the cell, so all this works only if `T` is `Copy`.
-//@ `set`, which overrides the content, only needs a *shared borrow* of the cell. The phenomenon of a type that permits mutation through
-//@ shared borrows (i.e., mutation despite the possibility of aliasing) is called *interior mutability*. You can think
+//@ `set`, which overrides the content, only needs a *shared reference* to the cell. The phenomenon of a type that permits mutation through
+//@ shared references (i.e., mutation despite the possibility of aliasing) is called *interior mutability*. You can think
 //@ of `set` changing only the *contents* of the cell, not its *identity*. In contrast, the kind of mutation we saw so far was
 //@ about replacing one piece of data by something else of the same type. This is called *inherited mutability*. <br/>
 //@ Notice that it is impossible to *borrow* the contents of the cell, and that is actually the key to why this is safe.
@@ -73,7 +73,7 @@ fn demo_cell(c: &mut Callbacks) {
         let count = Cell::new(0);
         // Again, we have to move ownership if the `count` into the environment closure.
         c.register(move |val| {
-            // In here, all we have is a shared borrow of our environment. But that's good enough for the `get` and `set` of the cell!
+            // In here, all we have is a shared reference of our environment. But that's good enough for the `get` and `set` of the cell!
             //@ At run-time, the `Cell` will be almost entirely compiled away, so this becomes pretty much equivalent to the version
             //@ we wrote in the previous part.
             let new_count = count.get()+1;
@@ -86,8 +86,13 @@ fn demo_cell(c: &mut Callbacks) {
 }
 
 //@ It is worth mentioning that `Rc` itself also has to make use of interior mutability: When you `clone` an `Rc`, all it has available
-//@ is a shared borrow. However, it has to increment the reference count! Internally, `Rc` uses `Cell` for the count, such that it
+//@ is a shared reference. However, it has to increment the reference count! Internally, `Rc` uses `Cell` for the count, such that it
 //@ can be updated during `clone`.
+//@ 
+//@ Putting it all together, the story around mutation and ownership through references looks as follows: There are *exclusive* references,
+//@ which - because of their exclusivity - are always safe to mutate through. And there are *shared* references, where the compiler cannot
+//@ generally promise that mutation is safe. However, if extra circumstances guarantee that mutation *is* safe, then it can happen even
+//@ through a sahred reference - as we saw with `Cell`.
 
 // ## `RefCell`
 //@ As the next step in the evolution of `Callbacks`, we could try to solve this problem of mutability once and for all, by adding `Cell`
@@ -120,23 +125,23 @@ impl CallbacksMut {
     pub fn call(&mut self, val: i32) {
         for callback in self.callbacks.iter() {
             // We have to *explicitly* borrow the contents of a `RefCell` by calling `borrow` or `borrow_mut`.
-            //@ At run-time, the cell will keep track of the number of outstanding shared and mutable borrows,
+            //@ At run-time, the cell will keep track of the number of outstanding shared and mutable references,
             //@ and panic if the rules are violated. <br />
-            //@ For this check to be performed, `closure` is a *guard*: Rather than a normal borrow, `borrow_mut` returns
-            //@ a smart pointer (`RefMut`, in this case) that waits until is goes out of scope, and then
-            //@ appropriately updates the number of active borrows.
+            //@ For this check to be performed, `closure` is a *guard*: Rather than a normal reference, `borrow_mut` returns
+            //@ a smart pointer ([`RefMut`](https://doc.rust-lang.org/stable/std/cell/struct.RefMut.html), in this case) that waits until is goes out of scope, and then
+            //@ appropriately updates the number of active references.
             //@ 
             //@ Since `call` is the only place that borrows the environments of the closures, we should expect that
-            //@ the check will always succeed. However, this is not actually true. Several different `CallbacksMut` could share
+            //@ the check will always succeed, as is actually entirely useless. However, this is not actually true. Several different `CallbacksMut` could share
             //@ a callback (as they were created with `clone`), and calling one callback here could trigger calling
-            //@ all callbacks of the other `CallbacksMut`, which would end up calling the initial callback again. This issue is called *reentrancy*,
-            //@ and it can lead to subtle bugs. Here, it would mean that the closure runs twice, each time thinking it has the only
-            //@ mutable borrow of its environment - so it may end up dereferencing a dangling pointer. Ouch! Lucky enough,
+            //@ all callbacks of the other `CallbacksMut`, which would end up calling the initial callback again. This issue of functions accidentally recursively calling
+            //@ themselves is called *reentrancy*, and it can lead to subtle bugs. Here, it would mean that the closure runs twice, each time thinking it has an
+            //@ exclusive, mutable reference to its environment - so it may end up dereferencing a dangling pointer. Ouch! Lucky enough,
             //@ Rust detects this at run-time and panics once we try to borrow the same environment again. I hope this also makes it
             //@ clear that there's absolutely no hope of Rust performing these checks statically, at compile-time: It would have to detect reentrancy!
             let mut closure = callback.borrow_mut();
             // Unfortunately, Rust's auto-dereference of pointers is not clever enough here. We thus have to explicitly
-            // dereference the smart pointer and obtain a mutable borrow of the content.
+            // dereference the smart pointer and obtain a mutable reference to the content.
             (&mut *closure)(val);
         }
     }
@@ -159,6 +164,6 @@ fn demo_mut(c: &mut CallbacksMut) {
 }
 
 // **Exercise 12.1**: Write some piece of code using only the available, public interface of `CallbacksMut` such that a reentrant call to a closure
-// is happening, and the program aborts because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
+// is happening, and the program panics because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
 
 //@ [index](main.html) | [previous](part11.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part12.rs) | [next](part13.html)

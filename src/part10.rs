@@ -9,10 +9,10 @@ use part05::BigInt;
 //@ our function. In Rust, a natural first attempt to express this is to have a trait for it.
 
 // So, let us define a trait that demands that the type provides some method `do_action` on digits.
-//@ This immediately raises the question: How do we pass `self` to that function? Owned, shared borrow,
-//@ or mutable borrow? The typical strategy to answer this question is to use the strongest
+//@ This immediately raises the question: How do we pass `self` to that function? Owned, shared reference,
+//@ or mutable reference? The typical strategy to answer this question is to use the strongest
 //@ type that still works. Certainly, passing `self` in owned form does not work: Then the function
-//@ would consume `self`, and we could not call it again, on the second digit. So let's go with a mutable borrow.
+//@ would consume `self`, and we could not call it again, on the second digit. So let's go with a mutable reference.
 trait Action {
     fn do_action(&mut self, digit: u64);
 }
@@ -21,7 +21,7 @@ trait Action {
 impl BigInt {
     fn act_v1<A: Action>(&self, mut a: A) {
         //@ Remember that the `mut` above is just an annotation to Rust, telling it that we're okay with `a` being mutated.
-        //@ Calling `do_action` on `a` takes a mutable borrow, so mutation could indeed happen.
+        //@ Calling `do_action` on `a` takes a mutable reference, so mutation could indeed happen.
         for digit in self {
             a.do_action(digit);                                     /*@*/
         }
@@ -62,7 +62,7 @@ pub fn main() {
 //@ In general, this is called a *closure*. Closures take some arguments and produce a result, and they have an *environment*
 //@ they can use, which corresponds to the type `PrintWithString` (or any other type implementing `Action`). Again we have the
 //@ choice of passing this environment in owned or borrowed form, so there are three traits for closures in Rust: `Fn`-closures
-//@ get a shared borrow, `FnMut`-closures get a mutable borrow, and `FnOnce`-closures consume their environment (and can hence
+//@ get a shared reference, `FnMut`-closures get a mutable reference, and `FnOnce`-closures consume their environment (and can hence
 //@ be called only once). The syntax for a closure trait which takes arguments of type `T1`, `T2`, ... and returns something
 //@ of type `U` is `Fn(T1, T2, ...) -> U`.
 
@@ -94,11 +94,11 @@ pub fn print_with_prefix(b: &BigInt, prefix: String) {
 // For example, we can use that to count the digits as they are printed.
 pub fn print_and_count(b: &BigInt) {
     let mut count: usize = 0;
-    //@ This time, the environment will contain a field of type `&mut usize`, that will be initialized with a mutable borrow of
+    //@ This time, the environment will contain a field of type `&mut usize`, that will be initialized with a mutable reference of
     //@ `count`. The closure, since it mutably borrows its environment, is able to access this field and mutate `count`
-    //@ through it. Once `act` returns, the closure is destroyed and the borrow of `count` ends. Because closures compile down
+    //@ through it. Once `act` returns, the closure is destroyed and `count` is no longer borrowed. Because closures compile down
     //@ to normal types, all the borrow checking continues to work as usually, and we cannot accidentally leak a closure somewhere
-    //@ that still contains, in its environment, a borrow that has ended.
+    //@ that still contains, in its environment, a dead reference.
     b.act(|digit| { println!("{}: {}", count, digit); count = count +1; } );
     println!("There are {} digits", count);
 }

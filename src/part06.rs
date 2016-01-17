@@ -28,7 +28,7 @@ impl BigInt {
 // Now we can write `vec_min`.
 fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
     let mut min: Option<BigInt> = None;
-    // If `v` is a shared borrowed vector, then the default for iterating over it is to call `iter`, the iterator that borrows the elements.
+    // If `v` is a shared reference to a vector, then the default for iterating over it is to call `iter`, the iterator that borrows the elements.
     for e in v {
         let e = e.clone();
         min = Some(match min {                                      /*@*/
@@ -47,7 +47,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ the intermediate variable `min`, which also has type `Option<BigInt>`. If you replace get rid of the
 //@ `e.clone()`, Rust will complain "Cannot move out of borrowed content". That's because
 //@ `e` is a `&BigInt`. Assigning `min = Some(*e)` works just like a function call: Ownership of the
-//@ underlying data is transferred from where `e` borrows from to `min`. But that's not allowed, since
+//@ underlying data is transferred from `e` to `min`. But that's not allowed, since
 //@ we just borrowed `e`, so we cannot empty it! We can, however, call `clone` on it. Then we own
 //@ the copy that was created, and hence we can store it in `min`. <br/>
 //@ Of course, making such a full copy is expensive, so we'd like to avoid it. We'll come to that in the next part.
@@ -94,10 +94,11 @@ impl<T: Copy> Copy for SomethingOrNothing<T> {}
 // ## Lifetimes
 //@ To fix the performance problems of `vec_min`, we need to avoid using `clone`. We'd like
 //@ the return value to not be owned (remember that this was the source of our need for cloning), but *borrowed*.
+//@ In other words, we want to return a shared reference to the minimal element.
 
-//@ The function `head` demonstrates how that could work: It borrows the first element of a vector if it is non-empty.
+//@ The function `head` demonstrates how that could work: It returns a reference to the first element of a vector if it is non-empty.
 //@ The type of the function says that it will either return nothing, or it will return a borrowed `T`.
-//@ We can then borrow the first element of `v` and use it to construct the return value.
+//@ We can then obtain a reference to the first element of `v` and use it to construct the return value.
 fn head<T>(v: &Vec<T>) -> Option<&T> {
     if v.len() > 0 {
         Some(&v[0])                                                 /*@*/
@@ -126,25 +127,25 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
     *first.unwrap()
 }
 
-//@ To give the answer to this question, we have to talk about the *lifetime* of a borrow. The point is, saying that
+//@ To give the answer to this question, we have to talk about the *lifetime* of a reference. The point is, saying that
 //@ you borrowed your friend a `Vec<i32>`, or a book, is not good enough, unless you also agree on *how long*
 //@ your friend can borrow it. After all, you need to know when you can rely on owning your data (or book) again.
 //@ 
-//@ Every borrow in Rust has an associated lifetime, written `&'a T` for a borrow of type `T` with lifetime `'a`. The full
+//@ Every reference in Rust has an associated lifetime, written `&'a T` for a reference with lifetime `'a` to something of type `T`. The full
 //@ type of `head` reads as follows: `fn<'a, T>(&'a Vec<T>) -> Option<&'a T>`. Here, `'a` is a *lifetime variable*, which
-//@ represents how long the vector has been borrowed. The function type expresses that argument and return value have *the same lifetime*.
+//@ represents for how long the vector has been borrowed. The function type expresses that argument and return value have *the same lifetime*.
 //@ 
 //@ When analyzing the code of `rust_foo`, Rust has to assign a lifetime to `first`. It will choose the scope
 //@ where `first` is valid, which is the entire rest of the function. Because `head` ties the lifetime of its
 //@ argument and return value together, this means that `&v` also has to borrow `v` for the entire duration of
-//@ the function `rust_foo`. So when we try to borrow `v` as mutable for `push`, Rust complains that the two borrows (the one
+//@ the function `rust_foo`. So when we try to borrow `v` exclusively for `push`, Rust complains that the two references (the one
 //@ for `head`, and the one for `push`) overlap. Lucky us! Rust caught our mistake and made sure we don't crash the program.
 //@ 
-//@ So, to sum this up: Lifetimes enable Rust to reason about *how long* a pointer has been borrowed. We can thus
-//@ safely write functions like `head`, that return pointers into data they got as argument, and make sure they
+//@ So, to sum this up: Lifetimes enable Rust to reason about *how long* a reference is valid, how long ownership has been borrowed. We can thus
+//@ safely write functions like `head`, that return references into data they got as argument, and make sure they
 //@ are used correctly, *while looking only at the function type*. At no point in our analysis of `rust_foo` did
 //@ we have to look *into* `head`. That's, of course, crucial if we want to separate library code from application code.
-//@ Most of the time, we don't have to explicitly add lifetimes to function types. This is thanks to *lifetimes elision*,
+//@ Most of the time, we don't have to explicitly add lifetimes to function types. This is thanks to *lifetime elision*,
 //@ where Rust will automatically insert lifetimes we did not specify, following some [simple, well-documented rules](https://doc.rust-lang.org/stable/book/lifetimes.html#lifetime-elision).
 
 //@ [index](main.html) | [previous](part05.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part06.rs) | [next](part07.html)

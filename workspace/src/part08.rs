@@ -56,11 +56,11 @@ impl ops::Add<BigInt> for BigInt {
     }
 }
 
-// ## Traits and borrowed types
+// ## Traits and reference types
 
 // Writing this out becomes a bit tedious, because trait implementations (unlike functions) require full explicit annotation
 // of lifetimes. Make sure you understand exactly what the following definition says. Notice that we can implement a trait for
-// a borrowed type!
+// a reference type!
 impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
     type Output = BigInt;
     fn add(self, rhs: &'a BigInt) -> Self::Output {

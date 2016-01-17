@@ -45,7 +45,7 @@ impl ConcurrentCounter {
         *counter = *counter + by;
         //@ At the end of the function, `counter` is dropped and the mutex is available again.
         //@ This can only happen when full ownership of the guard is given up. In particular, it is impossible for us
-        //@ to borrow some of its content, release the lock of the mutex, and subsequently access the protected data without holding
+        //@ to take a reference to some of its content, release the lock of the mutex, and subsequently access the protected data without holding
         //@ the lock. Enforcing the locking discipline is expressible in the Rust type system, so we don't have to worry
         //@ about data races *even though* we are mutating shared memory!
         //@ 
@@ -105,7 +105,7 @@ pub fn main() {
 //@ ## `RwLock`
 //@ Besides `Mutex`, there's also [`RwLock`](https://doc.rust-lang.org/stable/std/sync/struct.RwLock.html), which
 //@ provides two ways of locking: One that grants only read-only access, to any number of concurrent readers, and another one
-//@ for exclusive write access. Notice that this is the same pattern we already saw with shared vs. mutable borrows. Hence
+//@ for exclusive write access. Notice that this is the same pattern we already saw with shared vs. mutable references. Hence
 //@ another way of explaining `RwLock` is to say that it is like `RefCell`, but works even for concurrent access. Rather than
 //@ panicking when the data is already borrowed, `RwLock` will of course block the current thread until the lock is available.
 //@ In this view, `Mutex` is a stripped-down version of `RwLock` that does not distinguish readers and writers.
@@ -118,26 +118,26 @@ pub fn main() {
 //@ `RefCell` across multiple threads?
 //@ 
 //@ In part 13, we talked about types that are marked `Send` and thus can be moved to another thread. However, we did *not*
-//@ talk about the question whether a borrow is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
+//@ talk about the question whether a reference is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
 //@ `&mut` allows moving values back and forth, it is even possible to [`swap`](https://doc.rust-lang.org/stable/std/mem/fn.swap.html)
-//@ the contents of two mutably borrowed values. So in terms of concurrency, sending a mutable borrow is very much like
+//@ the contents of two mutable references. So in terms of concurrency, sending a mutable, exclusive reference is very much like
 //@ sending full ownership, in the sense that it can be used to move the object to another thread.
 //@ 
-//@ But what about `&T`, a shared borrow? Without interior mutability, it would always be all-right to send such values.
+//@ But what about `&T`, a shared reference? Without interior mutability, it would always be all-right to send such values.
 //@ After all, no mutation can be performed, so there can be as many threads accessing the data as we like. In the
 //@ presence of interior mutability though, the story gets more complicated. Rust introduces another marker trait for
 //@ this purpose: `Sync`. A type `T` is `Sync` if and only if `&T` is `Send`. Just like `Send`, `Sync` has a default implementation
 //@ and is thus automatically implemented for a data-structure *if* all its members implement it.
 //@ 
-//@ Since `Arc` provides multiple threads with a shared borrow of its content, `Arc<T>` is only `Send` if `T` is `Sync`.
+//@ Since `Arc` provides multiple threads with a shared reference to its content, `Arc<T>` is only `Send` if `T` is `Sync`.
 //@ So if we had used `RefCell` above, which is *not* `Sync`, Rust would have caught that mistake. Notice however that
 //@ `RefCell` *is* `Send`: If ownership of the entire cell is moved to another thread, it is still not possible for several
 //@ threads to try to access the data at the same time.
 //@ 
-//@ Almost all the types we saw so far are `Sync`, with the exception of `Rc`. Remember that a shared borrow is good enough
-//@ for cloning, and we don't want other threads to clone our local `Rc`, so it must not be `Sync`. The rule of `Mutex`
-//@ is to enforce synchronization, so it should not be entirely surprising that `Mutex<T>` is `Send` *and* `Sync` provided that
-//@ `T` is `Send`.
+//@ Almost all the types we saw so far are `Sync`, with the exception of `Rc`. Remember that a shared reference is good enough
+//@ for cloning, and we don't want other threads to clone our local `Rc` (they would race for updating the reference count),
+//@ so it must not be `Sync`. The rule of `Mutex` is to enforce synchronization, so it should not be entirely surprising that
+//@ `Mutex<T>` is `Send` *and* `Sync` provided that `T` is `Send`.
 //@ 
 //@ You may be curious whether there is a type that's `Sync`, but not `Send`. There are indeed rather esoteric examples
 //@ of such types, but that's not a topic I want to go into. In case you are curious, there's a

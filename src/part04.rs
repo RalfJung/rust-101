@@ -1,5 +1,5 @@
-// Rust-101, Part 04: Ownership, Borrowing
-// =======================================
+// Rust-101, Part 04: Ownership, Borrowing, References
+// ===================================================
 
 //@ Rust aims to be a "safe systems language". As a systems language, of course it
 //@ provides *references* (or *pointers*). But as a safe language, it has to
@@ -43,33 +43,33 @@ fn ownership_demo() {
 //@ Essentially, ownership rules out aliasing, hence making the kind of problem discussed above
 //@ impossible.
 
-// ## Shared borrowing
+// ## Borrowing a shared reference
 //@ If you go back to our example with `vec_min`, and try to call that function twice, you will
 //@ get the same error. That's because `vec_min` demands that the caller transfers ownership of the
 //@ vector. Hence, when `vec_min` finishes, the entire vector is deleted. That's of course not what
 //@ we wanted! Can't we somehow give `vec_min` access to the vector, while retaining ownership of it?
 //@ 
-//@ Rust calls this *borrowing* the vector, and it works a bit like borrowing does in the real world:
-//@ If you borrow a book to your friend, your friend can have it and work on it (and you can't!)
-//@ as long as the book is still borrowed. Your friend could even borrow the book to someone else.
-//@ Eventually however, your friend has to give the book back to you, at which point you again
-//@ have full control.
+//@ Rust calls this *a reference* the vector, and it considers references as *borrowing* ownership. This
+//@ works a bit like borrowing does in the real world: If you borrow a book to your friend, your friend
+//@ can have it and work on it (and you can't!) as long as the book is still borrowed. Your friend could
+//@ even borrow the book to someone else. Eventually however, your friend has to give the book back to you,
+//@ at which point you again have full control.
 //@ 
-//@ Rust distinguishes between two kinds of borrows. First of all, there's the *shared* borrow.
-//@ This is where the book metaphor kind of breaks down... you can give a shared borrow of
+//@ Rust distinguishes between two kinds of references. First of all, there's the *shared* reference.
+//@ This is where the book metaphor kind of breaks down... you can give a shared reference to
 //@ *the same data* to lots of different people, who can all access the data. This of course
-//@ introduces aliasing, so in order to live up to its promise of safety, Rust does not allow
-//@ mutation through a shared borrow.
+//@ introduces aliasing, so in order to live up to its promise of safety, Rust generally does not allow
+//@ mutation through a shared reference.
 
-//@ So, let's re-write `vec_min` to work on a shared borrow of a vector, written `&Vec<i32>`.
+//@ So, let's re-write `vec_min` to work on a shared reference to a vector, written `&Vec<i32>`.
 //@ I also took the liberty to convert the function from `SomethingOrNothing` to the standard
 //@ library type `Option`.
 fn vec_min(v: &Vec<i32>) -> Option<i32> {
     use std::cmp;
 
     let mut min = None;
-    // This time, we explicitly request an iterator for the vector `v`. The method `iter` borrows the vector
-    // it works on, and provides shared borrows of the elements.
+    // This time, we explicitly request an iterator for the vector `v`. The method `iter` just borrows the vector
+    // it works on, and provides shared references to the elements.
     for e in v.iter() {
         // In the loop, `e` now has type `&i32`, so we have to dereference it to obtain an `i32`.
         min = Some(match min {
@@ -81,64 +81,64 @@ fn vec_min(v: &Vec<i32>) -> Option<i32> {
 }
 
 // Now that `vec_min` does not acquire ownership of the vector anymore, we can call it multiple times on the same vector and also do things like
-fn shared_borrow_demo() {
+fn shared_ref_demo() {
     let v = vec![5,4,3,2,1];
     let first = &v[0];
     vec_min(&v);
     vec_min(&v);
     println!("The first element is: {}", *first);
 }
-//@ What's going on here? First, `&` is how you create a shared borrow to something. All borrows are created like
-//@ this - there is no way to have something like a  NULL pointer. This code creates three shared borrows to `v`:
-//@ The borrow for `first` begins in the 2nd line of the function and lasts all the way to the end. The other two
-//@ borrows, created for calling `vec_min`, only last for the duration of that respective call.
+//@ What's going on here? First, `&` is how you borrow ownership to someone - this operator creates a shared reference.
+//@ `shared_ref_demo` creates three shared references to `v`:
+//@ The reference `first` begins in the 2nd line of the function and lasts all the way to the end. The other two
+//@ references, created for calling `vec_min`, only last for the duration of that respective call.
 //@ 
-//@ Technically, of course, borrows are pointers. Notice that since `vec_min` only gets a shared
-//@ borrow, Rust knows that it cannot mutate `v` in any way. Hence the pointer into the buffer of `v`
+//@ Technically, of course, references are pointers. Notice that since `vec_min` only gets a shared
+//@ reference, Rust knows that it cannot mutate `v`. Hence the pointer into the buffer of `v`
 //@ that was created before calling `vec_min` remains valid.
 
-// ## Mutable borrowing
-//@ There is a second kind of borrow, a *mutable borrow*. As the name suggests, such a borrow permits
-//@ mutation, and hence has to prevent aliasing. There can only ever be one mutable borrow to a
-//@ particular piece of data.
+// ## Exclusive, mutable references
+//@ There is a second way to borrow something, a second kind of reference: The *exclusive reference*. This is a reference that comes with the promise that
+//@ nobody else has *any kind of access* to the referee - there is no aliasing. As a consequence, it is always safe to mutate data through
+//@ an exclusive reference, which is why they are usually called *mutable references*.
 
 //@ As an example, consider a function which increments every element of a vector by 1.
-//@ The type `&mut Vec<i32>` is the type of mutable borrows of `vec<i32>`. Because the borrow is
-//@ mutable, we can use a mutable iterator, providing a mutable borrow of the elements.
+//@ The type `&mut Vec<i32>` is the type of mutable references to `vec<i32>`. Because the reference is
+//@ mutable, we can use a mutable iterator, providing mutable (exclusive) references to the elements.
 fn vec_inc(v: &mut Vec<i32>) {
     for e in v.iter_mut() {
         *e += 1;
     }
 }
 // Here's an example of calling `vec_inc`.
-fn mutable_borrow_demo() {
+fn mutable_ref_demo() {
     let mut v = vec![5,4,3,2,1];
     /* let first = &v[0]; */
     vec_inc(&mut v);
     vec_inc(&mut v);
     /* println!("The first element is: {}", *first); */             /* BAD! */
 }
-//@ `&mut` is the operator to create a mutable borrow. We have to mark `v` as mutable in order to create such a
-//@ borrow: Even though we completely own `v`, Rust tries to protect us from accidentally mutating things.
-//@ Hence owned variables that you intend to mutate, have to be annotated with `mut`.
-//@ Because the borrow passed to `vec_inc` only lasts as long as the function call, we can still call
-//@ `vec_inc` on the same vector twice: The durations of the two borrows do not overlap, so we never have more
-//@ than one mutable borrow. However, we can *not* create a shared borrow that spans a call to `vec_inc`. Just try
+//@ `&mut` is the operator to create a mutable reference. We have to mark `v` as mutable in order to create such a
+//@ reference: Even though we completely own `v`, Rust tries to protect us from accidentally mutating things.
+//@ Hence owned variables that you intend to mutate have to be annotated with `mut`.
+//@ Because the reference passed to `vec_inc` only lasts as long as the function call, we can still call
+//@ `vec_inc` on the same vector twice: The durations of the two references do not overlap, so we never have more
+//@ than one mutable reference - we only ever borrow `v` once at a time. However, we can *not* create a shared reference that spans a call to `vec_inc`. Just try
 //@ enabling the commented-out lines, and watch Rust complain. This is because `vec_inc` could mutate
-//@ the vector structurally (i.e., it could add or remove elements), and hence the pointer `first`
+//@ the vector structurally (i.e., it could add or remove elements), and hence the reference `first`
 //@ could become invalid. In other words, Rust keeps us safe from bugs like the one in the C++ snipped above.
 //@ 
-//@ Above, I said that having a mutable borrow excludes aliasing. But if you look at the code above carefully,
-//@ you may say: "Wait! Don't the `v` in `mutable_borrow_demo` and the `v` in `vec_inc` alias?" And you are right,
-//@ they do. However, the `v` in `mutable_borrow_demo` is not actually usable, it is not *active*: As long as there is an
-//@ outstanding borrow, Rust will not allow you to do anything with `v`.
+//@ Above, I said that having a mutable reference excludes aliasing. But if you look at the code above carefully,
+//@ you may say: "Wait! Don't the `v` in `mutable_ref_demo` and the `v` in `vec_inc` alias?" And you are right,
+//@ they do. However, the `v` in `mutable_ref_demo` is not actually usable, it is not *active*: As long as `v` is
+//@ borrowed, Rust will not allow you to do anything with it.
 
 // ## Summary
 // The ownership and borrowing system of Rust enforces the following three rules:
 // 
 // * There is always exactly one owner of a piece of data
-// * If there is an active mutable borrow, then nobody else can have active access to the data
-// * If there is an active shared borrow, then every other active access to the data is also a shared borrow
+// * If there is an active mutable reference, then nobody else can have active access to the data
+// * If there is an active shared reference, then every other active access to the data is also a shared reference
 // 
 // As it turns out, combined with the abstraction facilities of Rust, this is a very powerful mechanism
 // to tackle many problems beyond basic memory safety. You will see some examples for this soon.

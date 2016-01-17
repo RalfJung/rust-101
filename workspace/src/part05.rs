@@ -61,7 +61,7 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
 }
 
 // **Exercise 05.2**: Write some more functions on `BigInt`. What about a function that returns the number of
-// digits? The number of non-zero digits? The smallest/largest digit? Of course, these should all just borrow `self`.
+// digits? The number of non-zero digits? The smallest/largest digit? Of course, these should all take `self` as a shared reference (i.e., in borrowed form).
 
 // ## Mutation + aliasing considered harmful (part 2)
 enum Variant {

@@ -65,7 +65,7 @@
 // 
 // ### Basic Rust
 // 
-// * [Part 04: Ownership, Borrowing](part04.html)
+// * [Part 04: Ownership, Borrowing, References](part04.html)
 // * [Part 05: Clone](part05.html)
 // * [Part 06: Copy, Lifetimes](part06.html)
 // * [Part 07: Operator Overloading, Tests, Formating](part07.html)

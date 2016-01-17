@@ -59,7 +59,7 @@ pub fn main() {
 }
 
 
-// **Exercise 11.1**: We made the arbitrary choice of using `i32` for the arguments. Generalize the data-structures above
+// **Exercise 11.1**: We made the arbitrary choice of using `i32` for the arguments. Generalize the data structures above
 // to work with an arbitrary type `T` that's passed to the callbacks. Since you need to call multiple callbacks with the
-// same `t: T`, you will either have to restrict `T` to `Copy` types, or pass a borrow.
+// same `t: T`, you will either have to restrict `T` to `Copy` types, or pass a reference.
 

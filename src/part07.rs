@@ -4,8 +4,8 @@
 pub use part05::BigInt;
 
 // With our new knowledge of lifetimes, we are now able to write down the desired type of `min`:
-//@ We want the function to take two borrows *of the same lifetime*, and then
-//@ return a borrow of that lifetime. If the two input lifetimes would be different, we
+//@ We want the function to take two references *with the same lifetime*, and then
+//@ return a reference with that lifetime. If the two input lifetimes would be different, we
 //@ would not know which lifetime to use for the result.
 pub trait Minimum {
     fn min<'a>(&'a self, other: &'a Self) -> &'a Self;

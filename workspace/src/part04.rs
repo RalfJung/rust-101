@@ -1,5 +1,5 @@
-// Rust-101, Part 04: Ownership, Borrowing
-// =======================================
+// Rust-101, Part 04: Ownership, Borrowing, References
+// ===================================================
 
 /*
   void foo(std::vector<int> v) {
@@ -17,14 +17,14 @@ fn ownership_demo() {
     /* println!("The first element is: {}", v[0]); */               /* BAD! */
 }
 
-// ## Shared borrowing
+// ## Borrowing a shared reference
 
 fn vec_min(v: &Vec<i32>) -> Option<i32> {
     use std::cmp;
 
     let mut min = None;
-    // This time, we explicitly request an iterator for the vector `v`. The method `iter` borrows the vector
-    // it works on, and provides shared borrows of the elements.
+    // This time, we explicitly request an iterator for the vector `v`. The method `iter` just borrows the vector
+    // it works on, and provides shared references to the elements.
     for e in v.iter() {
         // In the loop, `e` now has type `&i32`, so we have to dereference it to obtain an `i32`.
         min = Some(match min {
@@ -36,7 +36,7 @@ fn vec_min(v: &Vec<i32>) -> Option<i32> {
 }
 
 // Now that `vec_min` does not acquire ownership of the vector anymore, we can call it multiple times on the same vector and also do things like
-fn shared_borrow_demo() {
+fn shared_ref_demo() {
     let v = vec![5,4,3,2,1];
     let first = &v[0];
     vec_min(&v);
@@ -44,7 +44,7 @@ fn shared_borrow_demo() {
     println!("The first element is: {}", *first);
 }
 
-// ## Mutable borrowing
+// ## Exclusive, mutable references
 
 fn vec_inc(v: &mut Vec<i32>) {
     for e in v.iter_mut() {
@@ -52,7 +52,7 @@ fn vec_inc(v: &mut Vec<i32>) {
     }
 }
 // Here's an example of calling `vec_inc`.
-fn mutable_borrow_demo() {
+fn mutable_ref_demo() {
     let mut v = vec![5,4,3,2,1];
     /* let first = &v[0]; */
     vec_inc(&mut v);
@@ -64,8 +64,8 @@ fn mutable_borrow_demo() {
 // The ownership and borrowing system of Rust enforces the following three rules:
 // 
 // * There is always exactly one owner of a piece of data
-// * If there is an active mutable borrow, then nobody else can have active access to the data
-// * If there is an active shared borrow, then every other active access to the data is also a shared borrow
+// * If there is an active mutable reference, then nobody else can have active access to the data
+// * If there is an active shared reference, then every other active access to the data is also a shared reference
 // 
 // As it turns out, combined with the abstraction facilities of Rust, this is a very powerful mechanism
 // to tackle many problems beyond basic memory safety. You will see some examples for this soon.

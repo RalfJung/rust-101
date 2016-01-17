@@ -48,7 +48,7 @@ fn demo_cell(c: &mut Callbacks) {
         let count = Cell::new(0);
         // Again, we have to move ownership if the `count` into the environment closure.
         c.register(move |val| {
-            // In here, all we have is a shared borrow of our environment. But that's good enough for the `get` and `set` of the cell!
+            // In here, all we have is a shared reference of our environment. But that's good enough for the `get` and `set` of the cell!
             let new_count = count.get()+1;
             count.set(new_count);
             println!("Callback 2: {} ({}. time)", val, new_count);
@@ -81,7 +81,7 @@ impl CallbacksMut {
             // We have to *explicitly* borrow the contents of a `RefCell` by calling `borrow` or `borrow_mut`.
             let mut closure = callback.borrow_mut();
             // Unfortunately, Rust's auto-dereference of pointers is not clever enough here. We thus have to explicitly
-            // dereference the smart pointer and obtain a mutable borrow of the content.
+            // dereference the smart pointer and obtain a mutable reference to the content.
             (&mut *closure)(val);
         }
     }
@@ -104,5 +104,5 @@ fn demo_mut(c: &mut CallbacksMut) {
 }
 
 // **Exercise 12.1**: Write some piece of code using only the available, public interface of `CallbacksMut` such that a reentrant call to a closure
-// is happening, and the program aborts because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
+// is happening, and the program panics because the `RefCell` refuses to hand out a second mutable borrow of the closure's environment.
 

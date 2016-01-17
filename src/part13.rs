@@ -159,8 +159,8 @@ pub fn main() {
 //@ programs memory safe, and that prevents us from invalidating iterators, also helps secure our multi-threaded code against
 //@ data races. For example, notice how `read_files` sends a `String` to `filter_lines`. At run-time, only the pointer to
 //@ the character data will actually be moved around (just like when a `String` is passed to a function with full ownership). However,
-//@ `read_files` has to *give up* ownership of the string to perform `send`, to it is impossible for an outstanding borrow to
-//@ still be around. After it sent the string to the other side, `read_files` has no pointer into the string content
+//@ `read_files` has to *give up* ownership of the string to perform `send`, to it is impossible for the string to still be borrowed.
+//@ After it sent the string to the other side, `read_files` has no pointer into the string content
 //@ anymore, and hence no way to race on the data with someone else.
 //@ 
 //@ There is a little more to this. Remember the `'static` bound we had to add to `register` in the previous parts, to make

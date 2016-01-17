@@ -15,8 +15,8 @@
 //@ `[T]` is the type of an (unsized) *array*, with elements of type `T`. All this means is that there's a contiguous
 //@ region of memory, where a bunch of `T` are stored. How many? We can't tell! This is an unsized type. Just like for
 //@ trait objects, this means we can only operate on pointers to that type, and these pointers will carry the missing
-//@ information - namely, the length. Such a pointer is called a *slice*. As we will see, a slice can be split.
-//@ Our function can thus take a borrowed slice, and promise to sort all elements in there.
+//@ information - namely, the length (they will be *fat pointers*). Such a reference to an array is called a *slice*. As we will see, a slice can be split.
+//@ Our function can thus take a mutable slice, and promise to sort all elements in there.
 pub fn sort<T: PartialOrd>(data: &mut [T]) {
     if data.len() < 2 { return; }
 
@@ -38,7 +38,7 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     // Finally, we split our slice to sort the two halves. The nice part about slices is that splitting them is cheap:
     //@ They are just a pointer to a start address, and a length. We can thus get two pointers, one at the beginning and
     //@ one in the middle, and set the lengths appropriately such that they don't overlap. This is what `split_at_mut` does.
-    //@ Since the two slices don't overlap, there is no aliasing and we can have them both mutably borrowed.
+    //@ Since the two slices don't overlap, there is no aliasing and we can have both of them as exclusive, mutable slices.
     let (part1, part2) = data.split_at_mut(lpos);
     //@ The index operation can not only be used to address certain elements, it can also be used for *slicing*: Giving a range
     //@ of indices, and obtaining an appropriate part of the slice we started with. Here, we remove the last element from
@@ -131,7 +131,7 @@ Options:
         //@ encoded string, that is, a bunch of bytes in memory (`[u8]`) that are valid according of UTF-8. `str` is unsized. `&str`
         //@ stores the address of the character data, and their length. String literals like "this one" are
         //@ of type `&'static str`: They point right to the constant section of the binary, so 
-        //@ the borrow is valid for the entire program. The bytes pointed to by `pattern`, on the other hand, are owned by someone else, 
+        //@ the reference is valid for the entire program. The bytes pointed to by `pattern`, on the other hand, are owned by someone else, 
         //@ and we call `to_string` on it to copy the string data into a buffer on the heap that we own.
         let mode = if count {
             OutputMode::Count

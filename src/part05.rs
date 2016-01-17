@@ -66,13 +66,13 @@ impl BigInt {
 //@ consumes the vector `v`. The caller hence loses access to its vector. However, there is something
 //@ we can do if we don't want that to happen: We can explicitly `clone` the vector,
 //@ which means that a full (or *deep*) copy will be performed. Technically,
-//@ `clone` takes a borrowed vector, and returns a fully owned one.
+//@ `clone` takes a borrowed vector in the form of a shared reference, and returns a fully owned one.
 fn clone_demo() {
     let v = vec![0,1 << 16];
     let b1 = BigInt::from_vec((&v).clone());
     let b2 = BigInt::from_vec(v);
 }
-//@ Rust has special treatment for methods that borrow its `self` argument (like `clone`, or
+//@ Rust has special treatment for methods that borrow their `self` argument (like `clone`, or
 //@ like `test_invariant` above): It is not necessary to explicitly borrow the receiver of the
 //@ method. Hence you could replace `(&v).clone()` by `v.clone()` above. Just try it!
 
@@ -113,18 +113,18 @@ impl<T: Clone> Clone for SomethingOrNothing<T> {
 //@ `#[derive(Clone)]` right before the definition of `SomethingOrNothing`.
 
 // **Exercise 05.2**: Write some more functions on `BigInt`. What about a function that returns the number of
-// digits? The number of non-zero digits? The smallest/largest digit? Of course, these should all just borrow `self`.
+// digits? The number of non-zero digits? The smallest/largest digit? Of course, these should all take `self` as a shared reference (i.e., in borrowed form).
 
 // ## Mutation + aliasing considered harmful (part 2)
-//@ Now that we know how to borrow a part of an `enum` (like `v` above), there's another example for why we
+//@ Now that we know how to create references to contents of an `enum` (like `v` above), there's another example we can look at for why we
 //@ have to rule out mutation in the presence of aliasing. First, we define an `enum` that can hold either
 //@ a number, or a string.
 enum Variant {
     Number(i32),
     Text(String),
 }
-//@ Now consider the following piece of code. Like above, `n` will be a borrow of a part of `var`,
-//@ and since we wrote `ref mut`, the borrow will be mutable. In other words, right after the match, `ptr`
+//@ Now consider the following piece of code. Like above, `n` will be a reference to a part of `var`,
+//@ and since we wrote `ref mut`, the reference will be exclusive and mutable. In other words, right after the match, `ptr`
 //@ points to the number that's stored in `var`, where `var` is a `Number`. Remember that `_` means
 //@ "we don't care".
 fn work_on_variant(mut var: Variant, text: String) {

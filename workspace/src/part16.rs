@@ -80,7 +80,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
         if self.next.is_null() {
             None
         } else {
-            // Otherwise, we can convert the next pointer to a borrow, get a borrow to the data
+            // Otherwise, we can convert the next pointer to a reference, get a reference to the data
             // and update the iterator.
             let next = unsafe { &mut *self.next };
             let ret = &mut next.data;
@@ -90,14 +90,14 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 }
 
 
-// **Exercise 16.2**: Add a method `iter` and a type `Iter` providing iteration for shared borrows.
+// **Exercise 16.2**: Add a method `iter` and a type `Iter` providing iteration for shared references.
 // Add testcases for both kinds of iterators.
 
 // ## `Drop`
 
 impl<T> Drop for LinkedList<T> {
     // The destructor itself is a method which takes `self` in mutably borrowed form. It cannot own `self`, because then
-    // the destructor of `self` would be called at the end of the function, resulting in endless recursion...
+    // the destructor of `self` would be called at the end of the function, resulting in endless recursion.
     fn drop(&mut self) {
         let mut cur_ptr = self.first;
         while !cur_ptr.is_null() {

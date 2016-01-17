@@ -48,7 +48,7 @@ impl Callbacks {
     // We can also write a generic version of `register`, such that it will be instantiated with some concrete closure type `F`
     // and do the creation of the `Box` and the conversion from `F` to `FnMut(i32)` itself.
     
-    //@ For this to work, we need to demand that the type `F` does not contain any short-lived borrows. After all, we will store it
+    //@ For this to work, we need to demand that the type `F` does not contain any short-lived references. After all, we will store it
     //@ in our list of callbacks indefinitely. If the closure contained a pointer to our caller's stackframe, that pointer
     //@ could be invalid by the time the closure is called. We can mitigate this by bounding `F` by a *lifetime*: `F: 'a` says
     //@ that all data of type `F` will *outlive* (i.e., will be valid for at least as long as) lifetime `'a`.
@@ -64,13 +64,13 @@ impl Callbacks {
         // Since they are of type `FnMut`, we need to mutably iterate.
         for callback in self.callbacks.iter_mut() {
             //@ Here, `callback` has type `&mut Box<FnMut(i32)>`. We can make use of the fact that `Box` is a *smart pointer*: In
-            //@ particular, we can use it as if it were a normal pointer, and use `*` to get to its contents. Then we mutably borrow
-            //@ these contents, because we call a `FnMut`.
+            //@ particular, we can use it as if it were a normal reference, and use `*` to get to its contents. Then we obtain a
+            //@ mutable reference to these contents, because we call a `FnMut`.
             (&mut *callback)(val);                                  /*@*/
-            //@ Just like it is the case with normal borrows, this typically happens implicitly, so we can also directly call the function.
+            //@ Just like it is the case with normal references, this typically happens implicitly with smart pointers, so we can also directly call the function.
             //@ Try removing the `&mut *`.
             //@ 
-            //@ The difference to a normal pointer is that `Box` implies ownership: Once you drop the box (i.e., when the entire `Callbacks` instance is
+            //@ The difference to a reference is that `Box` implies full ownership: Once you drop the box (i.e., when the entire `Callbacks` instance is
             //@ dropped), the content it points to on the heap will be deleted.
         }
     }
@@ -83,9 +83,9 @@ pub fn main() {
     c.call(0);
 
     {
-        //@ We can even register callbacks that modify their environment. Per default, Rust will attempt to borrow `count`. However,
+        //@ We can even register callbacks that modify their environment. Per default, Rust will attempt to capture a reference to `count`, to borrow it. However,
         //@ that doesn't work out this time. Remember the `'static` bound above? Borrowing `count` in the environment would
-        //@ violate that bound, as the borrow is only valid for this block. If the callbacks are triggered later, we'd be in trouble.
+        //@ violate that bound, as the reference is only valid for this block. If the callbacks are triggered later, we'd be in trouble.
         //@ We have to explicitly tell Rust to `move` ownership of the variable into the closure. Its environment will then contain a
         //@ `usize` rather than a `&mut usize`, and the closure has no effect on this local variable anymore.
         let mut count: usize = 0;
@@ -99,7 +99,7 @@ pub fn main() {
 
 //@ ## Run-time behavior
 //@ When you run the program above, how does Rust know what to do with the callbacks? Since an unsized type lacks some information,
-//@ a *pointer* to such a type (be it a `Box` or a borrow) will need to complete this information. We say that pointers to
+//@ a *pointer* to such a type (be it a `Box` or a reference) will need to complete this information. We say that pointers to
 //@ trait objects are *fat*. They store not only the address of the object, but (in the case of trait objects) also a *vtable*: A
 //@ table of function pointers, determining the code that's run when a trait method is called. There are some restrictions for traits to be usable
 //@ as trait objects. This is called *object safety* and described in [the documentation](https://doc.rust-lang.org/stable/book/trait-objects.html) and [the reference](https://doc.rust-lang.org/reference.html#trait-objects).
@@ -113,8 +113,8 @@ pub fn main() {
 //@ (Of course, in the case of `register` above, there's no function called on the trait object.)
 //@ Isn't it beautiful how traits can nicely handle this tradeoff (and much more, as we saw, like closures and operator overloading)?
 
-// **Exercise 11.1**: We made the arbitrary choice of using `i32` for the arguments. Generalize the data-structures above
+// **Exercise 11.1**: We made the arbitrary choice of using `i32` for the arguments. Generalize the data structures above
 // to work with an arbitrary type `T` that's passed to the callbacks. Since you need to call multiple callbacks with the
-// same `t: T`, you will either have to restrict `T` to `Copy` types, or pass a borrow.
+// same `t: T`, you will either have to restrict `T` to `Copy` types, or pass a reference.
 
 //@ [index](main.html) | [previous](part10.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part11.rs) | [next](part12.html)

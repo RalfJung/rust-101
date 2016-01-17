@@ -32,7 +32,7 @@ struct Node<T> {
     data: T,
 }
 // A node pointer is a *mutable raw pointer* to a node.
-//@ Raw pointers (`*mut T` and `*const T`) are the Rust equivalent of pointers in C. Unlike borrows, they do not come with
+//@ Raw pointers (`*mut T` and `*const T`) are the Rust equivalent of pointers in C. Unlike references, they do not come with
 //@ any guarantees: Raw pointers can be null, or they can point to garbage. They don't have a lifetime, either.
 type NodePtr<T> = *mut Node<T>;
 
@@ -115,7 +115,7 @@ impl<T> LinkedList<T> {
 //@ that it is going to visit. However, how do we make sure that this pointer remains valid? We have to
 //@ get this right ourselves, as we left the safe realms of borrowing and ownership. Remember that the
 //@ key ingredient for iterator safety was to tie the lifetime of the iterator to the lifetime of the
-//@ borrow used for `iter_mut`. We will thus give `IterMut` two parameters: A type parameter specifying
+//@ reference used for `iter_mut`. We will thus give `IterMut` two parameters: A type parameter specifying
 //@ the type of the data, and a lifetime parameter specifying for how long the list was borrowed to the
 //@ iterator.
 
@@ -123,7 +123,7 @@ impl<T> LinkedList<T> {
 //@ the data in the list lives at least as long as the iterator: If you drop the `T: 'a`, Rust will tell
 //@ you to add it back. And secondly, Rust will complain if `'a` is not actually used in the struct.
 //@ It doesn't know what it is supposed to do with that lifetime. So we use `PhantomData` again to tell
-//@ it that in terms of ownership, this type actually (mutably) borrows a linked list. This has no
+//@ it that in terms of ownership, this type actually (exclusively) borrows a linked list. This has no
 //@ operational effect, but it means that Rust can deduce the intent we had when adding that
 //@ seemingly useless lifetime parameter.
 pub struct IterMut<'a, T> where T: 'a {
@@ -141,7 +141,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
         if self.next.is_null() {
             None
         } else {
-            // Otherwise, we can convert the next pointer to a borrow, get a borrow to the data
+            // Otherwise, we can convert the next pointer to a reference, get a reference to the data
             // and update the iterator.
             let next = unsafe { &mut *self.next };
             let ret = &mut next.data;
@@ -154,12 +154,12 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 //@ In `next` above, we made crucial use of the assumption that `self.next` is either null or a valid pointer.
 //@ This only works because if someone tries to delete elements from a list during iteration, we know that the borrow checker
 //@ will catch them: If they call `next`, the lifetime `'a` we artificially added to the iterator has to still be
-//@ active, which means the mutable borrow passed to `iter_mut` is still active, which means nobody can delete
+//@ active, which means the mutable reference passed to `iter_mut` is still active, which means nobody can delete
 //@ anything from the list. In other words, we make use of the expressive type system of Rust, decorating
 //@ our own unsafe implementation with just enough information so that Rust can check *uses* of the linked-list.
 //@ If the type system were weaker, we could not write a linked-list like the above with a safe interface!
 
-// **Exercise 16.2**: Add a method `iter` and a type `Iter` providing iteration for shared borrows.
+// **Exercise 16.2**: Add a method `iter` and a type `Iter` providing iteration for shared references.
 // Add testcases for both kinds of iterators.
 
 // ## `Drop`
@@ -173,7 +173,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 //@ of `LinkedList`.
 impl<T> Drop for LinkedList<T> {
     // The destructor itself is a method which takes `self` in mutably borrowed form. It cannot own `self`, because then
-    // the destructor of `self` would be called at the end of the function, resulting in endless recursion...
+    // the destructor of `self` would be called at the end of the function, resulting in endless recursion.
     fn drop(&mut self) {
         let mut cur_ptr = self.first;
         while !cur_ptr.is_null() {
