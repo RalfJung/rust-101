@@ -120,7 +120,7 @@ pub fn main() {
 //@ In part 13, we talked about types that are marked `Send` and thus can be moved to another thread. However, we did *not*
 //@ talk about the question whether a reference is `Send`. For `&mut T`, the answer is: It is `Send` whenever `T` is send.
 //@ `&mut` allows moving values back and forth, it is even possible to [`swap`](https://doc.rust-lang.org/stable/std/mem/fn.swap.html)
-//@ the contents of two mutable references. So in terms of concurrency, sending a mutable, exclusive reference is very much like
+//@ the contents of two mutable references. So in terms of concurrency, sending a mutable, unique reference is very much like
 //@ sending full ownership, in the sense that it can be used to move the object to another thread.
 //@ 
 //@ But what about `&T`, a shared reference? Without interior mutability, it would always be all-right to send such values.

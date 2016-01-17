@@ -44,7 +44,7 @@ fn shared_ref_demo() {
     println!("The first element is: {}", *first);
 }
 
-// ## Exclusive, mutable references
+// ## Unique, mutable references
 
 fn vec_inc(v: &mut Vec<i32>) {
     for e in v.iter_mut() {

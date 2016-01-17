@@ -123,7 +123,7 @@ impl<T> LinkedList<T> {
 //@ the data in the list lives at least as long as the iterator: If you drop the `T: 'a`, Rust will tell
 //@ you to add it back. And secondly, Rust will complain if `'a` is not actually used in the struct.
 //@ It doesn't know what it is supposed to do with that lifetime. So we use `PhantomData` again to tell
-//@ it that in terms of ownership, this type actually (exclusively) borrows a linked list. This has no
+//@ it that in terms of ownership, this type actually (uniquely) borrows a linked list. This has no
 //@ operational effect, but it means that Rust can deduce the intent we had when adding that
 //@ seemingly useless lifetime parameter.
 pub struct IterMut<'a, T> where T: 'a {

@@ -138,8 +138,8 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
 //@ When analyzing the code of `rust_foo`, Rust has to assign a lifetime to `first`. It will choose the scope
 //@ where `first` is valid, which is the entire rest of the function. Because `head` ties the lifetime of its
 //@ argument and return value together, this means that `&v` also has to borrow `v` for the entire duration of
-//@ the function `rust_foo`. So when we try to borrow `v` exclusively for `push`, Rust complains that the two references (the one
-//@ for `head`, and the one for `push`) overlap. Lucky us! Rust caught our mistake and made sure we don't crash the program.
+//@ the function `rust_foo`. So when we try to create a unique reference to `v` for `push`, Rust complains that the two references (the one
+//@ for `head`, and the one for `push`) overlap, so neither of them can be unique. Lucky us! Rust caught our mistake and made sure we don't crash the program.
 //@ 
 //@ So, to sum this up: Lifetimes enable Rust to reason about *how long* a reference is valid, how long ownership has been borrowed. We can thus
 //@ safely write functions like `head`, that return references into data they got as argument, and make sure they

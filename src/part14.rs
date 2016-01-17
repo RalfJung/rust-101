@@ -38,7 +38,7 @@ pub fn sort<T: PartialOrd>(data: &mut [T]) {
     // Finally, we split our slice to sort the two halves. The nice part about slices is that splitting them is cheap:
     //@ They are just a pointer to a start address, and a length. We can thus get two pointers, one at the beginning and
     //@ one in the middle, and set the lengths appropriately such that they don't overlap. This is what `split_at_mut` does.
-    //@ Since the two slices don't overlap, there is no aliasing and we can have both of them as exclusive, mutable slices.
+    //@ Since the two slices don't overlap, there is no aliasing and we can have both of them as unique, mutable slices.
     let (part1, part2) = data.split_at_mut(lpos);
     //@ The index operation can not only be used to address certain elements, it can also be used for *slicing*: Giving a range
     //@ of indices, and obtaining an appropriate part of the slice we started with. Here, we remove the last element from

@@ -89,7 +89,7 @@ fn demo_cell(c: &mut Callbacks) {
 //@ is a shared reference. However, it has to increment the reference count! Internally, `Rc` uses `Cell` for the count, such that it
 //@ can be updated during `clone`.
 //@ 
-//@ Putting it all together, the story around mutation and ownership through references looks as follows: There are *exclusive* references,
+//@ Putting it all together, the story around mutation and ownership through references looks as follows: There are *unique* references,
 //@ which - because of their exclusivity - are always safe to mutate through. And there are *shared* references, where the compiler cannot
 //@ generally promise that mutation is safe. However, if extra circumstances guarantee that mutation *is* safe, then it can happen even
 //@ through a sahred reference - as we saw with `Cell`.
@@ -135,8 +135,8 @@ impl CallbacksMut {
             //@ the check will always succeed, as is actually entirely useless. However, this is not actually true. Several different `CallbacksMut` could share
             //@ a callback (as they were created with `clone`), and calling one callback here could trigger calling
             //@ all callbacks of the other `CallbacksMut`, which would end up calling the initial callback again. This issue of functions accidentally recursively calling
-            //@ themselves is called *reentrancy*, and it can lead to subtle bugs. Here, it would mean that the closure runs twice, each time thinking it has an
-            //@ exclusive, mutable reference to its environment - so it may end up dereferencing a dangling pointer. Ouch! Lucky enough,
+            //@ themselves is called *reentrancy*, and it can lead to subtle bugs. Here, it would mean that the closure runs twice, each time thinking it has a
+            //@ unique, mutable reference to its environment - so it may end up dereferencing a dangling pointer. Ouch! Lucky enough,
             //@ Rust detects this at run-time and panics once we try to borrow the same environment again. I hope this also makes it
             //@ clear that there's absolutely no hope of Rust performing these checks statically, at compile-time: It would have to detect reentrancy!
             let mut closure = callback.borrow_mut();

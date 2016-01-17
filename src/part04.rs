@@ -97,14 +97,14 @@ fn shared_ref_demo() {
 //@ reference, Rust knows that it cannot mutate `v`. Hence the pointer into the buffer of `v`
 //@ that was created before calling `vec_min` remains valid.
 
-// ## Exclusive, mutable references
-//@ There is a second way to borrow something, a second kind of reference: The *exclusive reference*. This is a reference that comes with the promise that
+// ## Unique, mutable references
+//@ There is a second way to borrow something, a second kind of reference: The *unique reference*. This is a reference that comes with the promise that
 //@ nobody else has *any kind of access* to the referee - there is no aliasing. As a consequence, it is always safe to mutate data through
-//@ an exclusive reference, which is why they are usually called *mutable references*.
+//@ an unique reference, which is why they are usually called *mutable references*.
 
 //@ As an example, consider a function which increments every element of a vector by 1.
 //@ The type `&mut Vec<i32>` is the type of mutable references to `vec<i32>`. Because the reference is
-//@ mutable, we can use a mutable iterator, providing mutable (exclusive) references to the elements.
+//@ mutable, we can use a mutable iterator, providing mutable (unique) references to the elements.
 fn vec_inc(v: &mut Vec<i32>) {
     for e in v.iter_mut() {
         *e += 1;
