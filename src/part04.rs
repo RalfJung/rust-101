@@ -98,13 +98,13 @@ fn shared_ref_demo() {
 //@ that was created before calling `vec_min` remains valid.
 
 // ## Unique, mutable references
-//@ There is a second way to borrow something, a second kind of reference: The *unique reference*. This is a reference that comes with the promise that
-//@ nobody else has *any kind of access* to the referee - there is no aliasing. As a consequence, it is always safe to mutate data through
-//@ an unique reference, which is why they are usually called *mutable references*.
+//@ There is a second way to borrow something, a second kind of reference: The *mutable reference*. This is a reference that comes with the promise
+//@ that nobody else has *any kind of access* to the referee - there is no aliasing. It is thus always safe to perform mutation through such a reference.
+//@ Because there cannot be another reference to the same data, we could also call it a *unique* reference, but that is not their official name.
 
 //@ As an example, consider a function which increments every element of a vector by 1.
 //@ The type `&mut Vec<i32>` is the type of mutable references to `vec<i32>`. Because the reference is
-//@ mutable, we can use a mutable iterator, providing mutable (unique) references to the elements.
+//@ mutable, we can use a mutable iterator, providing mutable references to the elements.
 fn vec_inc(v: &mut Vec<i32>) {
     for e in v.iter_mut() {
         *e += 1;
