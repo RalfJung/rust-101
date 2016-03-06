@@ -1,5 +1,6 @@
 use std::sync::{Arc, RwLock};
 use std::thread;
+use std::time::Duration;
 
 #[derive(Clone)]
 pub struct ConcurrentCounter(Arc<RwLock<usize>>);
@@ -36,7 +37,7 @@ pub fn main() {
     let counter1 = counter.clone();
     let handle1 = thread::spawn(move || {
         for _ in 0..10 {
-            thread::sleep_ms(15);
+            thread::sleep(Duration::from_millis(15));
             counter1.increment(2);
         }
     });
@@ -45,14 +46,14 @@ pub fn main() {
     let counter2 = counter.clone();
     let handle2 = thread::spawn(move || {
         for _ in 0..10 {
-            thread::sleep_ms(20);
+            thread::sleep(Duration::from_millis(20));
             counter2.increment(3);
         }
     });
 
     // Now we want to watch the threads working on the counter.
     for _ in 0..50 {
-        thread::sleep_ms(5);
+        thread::sleep(Duration::from_millis(5));
         println!("Current value: {}", counter.get());
     }
 

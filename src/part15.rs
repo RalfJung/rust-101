@@ -3,6 +3,7 @@
 
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::time::Duration;
 
 //@ We already saw that we can use `Arc` to share memory between threads. However, `Arc` can only provide *read-only*
 //@ access to memory: Since there is aliasing, Rust cannot, in general, permit mutation. To implement shared-memory
@@ -70,7 +71,7 @@ pub fn main() {
     let counter1 = counter.clone();
     let handle1 = thread::spawn(move || {
         for _ in 0..10 {
-            thread::sleep_ms(15);
+            thread::sleep(Duration::from_millis(15));
             counter1.increment(2);
         }
     });
@@ -79,14 +80,14 @@ pub fn main() {
     let counter2 = counter.clone();
     let handle2 = thread::spawn(move || {
         for _ in 0..10 {
-            thread::sleep_ms(20);
+            thread::sleep(Duration::from_millis(20));
             counter2.increment(3);
         }
     });
 
     // Now we watch the threads working on the counter.
     for _ in 0..50 {
-        thread::sleep_ms(5);
+        thread::sleep(Duration::from_millis(5));
         println!("Current value: {}", counter.get());
     }
 

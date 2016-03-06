@@ -104,7 +104,7 @@ pub fn main() {
 // Notice that I called the function on `SomethingOrNothing` `print2` to disambiguate from the `print` defined previously.
 // 
 // *Hint*: There is a macro `print!` for printing without appending a newline.
-trait Print {
+pub trait Print {
     /* Add things here */
 }
 impl<T: Print> SomethingOrNothing<T> {
