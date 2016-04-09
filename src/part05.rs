@@ -124,7 +124,7 @@ enum Variant {
     Text(String),
 }
 //@ Now consider the following piece of code. Like above, `n` will be a reference to a part of `var`,
-//@ and since we wrote `ref mut`, the reference will be uniqie and mutable. In other words, right after the match, `ptr`
+//@ and since we wrote `ref mut`, the reference will be unique and mutable. In other words, right after the match, `ptr`
 //@ points to the number that's stored in `var`, where `var` is a `Number`. Remember that `_` means
 //@ "we don't care".
 fn work_on_variant(mut var: Variant, text: String) {
