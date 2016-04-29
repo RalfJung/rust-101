@@ -27,6 +27,6 @@ html_src = html_src.replace(css_marker, css_marker+custom_css, 1)
 title_marker = '<title>'
 html_src = html_src.replace(title_marker, title_marker + 'Rust-101: ', 1)
 
-pycco.main.pycco_template = pycco.main.template(html_src)
+pycco_resources.pycco_template = pycco_resources.template(html_src)
 
 pycco.main.main()
