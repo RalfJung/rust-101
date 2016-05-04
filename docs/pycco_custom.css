@@ -75,6 +75,12 @@ div.code {
     div.code {
         margin: 0px;
         clear: both;
+        /*
+          This *would* be nice, but there are empty code blocks in the generated HTML :-/
+          background: #EEEEEE;
+          border-top: #BBBBBB 1px solid;
+          border-bottom: #BBBBBB 1px solid;
+        */
     }
 }
 
