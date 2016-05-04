@@ -22,11 +22,14 @@ html_src = pycco_resources.html
 
 css_marker = '<link rel="stylesheet" href="{{ stylesheet }}">'
 custom_css = '<link rel="stylesheet" href="pycco_custom.css"><meta name="viewport" content="width=device-width">'
+assert html_src.count(css_marker) == 1
 html_src = html_src.replace(css_marker, css_marker+custom_css, 1)
 
 title_marker = '<title>'
+assert html_src.count(title_marker) == 1
 html_src = html_src.replace(title_marker, title_marker + 'Rust-101: ', 1)
 
-pycco_resources.pycco_template = pycco_resources.template(html_src)
+pycco_resources.html = html_src
+pycco.main.pycco_template = pycco_resources.pycco_template = pycco_resources.template(pycco_resources.html)
 
 pycco.main.main()
