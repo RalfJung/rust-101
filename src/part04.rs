@@ -126,7 +126,7 @@ fn mutable_ref_demo() {
 //@ than one mutable reference - we only ever borrow `v` once at a time. However, we can *not* create a shared reference that spans a call to `vec_inc`. Just try
 //@ enabling the commented-out lines, and watch Rust complain. This is because `vec_inc` could mutate
 //@ the vector structurally (i.e., it could add or remove elements), and hence the reference `first`
-//@ could become invalid. In other words, Rust keeps us safe from bugs like the one in the C++ snipped above.
+//@ could become invalid. In other words, Rust keeps us safe from bugs like the one in the C++ snippet above.
 //@ 
 //@ Above, I said that having a mutable reference excludes aliasing. But if you look at the code above carefully,
 //@ you may say: "Wait! Don't the `v` in `mutable_ref_demo` and the `v` in `vec_inc` alias?" And you are right,
