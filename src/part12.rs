@@ -92,7 +92,7 @@ fn demo_cell(c: &mut Callbacks) {
 //@ Putting it all together, the story around mutation and ownership through references looks as follows: There are *unique* references,
 //@ which - because of their exclusivity - are always safe to mutate through. And there are *shared* references, where the compiler cannot
 //@ generally promise that mutation is safe. However, if extra circumstances guarantee that mutation *is* safe, then it can happen even
-//@ through a sahred reference - as we saw with `Cell`.
+//@ through a shared reference - as we saw with `Cell`.
 
 // ## `RefCell`
 //@ As the next step in the evolution of `Callbacks`, we could try to solve this problem of mutability once and for all, by adding `Cell`
