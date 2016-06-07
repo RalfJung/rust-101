@@ -71,7 +71,7 @@ pub fn main() {
 fn demo_cell(c: &mut Callbacks) {
     {
         let count = Cell::new(0);
-        // Again, we have to move ownership if the `count` into the environment closure.
+        // Again, we have to move ownership of the `count` into the environment closure.
         c.register(move |val| {
             // In here, all we have is a shared reference of our environment. But that's good enough for the `get` and `set` of the cell!
             //@ At run-time, the `Cell` will be almost entirely compiled away, so this becomes pretty much equivalent to the version
@@ -92,7 +92,7 @@ fn demo_cell(c: &mut Callbacks) {
 //@ Putting it all together, the story around mutation and ownership through references looks as follows: There are *unique* references,
 //@ which - because of their exclusivity - are always safe to mutate through. And there are *shared* references, where the compiler cannot
 //@ generally promise that mutation is safe. However, if extra circumstances guarantee that mutation *is* safe, then it can happen even
-//@ through a sahred reference - as we saw with `Cell`.
+//@ through a shared reference - as we saw with `Cell`.
 
 // ## `RefCell`
 //@ As the next step in the evolution of `Callbacks`, we could try to solve this problem of mutability once and for all, by adding `Cell`
