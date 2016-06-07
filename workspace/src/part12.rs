@@ -46,7 +46,7 @@ pub fn main() {
 fn demo_cell(c: &mut Callbacks) {
     {
         let count = Cell::new(0);
-        // Again, we have to move ownership if the `count` into the environment closure.
+        // Again, we have to move ownership of the `count` into the environment closure.
         c.register(move |val| {
             // In here, all we have is a shared reference of our environment. But that's good enough for the `get` and `set` of the cell!
             let new_count = count.get()+1;
