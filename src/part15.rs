@@ -145,4 +145,4 @@ pub fn main() {
 //@ [Rust RFC](https://github.com/rust-lang/rfcs/blob/master/text/0458-send-improvements.md), which contains a type `RcMut` that would be `Sync` and not `Send`.
 //@ You may also be interested in [this blog post](https://huonw.github.io/blog/2015/02/some-notes-on-send-and-sync/) on the topic.
 
-//@ [index](main.html) | [previous](part14.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part15.rs) | [next](part16.html)
+//@ [index](main.html) | [previous](part14.html) | [raw source](workspace/src/part15.rs) | [next](part16.html)

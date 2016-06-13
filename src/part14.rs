@@ -159,4 +159,4 @@ Options:
 // the pattern to regular-expression mode, and change `filter_lines` to honor this option. The documentation of regex is available from its crates.io site.
 // (You won't be able to use the `regex!` macro if you are on the stable or beta channel of Rust. But it wouldn't help for our use-case anyway.)
 
-//@ [index](main.html) | [previous](part13.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part14.rs) | [next](part15.html)
+//@ [index](main.html) | [previous](part13.html) | [raw source](workspace/src/part14.rs) | [next](part15.html)

@@ -42,13 +42,13 @@
 // [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
 // This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
 // 
-// Next, fetch the Rust-101 source code from the [git repository](https://www.ralfj.de/git/rust-101.git)
-// (also available [on GitHub](https://github.com/RalfJung/rust-101), and as a
-// [zip archive](https://github.com/RalfJung/rust-101/archive/master.zip) in case you don't have git installed).
+// Next, we have to prepare a workspace for you to conduct your Rust-101 work in, so that you don't
+// have to start with an empty file. The easiest way is to [download the workspace](https://www.ralfj.de/projects/rust-101/workspace.zip)
+// matching the online tutorial. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
+// (You can also execute it with `cargo run`, but you'll need to do some work before this does anything useful.)
 // 
-// There is a workspace prepared for you in the `workspace` folder. I suggest you copy this
-// folder somewhere else. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
-// (You can also execute it with `cargo run`, but you'll need to do some work before this will succeed.)
+// Alternatively, you can build the workspace from source by fetching the [git repository](https://www.ralfj.de/git/rust-101.git)
+// and running `make workspace`.
 
 // Course Content
 // --------------

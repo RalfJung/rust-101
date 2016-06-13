@@ -22,10 +22,10 @@ docs/%.html: .tmp/docs/%.rs
 # The generated files are shipped only for the benefit of Windows users, who
 # typically don't have the necessary tools for generating the workspace
 # available.
-workspace: $(WORKSPACEFILES)
+workspace: $(WORKSPACEFILES) docs/workspace.zip
 
 workspace/src/%.rs: src/%.rs Makefile dup-unimpl.sed
-	@mkdir -p .tmp/docs
+	@mkdir -p .tmp/docs workspace/src/
 	@echo "$< -> $@"
 	@# sed-fu: remove lines starting with "//@", and replace those ending in "/*@*/" or "/*@@*/" by "unimplemented!()".
 	@# Also coalesce multiple adjacent such lines to one.
@@ -33,6 +33,10 @@ workspace/src/%.rs: src/%.rs Makefile dup-unimpl.sed
 
 workspace/src/main.rs:
 	# Don't touch this file
+
+docs/workspace.zip: $(WORKSPACEFILES) workspace/Cargo.toml workspace/Cargo.lock
+	@rm -f $@
+	zip $@ $^
 
 ## Crates
 crates: $(WORKSPACEFILES)

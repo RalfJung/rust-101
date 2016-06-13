@@ -152,4 +152,4 @@ mod tests {
 // **Exercise 08.6**: Write a subtraction function, and testcases for it. Decide for yourself how you want to handle negative results.
 // For example, you may want to return an `Option`, to panic, or to return `0`.
 
-//@ [index](main.html) | [previous](part07.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part08.rs) | [next](part09.html)
+//@ [index](main.html) | [previous](part07.html) | [raw source](workspace/src/part08.rs) | [next](part09.html)

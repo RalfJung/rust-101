@@ -117,4 +117,4 @@ pub fn main() {
 // to work with an arbitrary type `T` that's passed to the callbacks. Since you need to call multiple callbacks with the
 // same `t: T`, you will either have to restrict `T` to `Copy` types, or pass a reference.
 
-//@ [index](main.html) | [previous](part10.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part11.rs) | [next](part12.html)
+//@ [index](main.html) | [previous](part10.html) | [raw source](workspace/src/part11.rs) | [next](part12.html)

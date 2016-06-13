@@ -147,4 +147,4 @@ fn test_vec_min() {
 // of course, need a `Display` bound on `T`.) Then you should be able to use them with `println!` just like you do
 // with numbers, and get rid of the inherent functions to print `SomethingOrNothing<i32>` and `SomethingOrNothing<f32>`.
 
-//@ [index](main.html) | [previous](part06.html) | [raw source](https://www.ralfj.de/git/rust-101.git/blob_plain/HEAD:/workspace/src/part07.rs) | [next](part08.html)
+//@ [index](main.html) | [previous](part06.html) | [raw source](workspace/src/part07.rs) | [next](part08.html)

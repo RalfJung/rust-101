@@ -1,9 +1,12 @@
 # Rust-101
 
 This documents Rust-101, a tutorial for the [Rust
-language](http://www.rust-lang.org/). You are probably looking for the
-[actual tutorial](https://www.ralfj.de/projects/rust-101/main.html).
+language](http://www.rust-lang.org/).
 
+## Online tutorial
+
+The easiest way to the toturial is to check out its
+[online version](https://www.ralfj.de/projects/rust-101/main.html).
 
 ## Usage
 
