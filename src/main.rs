@@ -39,7 +39,7 @@
 // You will need to have Rust installed, of course. It is available for download on
 // [the Rust website](https://www.rust-lang.org/). Make sure you get at least version 1.3.
 // More detailed installation instructions are provided in
-// [the second chapter of The Book](https://doc.rust-lang.org/stable/book/installing-rust.html).
+// [The Book](https://doc.rust-lang.org/stable/book/).
 // This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
 // 
 // Next, we have to prepare a workspace for you to conduct your Rust-101 work in, so that you don't
