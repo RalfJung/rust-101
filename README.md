@@ -5,7 +5,7 @@ language](http://www.rust-lang.org/).
 
 ## Online tutorial
 
-The easiest way to the toturial is to check out its
+The most accessible form of the toturial is its
 [online version](https://www.ralfj.de/projects/rust-101/main.html).
 
 ## Usage
