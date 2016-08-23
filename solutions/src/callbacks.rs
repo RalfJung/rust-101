@@ -50,22 +50,27 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_reentrant() {
+        // We want to create a `Callbacks` instance containing a closure referencing this very `Callbacks` instance.
+        // To create this cycle, we need to put the `Callbacks` into a `RefCell`.
         let c = Rc::new(RefCell::new(Callbacks::new()));
         c.borrow_mut().register(|val| println!("Callback called: {}", val) );
 
-        {
-            let c2 = c.clone();
-            c.borrow_mut().register(move |val| {
-                let mut guard = c2.borrow_mut();
-                println!("Callback called with {}, ready to go for nested call.", val);
-                guard.call(val+val)
-            } );
-        }
+        // This adds the cyclic closure, which refers to the `Callbacks` though `c2`.
+        let c2 = c.clone();
+        c.borrow_mut().register(move |val| {
+            // This `borrow_mut` won't fail because we are careful below to close the `RefCell`
+            // before triggering the cycle. You can see that this is the case because the log message
+            // below is printed.
+            let mut guard = c2.borrow_mut();
+            println!("Callback called with {}, ready to go for nested call.", val);
+            guard.call(val+val)
+        } );
 
-        // We do a clone, and call `call` on that one. This makes sure that it's not our `RefCell` that complains about two mutable borrows,
-        // but rather the `RefCell` inside the `CallbacksMut`.
+        // We do a clone of the `Callbacks` to ensure that the `RefCell` we created for the cycle is closed.
+        // This makes sure that it's not our `borrow_mut` above that complains about two mutable borrows,
+        // but rather the one inside `Callbacks::call`.
         let mut c2: Callbacks = c.borrow().clone();
-        drop(c);
+        drop(c); // This is not strictly necessary. It demonstrates that we are not holding any reference to the `RefCell` any more.
         c2.call(42);
     }
 }
