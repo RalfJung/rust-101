@@ -44,7 +44,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ The answer is already hidden in the type of `vec_min`: `v` is just borrowed, but
 //@ the Option<BigInt> that it returns is *owned*. We can't just return one of the elements of `v`,
 //@ as that would mean that it is no longer in the vector! In our code, this comes up when we update
-//@ the intermediate variable `min`, which also has type `Option<BigInt>`. If you replace get rid of the
+//@ the intermediate variable `min`, which also has type `Option<BigInt>`. If you get rid of the
 //@ `e.clone()`, Rust will complain "Cannot move out of borrowed content". That's because
 //@ `e` is a `&BigInt`. Assigning `min = Some(*e)` works just like a function call: Ownership of the
 //@ underlying data is transferred from `e` to `min`. But that's not allowed, since
