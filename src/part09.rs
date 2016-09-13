@@ -89,7 +89,7 @@ fn print_digits_v2(b: &BigInt) {
 
 // **Exercise 09.1**: Write a testcase for the iterator, making sure it yields the corrects numbers.
 // 
-// **Exercise 09.2**: Write a function `iter_ldf` that iterators over the digits with the least-significant
+// **Exercise 09.2**: Write a function `iter_ldf` that iterates over the digits with the least-significant
 // digits coming first. Write a testcase for it.
 
 // ## Iterator invalidation and lifetimes
