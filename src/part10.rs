@@ -108,7 +108,7 @@ pub fn print_and_count(b: &BigInt) {
 //@ Rust provides a whole lot of methods on iterators that allow us to write pretty functional-style list manipulation.
 
 // Let's say we want to write a function that increments every entry of a `Vec` by some number, then looks for numbers larger than some threshold, and prints them.
-fn inc_print_even(v: &Vec<i32>, offset: i32, threshold: i32) {
+fn inc_print_threshold(v: &Vec<i32>, offset: i32, threshold: i32) {
     //@ `map` takes a closure that is applied to every element of the iterator. `filter` removes elements
     //@ from the iterator that do not pass the test given by the closure.
     //@ 
