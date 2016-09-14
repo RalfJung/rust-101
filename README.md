@@ -5,7 +5,7 @@ language](http://www.rust-lang.org/).
 
 ## Online tutorial
 
-The most accessible form of the toturial is its
+The most accessible form of the tutorial is its
 [online version](https://www.ralfj.de/projects/rust-101/main.html).
 
 ## Offline Usage
