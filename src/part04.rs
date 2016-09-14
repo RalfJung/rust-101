@@ -49,7 +49,7 @@ fn ownership_demo() {
 //@ vector. Hence, when `vec_min` finishes, the entire vector is deleted. That's of course not what
 //@ we wanted! Can't we somehow give `vec_min` access to the vector, while retaining ownership of it?
 //@ 
-//@ Rust calls this *a reference* the vector, and it considers references as *borrowing* ownership. This
+//@ Rust calls this *a reference* to the vector, and it considers references as *borrowing* ownership. This
 //@ works a bit like borrowing does in the real world: If your friend borrows a book from you, your friend
 //@ can have it and work on it (and you can't!) as long as the book is still borrowed. Your friend could
 //@ even lend the book to someone else. Eventually however, your friend has to give the book back to you,
