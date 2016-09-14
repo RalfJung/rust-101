@@ -11,7 +11,7 @@ use part05::BigInt;
 // So, let us define a trait that demands that the type provides some method `do_action` on digits.
 //@ This immediately raises the question: How do we pass `self` to that function? Owned, shared reference,
 //@ or mutable reference? The typical strategy to answer this question is to use the strongest
-//@ type that still works. Certainly, passing `self` in owned form does not work: Then the function
+//@ type that still works. Certainly, passing `self` in owned form does not work: then the function
 //@ would consume `self`, and we could not call it again, on the second digit. So let's go with a mutable reference.
 trait Action {
     fn do_action(&mut self, digit: u64);
