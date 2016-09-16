@@ -23,7 +23,7 @@ struct CallbacksV1<F: FnMut(i32)> {
 //@ But, Rust complains about this definition. It says something about "Sized". What's the trouble? See, for many things we want to do, it is crucial that
 //@ Rust knows the precise, fixed size of the type - that is, how large this type will be when represented in memory. For example, for a `Vec`, the
 //@ elements are stored one right after the other. How should that be possible, without a fixed size? The point is, `FnMut(i32)` could be of any size.
-//@ We don't know how large that "type that implemenets `FnMut(i32)`" is. Rust calls this an *unsized* type. Whenever we introduce a type variable, Rust
+//@ We don't know how large that "type that implements `FnMut(i32)`" is. Rust calls this an *unsized* type. Whenever we introduce a type variable, Rust
 //@ will implicitly add a bound to that variable, demanding that it is sized. That's why we did not have to worry about this so far. <br/>
 //@ You can opt-out of this implicit bound by saying `T: ?Sized`. Then `T` may or may not be sized.
 
