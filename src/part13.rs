@@ -13,7 +13,7 @@ use std::sync::Arc;
 //@ pitfall of concurrent programming: data races. We will see how that works concretely.
 
 // Before we come to the actual code, we define a data-structure `Options` to store all the information we need
-// to complete the job: Which files to work on, which pattern to look for, and how to output. <br/>
+// to complete the job: Which files to work on, which pattern to look for, and how to output.
 //@ Besides just printing all the matching lines, we will also offer to count them, or alternatively to sort them.
 #[derive(Clone,Copy)]
 pub enum OutputMode {
