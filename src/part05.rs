@@ -40,11 +40,7 @@ impl BigInt {
     //@ It can often be useful to encode the invariant of a data-structure in code, so here
     //@ is a check that detects useless trailing zeros.
     pub fn test_invariant(&self) -> bool {
-        if self.data.len() == 0 {
-            true
-        } else {
-            self.data[self.data.len() - 1] != 0                     /*@*/
-        }
+        self.data.last().map_or(true, |&last| last != 0)            /*@*/
     }
 
     // We can convert any vector of digits into a number, by removing trailing zeros. The `mut`
