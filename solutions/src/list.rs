@@ -53,6 +53,8 @@ impl<T> LinkedList<T> {
             if new_last.is_null() {
                 // The list is now empty.
                 self.first = new_last;
+            } else {
+                unsafe { (*new_last).next = ptr::null_mut() };
             }
             let last = unsafe { raw_into_box(last) } ;
             Some(last.data)
@@ -86,6 +88,8 @@ impl<T> LinkedList<T> {
             if new_first.is_null() {
                 // The list is now empty.
                 self.last = new_first;
+            } else {
+                unsafe { (*new_first).prev = ptr::null_mut() };
             }
             let first = unsafe { raw_into_box(first) } ;
             Some(first.data)
@@ -102,12 +106,13 @@ impl<T> LinkedList<T> {
     }
 
     pub fn iter_mut(&mut self) -> IterMut<T> {
-        IterMut { next: self.first, _marker: PhantomData  }
+        IterMut { next: self.first, next_back: self.last, _marker: PhantomData  }
     }
 }
 
 pub struct IterMut<'a, T> where T: 'a {
     next: NodePtr<T>,
+    next_back: NodePtr<T>,
     _marker: PhantomData<&'a T>,
 }
 
@@ -115,11 +120,29 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.next.is_null() {
-           None
+        if self.next.is_null() || self.next_back.is_null() {
+            // We've reached either end.
+            None
+        }  else if unsafe { (*self.next).prev } == self.next_back {
+            // Next crossed next_back.
+            None
         } else {
             let ret = unsafe{ &mut (*self.next).data };
             self.next = unsafe { (*self.next).next };
+            Some(ret)
+        }
+    }
+}
+
+impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        if self.next.is_null() || self.next_back.is_null() {
+           None
+        }  else if unsafe { (*self.next).prev } == self.next_back {
+           None
+        } else {
+            let ret = unsafe{ &mut (*self.next_back).data };
+            self.next_back = unsafe { (*self.next_back).prev };
             Some(ret)
         }
     }
@@ -199,5 +222,39 @@ mod tests {
             }
         }
         assert_eq!(count.count.get(), 20);
+    }
+
+    #[test]
+    fn test_iter_mut() {
+        let mut l = LinkedList::<i32>::new();
+        for i in 0..5 {
+            l.push_back(i);
+        }
+
+        assert_eq!(l.pop_front(), Some(0));
+        assert_eq!(l.pop_back(), Some(4));
+
+        for (n, i) in l.iter_mut().enumerate() {
+            *i-=1;
+            assert_eq!(n as i32, *i);
+        }
+
+        for (n, i) in l.iter_mut().rev().enumerate() {
+            assert_eq!(n as i32, 2-*i);
+        }
+    }
+
+    #[test]
+    fn test_double_ended_iterator() {
+        let mut l = LinkedList::<i32>::new();
+        for i in 0..3 {
+            l.push_back(i);
+        }
+        let mut i = l.iter_mut();
+        assert_eq!(Some(&mut 0), i.next());
+        assert_eq!(Some(&mut 2), i.next_back());
+        assert_eq!(Some(&mut 1), i.next());
+        assert_eq!(None, i.next());
+        assert_eq!(None, i.next_back());
     }
 }
