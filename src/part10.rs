@@ -81,7 +81,7 @@ impl BigInt {
 pub fn print_with_prefix(b: &BigInt, prefix: String) {
     //@ The syntax for closures is `|arg1, arg2, ...| code`. Notice that the closure can reference variables like `prefix` that it did not
     //@ take as argument - variables that happen to be present *outside* of the closure. We say that the closure *captures*
-    //@ variables. Rust will now automatically create a type (like `PrintWithStruct`) for the environment of the closure
+    //@ variables. Rust will now automatically create a type (like `PrintWithString`) for the environment of the closure
     //@ with fields for every captured variable, implement the closure trait for this type such that the action performed
     //@ is given by the code of the closure, and finally it will instantiate the environment type here at the definition site
     //@ of the closure and fill it appropriately.
