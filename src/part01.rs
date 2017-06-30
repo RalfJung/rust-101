@@ -13,7 +13,7 @@
 //@ For example, consider `sqr`:
 fn sqr(i: i32) -> i32 { i * i }
 //@ Between the curly braces, we are giving the *expression* that computes the return value.
-//@ So we can just write `i * i`, the expression that returns the square if `i`!
+//@ So we can just write `i * i`, the expression that returns the square of `i`!
 //@ This is very close to how mathematicians write down functions (but with more types).
 
 // Conditionals are also just expressions. This is comparable to the ternary `? :` operator
