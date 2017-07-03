@@ -6,7 +6,7 @@
 //@ I/O is a complicated topic, so the code to do that is not exactly pretty - but well,
 //@ let's get that behind us.
 
-// I/O is provided by the module `std::io`, so we first have import that with `use`.
+// I/O is provided by the module `std::io`, so we first have to import that with `use`.
 // We also import the I/O *prelude*, which makes a bunch of commonly used I/O stuff
 // directly available.
 use std::io::prelude::*;
