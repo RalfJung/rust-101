@@ -53,6 +53,8 @@ impl<T> LinkedList<T> {
             if new_last.is_null() {
                 // The list is now empty.
                 self.first = new_last;
+            } else {
+                unsafe { (*new_last).next = ptr::null_mut() };
             }
             let last = unsafe { raw_into_box(last) } ;
             Some(last.data)
@@ -86,6 +88,8 @@ impl<T> LinkedList<T> {
             if new_first.is_null() {
                 // The list is now empty.
                 self.last = new_first;
+            } else {
+                unsafe { (*new_first).prev = ptr::null_mut() };
             }
             let first = unsafe { raw_into_box(first) } ;
             Some(first.data)
@@ -199,5 +203,21 @@ mod tests {
             }
         }
         assert_eq!(count.count.get(), 20);
+    }
+
+    #[test]
+    fn test_iter_mut() {
+        let mut l = LinkedList::<i32>::new();
+        for i in 0..5 {
+            l.push_back(i);
+        }
+
+        assert_eq!(l.pop_front(), Some(0));
+        assert_eq!(l.pop_back(), Some(4));
+
+        for (n, i) in l.iter_mut().enumerate() {
+            *i-=1;
+            assert_eq!(n as i32, *i);
+        }
     }
 }
