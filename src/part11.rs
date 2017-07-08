@@ -115,6 +115,6 @@ pub fn main() {
 
 // **Exercise 11.1**: We made the arbitrary choice of using `i32` for the arguments. Generalize the data structures above
 // to work with an arbitrary type `T` that's passed to the callbacks. Since you need to call multiple callbacks with the
-// same `t: T`, you will either have to restrict `T` to `Copy` types, or pass a reference.
+// same `val: T` (in our `call` function), you will either have to restrict `T` to `Copy` types, or pass a reference.
 
 //@ [index](main.html) | [previous](part10.html) | [raw source](workspace/src/part11.rs) | [next](part12.html)
