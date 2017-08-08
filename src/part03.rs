@@ -51,7 +51,7 @@ fn read_vec() -> Vec<i32> {
         let line = line.unwrap();
         // Now that we have our `String`, we want to make it an `i32`.
         //@ We first `trim` the `line` to remove leading and trailing whitespace.
-        //@ `parse` is a method on `String` that can convert a string to anything. Try finding it's documentation!
+        //@ `parse` is a method on `String` that can convert a string to anything. Try finding its documentation!
 
         //@ In this case, Rust *could* figure out automatically that we need an `i32` (because of the return type
         //@ of the function), but that's a bit too much magic for my taste. We are being more explicit here:
