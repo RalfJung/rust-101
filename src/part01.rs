@@ -43,9 +43,10 @@ fn compute_stuff(x: i32) -> i32 {
 
 // Let us now refactor `vec_min`.
 fn vec_min(v: Vec<i32>) -> NumberOrNothing {
-    //@ Remember that helper function `min_i32`? Rust allows us to define such helper functions *inside* other
-    //@ functions. This is just a matter of namespacing, the inner function has no access to the data of the outer
-    //@ one. Still, being able to nicely group functions can significantly increase readability.
+    //@ Remember that helper function `min_i32`? Rust allows us to define such helper functions
+    //@ *inside* other functions. This is just a matter of namespacing, the inner function has no
+    //@ access to the data of the outer one. Still, being able to nicely group functions can
+    //@ significantly increase readability.
     fn min_i32(a: i32, b: i32) -> i32 {
         if a < b { a } else { b }                                   /*@*/
     }
@@ -106,4 +107,5 @@ pub fn main() {
 
 // **Exercise 01.2**: Write a function `vec_print` that takes a vector and prints all its elements.
 
-//@ [index](main.html) | [previous](part00.html) | [raw source](workspace/src/part01.rs) | [next](part02.html)
+//@ [index](main.html) | [previous](part00.html) | [raw source](workspace/src/part01.rs) |
+//@ [next](part02.html)
