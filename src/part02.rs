@@ -21,7 +21,6 @@ pub use self::SomethingOrNothing::*;
 //@ What this does is define an entire family of types: We can now write
 //@ `SomethingOrNothing<i32>` to get back our `NumberOrNothing`.
 type NumberOrNothing = SomethingOrNothing<i32>;
-
 //@ However, we can also write `SomethingOrNothing<bool>` or even
 //@ `SomethingOrNothing<SomethingOrNothing<i32>>`. In fact, a type like `SomethingOrNothing` is so
 //@ useful that it is already present in the standard library: It's called an *option type*,
@@ -122,8 +121,6 @@ impl Minimum for i32 {
 }
 
 // We again provide a `print` function.
-
-
 //@ This also shows that we can have multiple `impl` blocks for the same type (remember that
 //@ `NumberOrNothing` is just a type alias for `SomethingOrNothing<i32>`), and we can provide some
 //@ methods only for certain instances of a generic type.

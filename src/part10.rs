@@ -125,10 +125,12 @@ pub fn print_and_count(b: &BigInt) {
 // then looks for numbers larger than some threshold, and prints them.
 fn inc_print_threshold(v: &Vec<i32>, offset: i32, threshold: i32) {
     //@ `map` takes a closure that is applied to every element of the iterator. `filter` removes
-    //@ elements from the iterator that do not pass the test given by the closure.  Since all these
-    //@ closures compile down to the pattern described above, there is actually no heap allocation
-    //@ going on here. This makes closures very efficient, and it makes optimization fairly
-    //@ trivial: The resulting code will look like you hand-rolled the loop in C.
+    //@ elements from the iterator that do not pass the test given by the closure.
+    //@ 
+    //@ Since all these closures compile down to the pattern described above, there is actually no
+    //@ heap allocation going on here. This makes closures very efficient, and it makes
+    //@ optimization fairly trivial: The resulting code will look like you hand-rolled the loop in
+    //@ C.
     for i in v.iter().map(|n| *n + offset).filter(|n| *n > threshold) {
         println!("{}", i);
     }

@@ -56,7 +56,6 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ in the next part.
 
 // ## `Copy` types
-
 //@ But before we go there, I should answer the second question I brought up above: Why did our old
 //@ `vec_min` work? We stored the minimal `i32` locally without cloning, and Rust did not complain.
 //@ That's because there isn't really much of an "ownership" when it comes to types like `i32` or
@@ -71,6 +70,7 @@ fn vec_min(v: &Vec<BigInt>) -> Option<BigInt> {
 //@ must also implement `Copy`, and that's why the compiler accepted our generic `vec_min` in part
 //@ 02. `Copy` is the first *marker trait* that we encounter: It does not provide any methods, but
 //@ makes a promise about the behavior of the type - in this case, being duplicable.
+
 //@ If you try to implement `Copy` for `BigInt`, you will notice that Rust does not let you do
 //@ that. A type can only be `Copy` if all its elements are `Copy`, and that's not the case for
 //@ `BigInt`. However, we can make `SomethingOrNothing<T>` copy if `T` is `Copy`.
@@ -100,6 +100,7 @@ impl<T: Copy> Copy for SomethingOrNothing<T> {}
 //@ To fix the performance problems of `vec_min`, we need to avoid using `clone`. We'd like the
 //@ return value to not be owned (remember that this was the source of our need for cloning), but
 //@ *borrowed*. In other words, we want to return a shared reference to the minimal element.
+
 //@ The function `head` demonstrates how that could work: It returns a reference to the first
 //@ element of a vector if it is non-empty. The type of the function says that it will either
 //@ return nothing, or it will return a borrowed `T`. We can then obtain a reference to the first
@@ -158,10 +159,9 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
 //@ references into data they got as argument, and make sure they are used correctly, *while
 //@ looking only at the function type*. At no point in our analysis of `rust_foo` did we have to
 //@ look *into* `head`. That's, of course, crucial if we want to separate library code from
-//@ application code.
-//@ Most of the time, we don't have to explicitly add lifetimes to function types. This is thanks
-//@ to *lifetime elision*, where Rust will automatically insert lifetimes we did not specify,
-//@ following some simple, well-documented
+//@ application code. Most of the time, we don't have to explicitly add lifetimes to function
+//@ types. This is thanks to *lifetime elision*, where Rust will automatically insert lifetimes we
+//@ did not specify, following some simple, well-documented
 //@ [rules](https://doc.rust- lang.org/stable/book/lifetimes.html#lifetime-elision).
 
 //@ [index](main.html) | [previous](part05.html) | [raw source](workspace/src/part06.rs) |

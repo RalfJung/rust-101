@@ -60,7 +60,6 @@ fn read_vec() -> Vec<i32> {
         //@ the return type of the function), but that's a bit too much magic for my taste. We are
         //@ being more explicit here: `parse::<i32>` is `parse` with its generic type set to `i32`.
         match line.trim().parse::<i32>() {
-
             //@ `parse` returns again a `Result`, and this time we use a `match` to handle errors
             //@ (like, the user entering something that is not a number).
             //@ This is a common pattern in Rust: Operations that could go wrong will return

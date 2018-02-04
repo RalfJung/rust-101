@@ -13,7 +13,6 @@ use part05::BigInt;
 // So, let us write a function to "add with carry", and give it the appropriate type. Notice Rust's
 // native support for pairs.
 fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
-
     //@ Rust's stanza on integer overflows may be a bit surprising: In general, when we write `a +
     //@ b`, an overflow is considered an *error*. If you compile your program in debug mode, Rust
     //@ will actually check for that error and panic the program in case of overflows. For
@@ -64,7 +63,6 @@ fn test_overflowing_add() {
 //@ other operand. In this case, it will also be `BigInt` (and we could have left it away, since
 //@ that's the default).
 impl ops::Add<BigInt> for BigInt {
-
     //@ Besides static functions and methods, traits can contain *associated types*: This is a type
     //@ chosen by every particular implementation of the trait. The methods of the trait can then
     //@ refer to that type. In the case of addition, it is used to give the type of the result.
@@ -136,7 +134,6 @@ impl<'a, 'b> ops::Add<&'a BigInt> for &'b BigInt {
 //@ The `cfg` attribute controls whether this module is even compiled: If we added some functions
 //@ that are useful for testing, Rust would not bother compiling them when you just build your
 //@ program for normal use. Other than that, tests work as usually.
-
 #[cfg(test)]
 mod tests {
     use part05::BigInt;

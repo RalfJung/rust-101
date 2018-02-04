@@ -116,16 +116,15 @@ pub fn main() {
 // `unwrap_or_else` for this job.
 
 //@ ## `RwLock`
-
-//@ Besides `Mutex`, there's also [`RwLock`](https://doc.rust-
-//@ lang.org/stable/std/sync/struct.RwLock.html), which provides two ways of locking: One that
-//@ grants only read-only access, to any number of concurrent readers, and another one for
-//@ exclusive write access. Notice that this is the same pattern we already saw with shared vs.
-//@ mutable references. Hence another way of explaining `RwLock` is to say that it is like
-//@ `RefCell`, but works even for concurrent access. Rather than panicking when the data is already
-//@ borrowed, `RwLock` will of course block the current thread until the lock is available.
-//@ In this view, `Mutex` is a stripped-down version of `RwLock` that does not distinguish readers
-//@ and writers.
+//@ Besides `Mutex`, there's also
+//@ [`RwLock`](https://doc.rust-lang.org/stable/std/sync/struct.RwLock.html), which provides two
+//@ ways of locking: One that grants only read-only access, to any number of concurrent readers,
+//@ and another one for exclusive write access. Notice that this is the same pattern we already
+//@ saw with shared vs. mutable references. Hence another way of explaining `RwLock` is to say that
+//@ it is like `RefCell`, but works even for concurrent access. Rather than panicking when the data
+//@ is already borrowed, `RwLock` will of course block the current thread until the lock is
+//@ available. In this view, `Mutex` is a stripped-down version of `RwLock` that does not
+//@ distinguish readers and writers.
 
 // **Exercise 15.3**:  Change the code above to use `RwLock`, such that multiple calls to `get` can
 // be executed at the same time.

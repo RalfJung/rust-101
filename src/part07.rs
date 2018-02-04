@@ -35,8 +35,8 @@ pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
 //@ much safer to use.
 
 // **Exercise 07.1**: For our `vec_min` to be usable with `BigInt`, you will have to provide an
-// **implementation of `Minimum`. You should be able to pretty much copy the code you wrote for
-// **exercise 06.1. You should *not* make any copies of `BigInt`!
+// implementation of `Minimum`. You should be able to pretty much copy the code you wrote for
+// exercise 06.1. You should *not* make any copies of `BigInt`!
 impl Minimum for BigInt {
     fn min<'a>(&'a self, other: &'a Self) -> &'a Self {
         unimplemented!()
@@ -44,7 +44,6 @@ impl Minimum for BigInt {
 }
 
 // ## Operator Overloading
-
 //@ How can we know that our `min` function actually does what we want it to do? One possibility
 //@ here is to do *testing*. Rust comes with nice built-in support for both unit tests and
 //@ integration tests. However, before we go there, we need to have a way of checking whether the
@@ -73,7 +72,6 @@ impl PartialEq for BigInt {
 
 // Now we can compare `BigInt`s. Rust treats `PartialEq` special in that it is wired to the operator
 // `==`:
-
 //@ That operator can now be used on our numbers! Speaking in C++ terms, we just overloaded the
 //@ `==` operator for `BigInt`. Rust does not have function overloading (i.e., it will not dispatch
 //@ to different functions depending on the type of the argument). Instead, one typically finds (or

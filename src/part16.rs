@@ -28,6 +28,7 @@ use std::marker::PhantomData;
 //@ low-level data-structure like a doubly-linked list, it makes sense to implement an efficient
 //@ version once, that is unsafe internally, but that can be used without any risk by safe client
 //@ code.
+
 //@ As usually, we start by defining the types. Everything is parameterized by the type `T` of the
 //@ data stored in the list.
 // A node of the list consists of the data, and two node pointers for the predecessor and successor.
@@ -216,7 +217,6 @@ impl<T> Drop for LinkedList<T> {
 }
 
 // ## The End
-
 //@ Congratulations! You completed Rust-101. This was the last part of the course. I hope you
 //@ enjoyed it. If you have feedback or want to contribute yourself, please head to the
 //@ [Rust-101](https://www.ralfj.de/projects/rust-101/) website fur further information. The entire

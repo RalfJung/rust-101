@@ -19,6 +19,7 @@ use part05::BigInt;
 //@ current location. However, it cannot *own* the `BigInt`, because then the number would be gone
 //@ after iteration! That'd certainly be bad. The only alternative is for the iterator to *borrow*
 //@ the number, so it takes a reference.
+
 //@ In writing this down, we again have to be explicit about the lifetime of the reference: We
 //@ can't just have an `Iter`, we must have an `Iter<'a>` that borrows the number for lifetime
 //@ `'a`. This is our first example of a data-type that's polymorphic in a lifetime, as opposed to
@@ -26,7 +27,6 @@ use part05::BigInt;
 //@ `usize` here is the type of unsigned, pointer-sized numbers. It is typically the type of
 //@ "lengths of things", in particular, it is the type of the length of a `Vec` and hence the right
 //@ type to store an offset into the vector of digits.
-
 pub struct Iter<'a> {
     num: &'a BigInt,
     idx: usize, // the index of the last number that was returned
@@ -118,7 +118,6 @@ fn iter_invalidation_demo() {
         /*b = b + BigInt::new(1);*/                                 /* BAD! */
     }
 }
-
 //@ If you enable the bad line, Rust will reject the code. Why? The problem is that we are
 //@ modifying the number while iterating over it. In other languages, this can have all sorts of
 //@ effects from inconsistent data or throwing an exception (Java) to bad pointers being
@@ -158,7 +157,6 @@ impl<'a> IntoIterator for &'a BigInt {
     }
 }
 // With this in place, you can now replace `b.iter()` in `main` by `&b`. Go ahead and try it! <br/>
-
 //@ Wait, `&b`? Why that? Well, we implemented `IntoIterator` for `&BigInt`. If we are in a place
 //@ where `b` is already borrowed, we can just do `for digit in b`. If however, we own `b`, we have
 //@ to create a reference to it. Alternatively, we could implement `IntoIterator` for `BigInt` -

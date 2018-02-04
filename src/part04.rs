@@ -98,7 +98,6 @@ fn shared_ref_demo() {
 //@ that was created before calling `vec_min` remains valid.
 
 // ## Unique, mutable references
-
 //@ There is a second way to borrow something, a second kind of reference: The *mutable reference*.
 //@ This is a reference that comes with the promise that nobody else has *any kind of access* to
 //@ the referee - in contrast to shared references, there is no aliasing with mutable references.
@@ -121,7 +120,6 @@ fn mutable_ref_demo() {
     vec_inc(&mut v);
     /* println!("The first element is: {}", *first); */             /* BAD! */
 }
-
 //@ `&mut` is the operator to create a mutable reference. We have to mark `v` as mutable in order
 //@ to create such a reference: Even though we completely own `v`, Rust tries to protect us from
 //@ accidentally mutating things.

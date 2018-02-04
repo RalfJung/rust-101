@@ -87,7 +87,6 @@ impl Callbacks {
             //@ The difference to a reference is that `Box` implies full ownership: Once you drop
             //@ the box (i.e., when the entire `Callbacks` instance is dropped), the content it
             //@ points to on the heap will be deleted.
-
         }
     }
 }

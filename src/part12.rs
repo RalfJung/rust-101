@@ -11,7 +11,6 @@ use std::cell::{Cell, RefCell};
 //@ This restriction propagates up to `Callbacks` itself. What could we do about this?
 
 //@ ## `Rc`
-
 //@ The solution is to find some way of cloning `Callbacks` without cloning the environments. This
 //@ can be achieved with `Rc<T>`, a *reference-counted* pointer. This is is another example of a
 //@ smart pointer. You can `clone` an `Rc` as often as you want, that doesn't affect the data it
@@ -143,7 +142,6 @@ impl CallbacksMut {
             // `borrow_mut`.
             //@ At run-time, the cell will keep track of the number of outstanding shared and
             //@ mutable references, and panic if the rules are violated. <br />
-
             //@ For this check to be performed, `closure` is a *guard*: Rather than a normal
             //@ reference, `borrow_mut` returns a smart pointer ([`RefMut`](https://doc.rust-
             //@ lang.org/stable/std/cell/struct.RefMut.html), in this case) that waits until is

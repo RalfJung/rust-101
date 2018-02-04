@@ -6,7 +6,6 @@
 //@ In the course of the next few parts, we are going to build a data-structure for computations
 //@ with *big* numbers. We would like to not have an upper bound to how large these numbers can
 //@ get, with the memory of the machine being the only limit.
-//@ 
 //@ We start by deciding how to represent such big numbers. One possibility here is to use a vector
 //@ "digits" of the number. This is like "1337" being a vector of four digits (1, 3, 3, 7), except
 //@ that we will use `u64` as type of our digits, meaning we have 2^64 individual digits. Now we
@@ -146,9 +145,11 @@ fn work_on_variant(mut var: Variant, text: String) {
 //@ (Technically, the first field of a `String` is a pointer to its character data, so by
 //@ overwriting that pointer with an integer, we make it a completely invalid address. When the
 //@ destructor of `var` runs, it would try to deallocate that address, and Rust would eat your
-//@ laundry - or whatever.)  I hope this example clarifies why Rust has to rule out mutation in the
-//@ presence of aliasing *in general*, not just for the specific case of a buffer being
-//@ reallocated, and old pointers becoming hence invalid.
+//@ laundry - or whatever.)
+//@ 
+//@ I hope this example clarifies why Rust has to rule out mutation in the presence of aliasing
+//@ *in general*, not just for the specific case of a buffer being reallocated, and old pointers
+//@ becoming hence invalid.
 
 //@ [index](main.html) | [previous](part04.html) | [raw source](workspace/src/part05.rs) |
 //@ [next](part06.html)
