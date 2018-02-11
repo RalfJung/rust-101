@@ -101,8 +101,9 @@ fn shared_ref_demo() {
 //@ There is a second way to borrow something, a second kind of reference: The *mutable reference*.
 //@ This is a reference that comes with the promise that nobody else has *any kind of access* to
 //@ the referee - in contrast to shared references, there is no aliasing with mutable references.
-//@ It is thus always safe to perform mutation through such a reference.
-//@ Because there cannot be another reference to the same data, we could also call it a *unique* reference, but that is not their official name.
+//@ It is thus always safe to perform mutation through such a reference. Because there cannot be
+//@ another reference to the same data, we could also call it a *unique* reference, but that is not
+//@ their official name.
 
 //@ As an example, consider a function which increments every element of a vector by 1.
 //@ The type `&mut Vec<i32>` is the type of mutable references to `vec<i32>`. Because the reference

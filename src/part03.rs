@@ -30,7 +30,7 @@ fn read_vec() -> Vec<i32> {
     //@ concurrently, that also reads from standard input? The result would be a mess. Hence
     //@ Rust requires us to `lock` standard input if we want to perform large operations on
     //@ it. (See [the documentation](https://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for
-    //@ more details.) 
+    //@ more details.)
     for line in stdin.lock().lines() {
         // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
         // here is not yet of that type: It has type `io::Result<String>`.
