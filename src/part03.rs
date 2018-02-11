@@ -29,41 +29,46 @@ fn read_vec() -> Vec<i32> {
     //@ for that, but there is a catch: What happens if there is some other piece of code running
     //@ concurrently, that also reads from standard input? The result would be a mess. Hence
     //@ Rust requires us to `lock` standard input if we want to perform large operations on
-    //@ it. (See [the documentation](https://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for more
-    //@ details.) 
+    //@ it. (See [the documentation](https://doc.rust-lang.org/stable/std/io/struct.Stdin.html) for
+    //@ more details.)
     for line in stdin.lock().lines() {
         // Rust's type for (dynamic, growable) strings is `String`. However, our variable `line`
         // here is not yet of that type: It has type `io::Result<String>`.
-        //@ The problem with I/O is that it can always go wrong. The type of `line` is a lot like `Option<String>` ("a `String` or
-        //@ nothing"), but in the case of "nothing", there is additional information about the error.
-        //@ Again, I recommend to check [the documentation](https://doc.rust-lang.org/stable/std/io/type.Result.html).
-        //@ You will see that `io::Result` is actually just an alias for `Result`, so click on that to obtain
+        //@ The problem with I/O is that it can always go wrong. The type of `line` is a lot like
+        //@ `Option<String>` ("a `String` or nothing"), but in the case of "nothing", there is
+        //@ additional information about the error. Again, I recommend to check
+        //@ [the documentation](https://doc.rust-lang.org/stable/std/io/type.Result.html). You will
+        //@ see that `io::Result` is actually just an alias for `Result`, so click on that to obtain
         //@ the list of all constructors and methods of the type.
 
-        //@ We will be lazy here and just assume that nothing goes wrong: `unwrap` returns the `String` if there is one,
-        //@ and panics the program otherwise. Since a `Result` carries some details about the error that occurred,
-        //@ there will be a somewhat reasonable error message. Still, you would not want a user to see such
-        //@ an error, so in a "real" program, we would have to do proper error handling.
+        //@ We will be lazy here and just assume that nothing goes wrong: `unwrap` returns the
+        //@ `String` if there is one, and panics the program otherwise. Since a `Result` carries
+        //@ some details about the error that occurred, there will be a somewhat reasonable error
+        //@ message. Still, you would not want a user to see such an error, so in a "real" program,
+        //@ we would have to do proper error handling.
         //@ Can you find the documentation of `Result::unwrap`?
         //@ 
-        // I chose the same name (`line`) for the new variable to ensure that I will never, accidentally,
-        // access the "old" `line` again.
+        // I chose the same name (`line`) for the new variable to ensure that I will never,
+        // accidentally, access the "old" `line` again.
         let line = line.unwrap();
         // Now that we have our `String`, we want to make it an `i32`.
         //@ We first `trim` the `line` to remove leading and trailing whitespace.
-        //@ `parse` is a method on `String` that can convert a string to anything. Try finding its documentation!
+        //@ `parse` is a method on `String` that can convert a string to anything. Try finding its
+        //@ documentation!
 
-        //@ In this case, Rust *could* figure out automatically that we need an `i32` (because of the return type
-        //@ of the function), but that's a bit too much magic for my taste. We are being more explicit here:
-        //@ `parse::<i32>` is `parse` with its generic type set to `i32`.
+        //@ In this case, Rust *could* figure out automatically that we need an `i32` (because of
+        //@ the return type of the function), but that's a bit too much magic for my taste. We are
+        //@ being more explicit here: `parse::<i32>` is `parse` with its generic type set to `i32`.
         match line.trim().parse::<i32>() {
-            //@ `parse` returns again a `Result`, and this time we use a `match` to handle errors (like, the user entering
-            //@ something that is not a number).
-            //@ This is a common pattern in Rust: Operations that could go wrong will return `Option` or `Result`.
-            //@ The only way to get to the value we are interested in is through pattern matching (and through helper functions
-            //@ like `unwrap`). If we call a function that returns a `Result`, and throw the return value away,
-            //@ the compiler will emit a warning. It is hence impossible for us to *forget* handling an error,
-            //@ or to accidentally use a value that doesn't make any sense because there was an error producing it.
+            //@ `parse` returns again a `Result`, and this time we use a `match` to handle errors
+            //@ (like, the user entering something that is not a number).
+            //@ This is a common pattern in Rust: Operations that could go wrong will return
+            //@ `Option` or `Result`. The only way to get to the value we are interested in is
+            //@ through pattern matching (and through helper functions like `unwrap`). If we call
+            //@ a function that returns a `Result`, and throw the return value away, the compiler
+            //@ will emit a warning. It is hence impossible for us to *forget* handling an error,
+            //@ or to accidentally use a value that doesn't make any sense because there was an
+            //@ error producing it.
             Ok(num) => {
                 vec.push(num)                                       /*@*/
             },
@@ -77,9 +82,9 @@ fn read_vec() -> Vec<i32> {
     vec
 }
 
-//@ So much for `read_vec`. If there are any questions left, the documentation of the respective function
-//@ should be very helpful. Try finding the one for `Vec::push`. I will not always provide the links,
-//@ as the documentation is quite easy to navigate and you should get used to that.
+//@ So much for `read_vec`. If there are any questions left, the documentation of the respective
+//@ function should be very helpful. Try finding the one for `Vec::push`. I will not always provide
+//@ the links, as the documentation is quite easy to navigate and you should get used to that.
 
 // For the rest of the code, we just re-use part 02 by importing it with `use`.
 //@ I already sneaked a bunch of `pub` in part 02 to make this possible: Only
@@ -94,14 +99,16 @@ pub fn main() {
     min.print();                                                    /*@*/
 }
 
-// **Exercise 03.1**: Define a trait `Print` to write a generic version of `SomethingOrNothing::print`.
+// **Exercise 03.1**: Define a trait `Print` to write a generic version of
+// `SomethingOrNothing::print`.
 // Implement that trait for `i32`, and change the code above to use it.
 // I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
 // implementations (just compare it to the `impl` block from the previous exercise).
 // You can read this as "For all types `T` satisfying the `Print` trait, I provide an implementation
 // for `SomethingOrNothing<T>`".
 // 
-// Notice that I called the function on `SomethingOrNothing` `print2` to disambiguate from the `print` defined previously.
+// Notice that I called the function on `SomethingOrNothing` `print2` to disambiguate from the
+// `print` defined previously.
 // 
 // *Hint*: There is a macro `print!` for printing without appending a newline.
 pub trait Print {
@@ -113,7 +120,8 @@ impl<T: Print> SomethingOrNothing<T> {
     }
 }
 
-// **Exercise 03.2**: Building on exercise 02.2, implement all the things you need on `f32` to make your
-// program work with floating-point numbers.
+// **Exercise 03.2**: Building on exercise 02.2, implement all the things you need on `f32` to make
+// your program work with floating-point numbers.
 
-//@ [index](main.html) | [previous](part02.html) | [raw source](workspace/src/part03.rs) | [next](part04.html)
+//@ [index](main.html) | [previous](part02.html) | [raw source](workspace/src/part03.rs) |
+//@ [next](part04.html)

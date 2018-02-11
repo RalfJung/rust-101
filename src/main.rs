@@ -43,12 +43,15 @@
 // This will also install `cargo`, the tool responsible for building rust projects (or *crates*).
 // 
 // Next, we have to prepare a workspace for you to conduct your Rust-101 work in, so that you don't
-// have to start with an empty file. The easiest way is to [download the workspace](https://www.ralfj.de/projects/rust-101/workspace.zip)
-// matching the online tutorial. Try `cargo build` in that new folder to check that compiling your workspace succeeds.
-// (You can also execute it with `cargo run`, but you'll need to do some work before this does anything useful.)
-// 
-// Alternatively, you can build the workspace from source by fetching the [git repository](https://www.ralfj.de/git/rust-101.git)
-// and running `make workspace`.
+// have to start with an empty file. The easiest way is to
+// [download the workspace](https://www.ralfj.de/projects/rust-101/workspace.zip)
+// matching the online tutorial. Try `cargo build` in that new folder to check that compiling your
+// workspace succeeds.
+// (You can also execute it with `cargo run`, but you'll need to do some work before this does
+// anything useful.)
+//
+// Alternatively, you can build the workspace from source by fetching the
+// [git repository](https://www.ralfj.de/git/rust-101.git) and running `make workspace`.
 
 // Course Content
 // --------------
@@ -101,8 +104,8 @@ mod part14;
 mod part15;
 mod part16;
 
-// To actually run the code of some part (after filling in the blanks, if necessary), simply edit the `main`
-// function.
+// To actually run the code of some part (after filling in the blanks, if necessary), simply edit
+// the `main` function.
 fn main() {
     part00::main();
 }
@@ -118,5 +121,7 @@ fn main() {
 // * [The Rustonomicon](https://doc.rust-lang.org/nightly/nomicon/)
 // * [Rust by Example](http://rustbyexample.com/)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
-// * A [collection of links](https://github.com/ctjhoa/rust-learning) to blog posts, articles, videos, etc. for learning Rust.
-// * For the IRC channel and other forums, see the "Community" section of the [Rust Documentation index](https://doc.rust-lang.org/index.html)
+// * A [collection of links](https://github.com/ctjhoa/rust-learning) to blog posts, articles,
+//   videos, etc. for learning Rust.
+// * For the IRC channel and other forums, see the "Community" section of the
+//   [Rust Documentation index](https://doc.rust-lang.org/index.html)

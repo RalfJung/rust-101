@@ -3,7 +3,8 @@
 
 //@ Let us for a moment reconsider the type `NumberOrNothing`. Isn't it a bit annoying that we
 //@ had to hard-code the type `i32` in there? What if tomorrow, we want a `CharOrNothing`, and
-//@ later a `FloatOrNothing`? Certainly we don't want to re-write the type and all its inherent methods.
+//@ later a `FloatOrNothing`? Certainly we don't want to re-write the type and all its inherent
+//@ methods.
 
 // ## Generic datatypes
 
@@ -20,18 +21,20 @@ pub use self::SomethingOrNothing::*;
 //@ What this does is define an entire family of types: We can now write
 //@ `SomethingOrNothing<i32>` to get back our `NumberOrNothing`.
 type NumberOrNothing = SomethingOrNothing<i32>;
-//@ However, we can also write `SomethingOrNothing<bool>` or even `SomethingOrNothing<SomethingOrNothing<i32>>`.
-//@ In fact, a type like `SomethingOrNothing` is so useful that it is already present in the standard library: It's called an
-//@ *option type*, written `Option<T>`. Go check out its [documentation](https://doc.rust-lang.org/stable/std/option/index.html)!
-//@ (And don't worry, there's indeed lots of material mentioned there that we have not covered yet.)
+//@ However, we can also write `SomethingOrNothing<bool>` or even
+//@ `SomethingOrNothing<SomethingOrNothing<i32>>`. In fact, a type like `SomethingOrNothing` is so
+//@ useful that it is already present in the standard library: It's called an *option type*,
+//@ written `Option<T>`. Go check out its
+//@ [documentation](https://doc.rust-lang.org/stable/std/option/index.html)! (And don't worry,
+//@ there's indeed lots of material mentioned there that we have not covered yet.)
 
 // ## Generic `impl`, Static functions
-//@ The types are so similar, that we can provide a generic function to construct a `SomethingOrNothing<T>`
-//@ from an `Option<T>`, and vice versa.
+//@ The types are so similar, that we can provide a generic function to construct a
+//@ `SomethingOrNothing<T>` from an `Option<T>`, and vice versa.
 //@ 
 //@ Notice the syntax for giving generic implementations to generic types: Think of the first `<T>` 
-//@ as *declaring* a type variable ("I am doing something for all types `T`"), and the second `<T>` as
-//@ *using* that variable ("The thing I do, is implement `SomethingOrNothing<T>`").
+//@ as *declaring* a type variable ("I am doing something for all types `T`"), and the second `<T>`
+//@ as *using* that variable ("The thing I do, is implement `SomethingOrNothing<T>`").
 //@
 // Inside an `impl`, `Self` refers to the type we are implementing things for. Here, it is
 // an alias for `SomethingOrNothing<T>`.
@@ -98,13 +101,14 @@ pub fn vec_min<T: Minimum>(v: Vec<T>) -> SomethingOrNothing<T> {
 //@ Before going on, take a moment to ponder the flexibility of Rust's take on abstraction:
 //@ We just defined our own, custom trait (interface), and then implemented that trait
 //@ *for an existing type*. With the hierarchical approach of, e.g., C++ or Java,
-//@ that's not possible: We cannot make an existing type also inherit from our abstract base class after the fact.
+//@ that's not possible: We cannot make an existing type also inherit from our abstract base class
+//@ after the fact.
 //@ 
 //@ In case you are worried about performance, note that Rust performs *monomorphisation*
 //@ of generic functions: When you call `vec_min` with `T` being `i32`, Rust essentially goes
 //@ ahead and creates a copy of the function for this particular type, filling in all the blanks.
-//@ In this case, the call to `T::min` will become a call to our implementation *statically*. There is
-//@ no dynamic dispatch, like there would be for Java interface methods or C++ `virtual` methods.
+//@ In this case, the call to `T::min` will become a call to our implementation *statically*. There
+//@ is no dynamic dispatch, like there would be for Java interface methods or C++ `virtual` methods.
 //@ This behavior is similar to C++ templates. The optimizer (Rust is using LLVM) then has all the
 //@ information it could want to, e.g., inline function calls.
 
@@ -117,9 +121,9 @@ impl Minimum for i32 {
 }
 
 // We again provide a `print` function.
-//@ This also shows that we can have multiple `impl` blocks
-//@ for the same type (remember that `NumberOrNothing` is just a type alias for `SomethingOrNothing<i32>`),
-//@ and we can provide some methods only for certain instances of a generic type.
+//@ This also shows that we can have multiple `impl` blocks for the same type (remember that
+//@ `NumberOrNothing` is just a type alias for `SomethingOrNothing<i32>`), and we can provide some
+//@ methods only for certain instances of a generic type.
 impl NumberOrNothing {
     pub fn print(self) {
         match self {
@@ -143,7 +147,9 @@ pub fn main() {
 
 //@ If this printed `3`, then your generic `vec_min` is working! So get ready for the next part.
 
-// **Exercise 02.1**: Change your program such that it computes the minimum of a `Vec<f32>` (where `f32` is the type
-// of 32-bit floating-point numbers). You should not change `vec_min` in any way, obviously!
+// **Exercise 02.1**: Change your program such that it computes the minimum of a `Vec<f32>` (where
+// `f32` is the type // of 32-bit floating-point numbers). You should not change `vec_min` in any
+// way, obviously!
 
-//@ [index](main.html) | [previous](part01.html) | [raw source](workspace/src/part02.rs) | [next](part03.html)
+//@ [index](main.html) | [previous](part01.html) | [raw source](workspace/src/part02.rs) |
+//@ [next](part03.html)
