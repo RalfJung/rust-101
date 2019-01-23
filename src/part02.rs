@@ -77,7 +77,7 @@ pub trait Minimum : Copy {
 //@ Next, we write `vec_min` as a generic function over a type `T` that we demand to satisfy the `Minimum` trait.
 //@ This requirement is called a *trait bound*.
 //@ The only difference to the version from the previous part is that we call `e.min(n)` instead
-//@ of `std::cmp::min(n, e)`. Rust automatically figures out that `n` is of type `T`, which implements
+//@ of `min_i32(n, e)`. Rust automatically figures out that `e` is of type `T`, which implements
 //@ the `Minimum` trait, and hence we can call that function.
 //@ 
 //@ There is a crucial difference to templates in C++: We actually have to declare which traits
