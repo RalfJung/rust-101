@@ -11,16 +11,16 @@ def patch_html(source, marker, new_text):
     return source.replace(marker, marker + new_text, 1)
 
 # now, monkey-patch pycco for Rust support
-pycco.main.languages[".rs"] = { "name": "rust", "symbol": "//"}
-for ext, l in pycco.main.languages.items():
+pycco.main.supported_languages[".rs"] = { "name": "rust", "comment_symbol": "//"}
+for ext, l in pycco.main.supported_languages.items():
     # Does the line begin with a comment?
-    l["comment_matcher"] = re.compile(r"^\s*" + l["symbol"] + "\s?")
+    l["comment_matcher"] = re.compile(r"^\s*" + l["comment_symbol"] + "\s?")
     # The dividing token we feed into Pygments, to delimit the boundaries between
     # sections.
-    l["divider_text"] = "\n" + l["symbol"] + "DIVIDER\n"
+    l["divider_text"] = "\n" + l["comment_symbol"] + "DIVIDER\n"
     # The mirror of `divider_text` that we expect Pygments to return. We can split
     # on this to recover the original sections.
-    l["divider_html"] = re.compile(r'\n*<span class="c[1]?">' + l["symbol"] + 'DIVIDER</span>\n*')
+    l["divider_html"] = re.compile(r'\n*<span class="c[1]?">' + l["comment_symbol"] + 'DIVIDER</span>\n*')
     # Get the Pygments Lexer for this language.
     l["lexer"] = lexers.get_lexer_by_name(l["name"])
 
