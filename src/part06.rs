@@ -162,7 +162,7 @@ fn rust_foo(mut v: Vec<i32>) -> i32 {
 //@ application code. Most of the time, we don't have to explicitly add lifetimes to function
 //@ types. This is thanks to *lifetime elision*, where Rust will automatically insert lifetimes we
 //@ did not specify, following some simple, well-documented
-//@ [rules](https://doc.rust- lang.org/stable/book/lifetimes.html#lifetime-elision).
+//@ [rules](https://doc.rust-lang.org/stable/book/lifetimes.html#lifetime-elision).
 
 //@ [index](main.html) | [previous](part05.html) | [raw source](workspace/src/part06.rs) |
 //@ [next](part07.html)
