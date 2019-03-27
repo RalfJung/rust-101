@@ -167,8 +167,8 @@ fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
 // **Exercise 10.2**: We started the journey in Part 02 with `SomethingOrNothing<T>`, and later
 // learned about `Option<T>` in Part 04. `Option<T>` also has a `map` function.
 // [Read its documentation here.](https://doc.rust-lang.org/stable/std/option/enum.Option.html#method.map)
-// Which functions in previous Parts can you rewrite to use `map` instead?
-// (Hint: read the source code of `map`, and see if the pattern appears in your own code)
+// Which functions in previous parts can you rewrite to use `map` instead?
+// (Hint: read the source code of `map`, and see if the pattern appears in your own code.)
 // (Bonus: [`test_invariant` in Part 05](part05.html#section-6) doesn't use `match`,
 // but can you still find a way to rewrite it with `map`?)
 
