@@ -164,5 +164,13 @@ fn filter_vec_by_divisor(v: &Vec<i32>, divisor: i32) -> Vec<i32> {
 // those numbers that sit at odd positions? A function that checks whether a vector contains a
 // certain number? Whether all numbers are smaller than some threshold? Be creative!
 
+// **Exercise 10.2**: We started the journey in Part 02 with `SomethingOrNothing<T>`, and later
+// learned about `Option<T>` in Part 04. `Option<T>` also has a `map` function.
+// [Read its documentation here.](https://doc.rust-lang.org/stable/std/option/enum.Option.html#method.map)
+// Which functions in previous parts can you rewrite to use `map` instead?
+// (Hint: read the source code of `map`, and see if the pattern appears in your own code.)
+// Bonus: [`test_invariant` in Part 05](part05.html#section-6) doesn't use `match`,
+// but can you still find a way to rewrite it with `map`?
+
 //@ [index](main.html) | [previous](part09.html) | [raw source](workspace/src/part10.rs) |
 //@ [next](part11.html)
