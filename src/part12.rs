@@ -12,7 +12,7 @@ use std::cell::{Cell, RefCell};
 
 //@ ## `Rc`
 //@ The solution is to find some way of cloning `Callbacks` without cloning the environments. This
-//@ can be achieved with `Rc<T>`, a *reference-counted* pointer. This is is another example of a
+//@ can be achieved with `Rc<T>`, a *reference-counted* pointer. This is another example of a
 //@ smart pointer. You can `clone` an `Rc` as often as you want, that doesn't affect the data it
 //@ contains. It only creates more references to the same data. Once all the references are gone,
 //@ the data is deleted.
