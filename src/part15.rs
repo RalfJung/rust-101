@@ -28,7 +28,7 @@ use std::time::Duration;
 //@ Rather than giving every field a name, a struct can also be defined by just giving a sequence
 //@ of types (similar to how a variant of an `enum` is defined). This is called a *tuple struct*.
 //@ It is often used when constructing a *newtype*, as we do here: `ConcurrentCounter` is
-//@ essentially just a new name for `Arc<Mutex<usize>>`. However, is is a locally declared types,
+//@ essentially just a new name for `Arc<Mutex<usize>>`. However, it is a locally declared types,
 //@ so we can give it an inherent implementation and implement traits for it. Since the field is
 //@ private, nobody outside this module can even know the type we are wrapping.
 
