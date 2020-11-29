@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # A little wrapper around pycco, to add Rust support.
 import pycco, pycco_resources
 from pygments import lexers, formatters
@@ -32,13 +32,13 @@ def generate_documentation(*args, **kwargs):
     generate_documentation_called = True
     result = generate_documentation_orig(*args, **kwargs)
     # now patch it
-    result = patch_html(result, '<link rel="stylesheet" href="pycco.css">',
-                        '<link rel="stylesheet" href="pycco_custom.css"><meta name="viewport" content="width=device-width">')
-    result = patch_html(result, '<title>', 'Rust-101: ')
+    result = patch_html(result, b'<link rel="stylesheet" href="pycco.css">',
+                        b'<link rel="stylesheet" href="pycco_custom.css"><meta name="viewport" content="width=device-width">')
+    result = patch_html(result, b'<title>', b'Rust-101: ')
     ## remove empty code blocks
-    result = re.sub('''<div class='code'>
+    result = re.sub(b'''<div class='code'>
  *<div class="highlight"><pre>(<span></span>)?</pre></div>
- *</div>''', '<!-- empty code block -->', result)
+ *</div>''', b'<!-- empty code block -->', result)
     # done
     return result
 pycco.main.generate_documentation = generate_documentation
