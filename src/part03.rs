@@ -101,7 +101,8 @@ pub fn main() {
 
 // **Exercise 03.1**: Define a trait `Print` to write a generic version of
 // `SomethingOrNothing::print`.
-// Implement that trait for `i32`, and change `main` above to use the new generic `print` function.
+// Implement that trait for `i32`, make `print2 use it, and change `main` above to use the new
+// generic `print2` function.
 // I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
 // implementations (just compare it to the `impl` block from the previous exercise).
 // You can read this as "For all types `T` satisfying the `Print` trait, I provide an implementation
@@ -112,6 +113,9 @@ pub fn main() {
 // 
 // *Hint*: There is a macro `print!` for printing without appending a newline.
 pub trait Print {
+    /* Add things here */
+}
+impl Print for i32 {
     /* Add things here */
 }
 impl<T: Print> SomethingOrNothing<T> {
