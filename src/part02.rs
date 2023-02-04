@@ -148,7 +148,7 @@ pub fn main() {
 //@ If this printed `3`, then your generic `vec_min` is working! So get ready for the next part.
 
 // **Exercise 02.1**: Change your program such that it computes the minimum of a `Vec<f32>` (where
-// `f32` is the type // of 32-bit floating-point numbers). You should not change `vec_min` in any
+// `f32` is the type of 32-bit floating-point numbers). You should not change `vec_min` in any
 // way, obviously!
 
 //@ [index](main.html) | [previous](part01.html) | [raw source](workspace/src/part02.rs) |

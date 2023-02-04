@@ -37,7 +37,7 @@ pub mod part01 {
     }
 }
 
-pub mod part0203 {
+pub mod part02 {
     // A polymorphic (generic) "some value, or no value"
     pub enum SomethingOrNothing<T>  {
         Something(T),
@@ -125,3 +125,63 @@ pub mod part0203 {
     }
 }
 
+pub mod part03 {
+    use std::io::prelude::*;
+    use std::io;
+
+    fn read_vec() -> Vec<i32> {
+        let mut vec: Vec<i32> = Vec::<i32>::new();
+        let stdin = io::stdin();
+        println!("Enter a list of numbers, one per line. End with Ctrl-D (Linux) or Ctrl-Z (Windows).");
+        for line in stdin.lock().lines() {
+            let line = line.unwrap();
+            match line.trim().parse::<i32>() {
+                Ok(num) => {
+                    vec.push(num)
+                },
+                // We don't care about the particular error, so we ignore it with a `_`.
+                Err(_) => {
+                    println!("What did I say about numbers?")
+                },
+            }
+        }
+
+        vec
+    }
+
+    use super::part02::{SomethingOrNothing,Something,Nothing,vec_min};
+
+    pub fn main() {
+        let vec = read_vec();
+        let min = vec_min(vec);
+        min.print2();
+    }
+
+    pub trait Print {
+        fn print(self);
+    }
+    impl Print for i32 {
+        fn print(self) {
+            print!("{}", self);
+        }
+    }
+
+    impl<T: Print> SomethingOrNothing<T> {
+        fn print2(self) {
+            match self {
+                Nothing => println!("The number is: <nothing>"),
+                Something(n) => {
+                    print!("The number is: ");
+                    n.print();
+                    println!();
+                }
+            }
+        }
+    }
+
+    impl Print for f32 {
+        fn print(self) {
+            print!("{}", self);
+        }
+    }
+}

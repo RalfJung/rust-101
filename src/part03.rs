@@ -101,7 +101,7 @@ pub fn main() {
 
 // **Exercise 03.1**: Define a trait `Print` to write a generic version of
 // `SomethingOrNothing::print`.
-// Implement that trait for `i32`, and change the code above to use it.
+// Implement that trait for `i32`, and change `main` above to use the new generic `print` function.
 // I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
 // implementations (just compare it to the `impl` block from the previous exercise).
 // You can read this as "For all types `T` satisfying the `Print` trait, I provide an implementation
