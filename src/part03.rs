@@ -99,10 +99,10 @@ pub fn main() {
     min.print();                                                    /*@*/
 }
 
-// **Exercise 03.1**: Define a trait `Print` to write a generic version of
-// `SomethingOrNothing::print`.
-// Implement that trait for `i32`, make `print2 use it, and change `main` above to use the new
-// generic `print2` function.
+// **Exercise 03.1**: The goal is to write a generic version of `SomethingOrNothing::print`.
+// To this end, define a trait `Print` that provides (simple) generic printing, and implement
+// that trait for `i32`. Then define `SomethingOrNothing::print2` to use that trait, and change
+// `main` above to use the new generic `print2` function.
 // I will again provide a skeleton for this solution. It also shows how to attach bounds to generic
 // implementations (just compare it to the `impl` block from the previous exercise).
 // You can read this as "For all types `T` satisfying the `Print` trait, I provide an implementation
