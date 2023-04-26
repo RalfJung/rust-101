@@ -106,7 +106,7 @@ fn shared_ref_demo() {
 //@ their official name.
 
 //@ As an example, consider a function which increments every element of a vector by 1.
-//@ The type `&mut Vec<i32>` is the type of mutable references to `vec<i32>`. Because the reference
+//@ The type `&mut Vec<i32>` is the type of mutable references to `Vec<i32>`. Because the reference
 //@ is mutable, we can use a mutable iterator, providing mutable references to the elements.
 fn vec_inc(v: &mut Vec<i32>) {
     for e in v.iter_mut() {
