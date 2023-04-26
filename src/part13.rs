@@ -198,7 +198,7 @@ pub fn main() {
 //@ functions provided by `Send`. What the trait says is that types which are `Send` can be safely
 //@ sent to another thread without causing trouble.
 //@ Of course, all the primitive data-types are `Send`. So is `Arc`, which is why Rust accepted our
-//@ code. But `Rc` is not `Send`, and for a good reason! If had two `Rc` to the same data, and sent
+//@ code. But `Rc` is not `Send`, and for a good reason! If we had two `Rc`s to the same data, and sent
 //@ one of them to another thread, things could go havoc due to the lack of synchronization.
 //@ 
 //@ Now, `Send` as a trait is fairly special. It has a so-called *default implementation*. This
