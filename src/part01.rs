@@ -87,7 +87,7 @@ impl NumberOrNothing {
 //@ methods on an `enum` (and also on `struct`, which we will learn about later)
 //@ is independent of the definition of the type. `self` is like `this` in other
 //@ languages, and its type is always implicit. So `print` is now a method that
-//@ takes as first argument a `NumberOrNothing`, just like `print_number_or_nothing`.
+//@ takes `NumberOrNothing` as the first argument, just like `print_number_or_nothing`.
 //@ 
 //@ Try making `number_or_default` from above an inherent method as well!
 
