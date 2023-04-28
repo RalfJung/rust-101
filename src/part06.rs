@@ -127,8 +127,8 @@ fn head<T>(v: &Vec<T>) -> Option<&T> {
 //@ have aliasing (of `first` and `v`) and mutation. But this time, the bug is hidden behind the
 //@ call to `head`. How does Rust solve this? If we translate the code above to Rust, it doesn't
 //@ compile, so clearly we are good - but how and why?
-//@ (Notice that have to explicitly assert using //@ `unwrap` that `first` is not `None`, whereas
-//@ the C++ code above would silently dereference a //@ `NULL`-pointer. But that's another point.)
+//@ (Notice that we use `unwrap` to explicitly assert that `first` is not `None`, whereas
+//@ the C++ code above would silently dereference a `NULL`-pointer. But that's another point.)
 fn rust_foo(mut v: Vec<i32>) -> i32 {
     let first: Option<&i32> = head(&v);
     /* v.push(42); */
