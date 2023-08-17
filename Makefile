@@ -16,7 +16,7 @@ docs: $(DOCFILES)
 	@sed 's|^\(\s*//\)@|\1|;s|\s*/\*@\*/$$||;s|\(\s*\)\S.*/\*@@\*/|\1unimplemented!()|' $< | sed -f dup-unimpl.sed > $@
 
 docs/%.html: .tmp/docs/%.rs
-	@./pycco-rs $<
+	~/.local/pipx/venvs/pycco/bin/python pycco-rs $<
 
 ## Workspace
 # The generated files are shipped only for the benefit of Windows users, who
