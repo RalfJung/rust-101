@@ -119,7 +119,7 @@ fn main() {
 // 
 // * [The Rust Book](https://doc.rust-lang.org/stable/book/)
 // * [The Rustonomicon](https://doc.rust-lang.org/nightly/nomicon/)
-// * [Rust by Example](http://rustbyexample.com/)
+// * [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
 // * The [Rust Subreddit](https://www.reddit.com/r/rust/)
 // * A [collection of links](https://github.com/ctjhoa/rust-learning) to blog posts, articles,
 //   videos, etc. for learning Rust.
