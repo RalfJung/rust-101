@@ -3,6 +3,9 @@
 This documents Rust-101, a tutorial for the [Rust
 language](http://www.rust-lang.org/).
 
+**Note that this tutorial was written for Rust 1.3 in 2015, and the language evolved a lot since then.
+Some of the idioms presented here may no longer reflect current practice.**
+
 ## Online tutorial
 
 The most accessible form of the tutorial is its
